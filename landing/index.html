@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ClearCache — one-click per-site cache clear &amp; hard reload</title>
+  <meta name="description" content="A minimal Chromium browser extension that clears the cache for the current site and hard-reloads it. No popups, no telemetry, no remote calls. Open source under GPL-3.0." />
+  <meta name="theme-color" content="#0a8a3a" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ClearCache — one-click per-site cache clear &amp; hard reload" />
+  <meta property="og:description" content="Minimal Chromium extension. Per-site cache clear by default. Keyboard shortcuts, right-click menu, post-reload toast confirmation. Zero telemetry, GPL-3.0." />
+  <meta property="og:image" content="logo.png" />
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #18181b;
+      --fg-muted: #52525b;
+      --border: #e4e4e7;
+      --surface: #fafafa;
+      --surface-strong: #f4f4f5;
+      --accent: #0a8a3a;
+      --accent-fg: #ffffff;
+      --warn: #d97706;
+      --danger: #b91c1c;
+      --code-bg: #f4f4f5;
+      --code-fg: #18181b;
+      --shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      --radius: 10px;
+      --maxw: 980px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0a0a0a;
+        --fg: #fafafa;
+        --fg-muted: #a1a1aa;
+        --border: #27272a;
+        --surface: #18181b;
+        --surface-strong: #27272a;
+        --accent: #22c55e;
+        --accent-fg: #052e16;
+        --warn: #f59e0b;
+        --danger: #f87171;
+        --code-bg: #1e1e21;
+        --code-fg: #f4f4f5;
+        --shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--fg);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
+    code { background: var(--code-bg); color: var(--code-fg); padding: 1px 6px; border-radius: 4px; font-size: 0.92em; }
+
+    .container { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+    /* HEADER */
+    header {
+      padding: 56px 0 24px;
+      text-align: center;
+    }
+    header .logo {
+      width: 96px; height: 96px;
+      border-radius: 22px;
+      background: transparent;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      margin: 20px 0 6px;
+      letter-spacing: -0.02em;
+    }
+    header .tagline {
+      color: var(--fg-muted);
+      font-size: 1.1rem;
+      margin: 0 0 24px;
+    }
+    .pills {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+      margin: 0 0 28px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      color: var(--fg-muted);
+      background: var(--surface);
+    }
+    .cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 22px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      transition: transform 100ms ease;
+    }
+    .cta:hover { text-decoration: none; transform: translateY(-1px); }
+    .cta.secondary {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+    /* SECTIONS */
+    section { padding: 48px 0; border-top: 1px solid var(--border); }
+    section h2 {
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      letter-spacing: -0.01em;
+      margin: 0 0 8px;
+    }
+    section .lede {
+      color: var(--fg-muted);
+      font-size: 1.04rem;
+      max-width: 60ch;
+      margin: 0 0 28px;
+    }
+
+    /* FEATURE GRID */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .feature h3 {
+      font-size: 1.04rem;
+      margin: 0 0 6px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .feature .icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: var(--surface-strong);
+      font-size: 0.95rem;
+    }
+    .feature p {
+      margin: 0; color: var(--fg-muted); font-size: 0.95rem;
+    }
+
+    /* COMPARISON TABLE */
+    .compare {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      font-size: 0.94rem;
+    }
+    .compare th, .compare td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .compare th { background: var(--surface-strong); font-weight: 600; }
+    .compare tr:last-child td { border-bottom: none; }
+    .compare .check { color: var(--accent); font-weight: 700; }
+    .compare .x     { color: var(--danger); font-weight: 700; }
+
+    /* MODES TABLE */
+    .modes { width: 100%; border-collapse: collapse; font-size: 0.96rem; }
+    .modes th, .modes td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .modes th { color: var(--fg-muted); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .modes tr:last-child td { border-bottom: none; }
+    .modes kbd {
+      font-family: ui-monospace, monospace;
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.86rem;
+      border: 1px solid var(--border);
+    }
+    .badge-dot {
+      display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+      vertical-align: middle; margin-right: 6px;
+    }
+    .dot-green  { background: var(--accent); }
+    .dot-amber  { background: var(--warn); }
+    .dot-red    { background: var(--danger); }
+
+    /* PRIVACY CALLOUT */
+    .privacy {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .privacy h3 { margin: 0 0 4px; font-size: 1.1rem; }
+    .privacy ul { margin: 0; padding-left: 20px; color: var(--fg-muted); }
+    .privacy li { margin: 4px 0; }
+
+    /* INSTALL BLOCK */
+    .install ol { margin: 0; padding-left: 22px; }
+    .install li { margin: 8px 0; color: var(--fg); }
+    .install pre {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 12px 14px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      margin: 12px 0;
+    }
+    .install .note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--warn);
+      background: var(--surface);
+      border-radius: 0 8px 8px 0;
+      color: var(--fg-muted);
+      font-size: 0.94rem;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 36px 0;
+      border-top: 1px solid var(--border);
+      color: var(--fg-muted);
+      font-size: 0.92rem;
+      text-align: center;
+    }
+    footer a { color: var(--fg-muted); }
+    footer a:hover { color: var(--fg); }
+
+    /* SR-only */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <img class="logo" src="logo.png" alt="ClearCache logo" width="96" height="96" />
+      <h1>Clear Cache &amp; Hard Reload</h1>
+      <p class="tagline">One click. One site. One fresh load.</p>
+      <div class="pills">
+        <span class="pill">Manifest V3</span>
+        <span class="pill">Chrome 114+</span>
+        <span class="pill">Edge · Brave · Arc · Opera</span>
+        <span class="pill">GPL-3.0</span>
+        <span class="pill">No telemetry</span>
+      </div>
+      <div class="cta-row">
+        <a class="cta" href="https://github.com/isaiasgv/ClearCache/releases/latest" rel="noopener">
+          ↓ Download latest release
+        </a>
+        <a class="cta secondary" href="https://github.com/isaiasgv/ClearCache" rel="noopener">
+          View source on GitHub
+        </a>
+      </div>
+    </header>
+
+    <section>
+      <h2>Why ClearCache?</h2>
+      <p class="lede">The browser already gives you several cache-clearing tools — and each is annoying in its own way.</p>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>Built-in option</th>
+            <th>What it does</th>
+            <th>What's annoying</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Ctrl+Shift+R</code></td>
+            <td>Reloads with cache bypass for that one navigation</td>
+            <td>Doesn't unregister Service Workers — subsequent navigations may still be stale</td>
+          </tr>
+          <tr>
+            <td>DevTools → Disable cache</td>
+            <td>Bypasses cache <em>while DevTools is open</em></td>
+            <td>You have to keep DevTools open. Doesn't help users testing your dev build.</td>
+          </tr>
+          <tr>
+            <td>Settings → Clear browsing data</td>
+            <td>Wipes everything for the chosen time range</td>
+            <td>Nukes every site's cache. Loses your auth sessions everywhere. Multi-step dialog.</td>
+          </tr>
+          <tr>
+            <td><strong>ClearCache</strong></td>
+            <td><strong>Clears <em>this</em> site's cache, unregisters its Service Workers, and hard-reloads</strong></td>
+            <td><span class="check">Nothing — that's the point.</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Features</h2>
+      <p class="lede">Everything routed through one toolbar click, four keyboard shortcuts, and a right-click menu. No popup, no options page, nothing to configure.</p>
+      <div class="features">
+        <div class="feature">
+          <h3><span class="icon">🎯</span> Per-site by default</h3>
+          <p>Click clears cache for the active tab's origin only. Other sites' data stays untouched.</p>
+        </div>
+        <div class="feature">
+          <h3><span class="icon">⌨️</span> Three escalation modes</h3>
+          <p>All-sites wipe, deep clear (cache + cookies + storage), and reload-all-tabs — each on its own keyboard shortcut.</p>
+        </div>
+        <div class="feature">
+          <h3><span class="icon">✓</span> Toast + badge confirmation</h3>
+          <p>A color-coded toast appears on the freshly reloaded page. Badge is the fallback on chrome:// pages.</p>
+        </div>
+        <div class="feature">
+          <h3><span class="icon">📊</span> Cache hit/miss telemetry</h3>
+          <p>The toast shows how many subresources were served from cache vs. fetched fresh, so you can verify the wipe worked.</p>
+        </div>
+        <div class="feature">
+          <h3><span class="icon">🕶️</span> Reopen in incognito</h3>
+          <p>Right-click for a one-click "deep-clear and reopen this URL in a fresh incognito window."</p>
+        </div>
+        <div class="feature">
+          <h3><span class="icon">🌐</span> Internationalized</h3>
+          <p>Available in English and Spanish. Drop a <code>_locales/&lt;lang&gt;/messages.json</code> to add more.</p>
+        </div>
+        <div class="feature">
+          <h3><span class="icon">🪶</span> Tiny footprint</h3>
+          <p>~150 lines of vanilla JS. No frameworks, no bundlers, no third-party dependencies.</p>
+        </div>
+        <div class="feature">
+          <h3><span class="icon">🔒</span> Zero telemetry</h3>
+          <p>Collects nothing, transmits nothing, contacts no remote servers. Fully auditable source.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>All four modes</h2>
+      <p class="lede">Defaults are sensible. Modifiers are explicit. No magic.</p>
+      <table class="modes">
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Shortcut</th>
+            <th>Toast</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Clear current site &amp; reload <em>(default)</em></td>
+            <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd></td>
+            <td><span class="badge-dot dot-green"></span> green</td>
+          </tr>
+          <tr>
+            <td>Clear all sites &amp; reload current tab</td>
+            <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd></td>
+            <td><span class="badge-dot dot-amber"></span> amber</td>
+          </tr>
+          <tr>
+            <td>Deep clear current site (cache + cookies + storage)</td>
+            <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd></td>
+            <td><span class="badge-dot dot-red"></span> red</td>
+          </tr>
+          <tr>
+            <td>Reload all tabs in this window</td>
+            <td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>W</kbd></td>
+            <td><span class="badge-dot dot-green"></span> green</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Install</h2>
+      <p class="lede">The Chrome Web Store and Edge Add-ons listings are coming soon. For now, side-load the latest GitHub Release.</p>
+      <div class="install">
+        <ol>
+          <li>Download <code>clearcache-X.Y.Z.zip</code> from the <a href="https://github.com/isaiasgv/ClearCache/releases/latest" rel="noopener">latest release</a>.</li>
+          <li>Verify the SHA-256 against the <code>.sha256</code> file (optional but recommended).</li>
+          <li>Extract the zip somewhere stable — the browser reads from this folder on every launch.</li>
+          <li>Open <code>chrome://extensions</code> (or <code>edge://extensions</code>).</li>
+          <li>Toggle <strong>Developer mode</strong> on (top-right corner).</li>
+          <li>Click <strong>Load unpacked</strong> and select the extracted folder.</li>
+          <li>Pin the icon to your toolbar.</li>
+        </ol>
+        <div class="note">
+          Or build from source — there is no build step:
+          <pre>git clone https://github.com/isaiasgv/ClearCache.git</pre>
+          Then load the cloned folder via <strong>Load unpacked</strong>.
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Privacy</h2>
+      <div class="privacy">
+        <h3>The extension collects nothing.</h3>
+        <ul>
+          <li>No analytics, no error reporting, no usage tracking.</li>
+          <li>No remote calls — the extension never makes an HTTP request.</li>
+          <li>No data storage. The extension reads no cookies, no <code>localStorage</code>, no IndexedDB.</li>
+          <li>No content scripts that read your pages.</li>
+        </ul>
+        <p style="margin: 0; color: var(--fg-muted); font-size: 0.94rem;">
+          Read the full <a href="https://github.com/isaiasgv/ClearCache/blob/main/docs/privacy.md" rel="noopener">privacy policy</a> or audit the source — <a href="https://github.com/isaiasgv/ClearCache/blob/main/background.js" rel="noopener"><code>background.js</code></a> is about 150 lines.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Open source &amp; permissions</h2>
+      <p class="lede">Every permission has a justification. There are no "just in case" requests.</p>
+      <table class="compare">
+        <thead>
+          <tr><th>Permission</th><th>Why it's needed</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>browsingData</code></td><td>Calling <code>chrome.browsingData.remove</code> to clear cache, Cache Storage, Service Workers, and (deep mode) cookies / localStorage / IndexedDB.</td></tr>
+          <tr><td><code>tabs</code></td><td>Reading the active tab's URL to scope the clear, and reloading it.</td></tr>
+          <tr><td><code>contextMenus</code></td><td>Adding the right-click entries on the toolbar icon.</td></tr>
+          <tr><td><code>scripting</code></td><td>Injecting the post-reload toast into the page. Toast injection is the only use.</td></tr>
+          <tr><td><code>webRequest</code></td><td>Read-only observation of post-reload requests to compute cache hit/miss telemetry shown in the toast.</td></tr>
+          <tr><td><code>&lt;all_urls&gt;</code></td><td>The per-site scoping logic must resolve any origin you visit. The extension never reads page contents.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer>
+      <p>
+        Made with care. No analytics. No AI co-authors.<br />
+        <a href="https://github.com/isaiasgv/ClearCache">github.com/isaiasgv/ClearCache</a> ·
+        <a href="https://github.com/isaiasgv/ClearCache/issues">Report an issue</a> ·
+        <a href="https://github.com/isaiasgv/ClearCache/blob/main/LICENSE">GPL-3.0</a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

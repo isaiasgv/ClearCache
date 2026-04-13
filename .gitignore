@@ -23,3 +23,9 @@ build/
 # Local env / secrets
 .env
 .env.*
+
+# Node (test tooling only — extension itself ships zero deps)
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

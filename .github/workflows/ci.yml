@@ -53,6 +53,19 @@ jobs:
       - name: background.js parses as JavaScript
         run: node --check background.js
 
+      - name: lib/*.js parses as JavaScript
+        run: |
+          for f in lib/*.js; do
+            [ -f "$f" ] || continue
+            node --check "$f"
+          done
+
+      - name: Run unit tests (vitest)
+        if: hashFiles('package.json') != ''
+        run: |
+          npm install --no-audit --no-fund --silent
+          npm test
+
       - name: No AI-assistant attribution in commit history (last 50)
         run: |
           BAD=$(git log -n 50 --pretty=format:'AUTHOR:%an <%ae>%nCOMMITTER:%cn <%ce>%nMESSAGE:%B%n---' \

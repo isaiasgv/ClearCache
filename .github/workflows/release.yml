@@ -214,6 +214,7 @@ jobs:
           cp manifest.json background.js LICENSE "$STAGING/"
           cp -r icons "$STAGING/"
           if [ -d _locales ]; then cp -r _locales "$STAGING/"; fi
+          if [ -d lib ]; then cp -r lib "$STAGING/"; fi
           (cd "$STAGING" && zip -r "$GITHUB_WORKSPACE/${{ steps.version.outputs.zip_name }}" .)
           unzip -l "${{ steps.version.outputs.zip_name }}"
           echo "zip_path=${GITHUB_WORKSPACE}/${{ steps.version.outputs.zip_name }}" >> "$GITHUB_OUTPUT"

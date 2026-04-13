@@ -31,7 +31,8 @@ When committing on the user's behalf, use only the user's configured git identit
 
 ### 2. Keep it minimal
 
-- No third-party runtime dependencies. No npm, no bundlers, no frameworks.
+- **No third-party runtime dependencies.** The shipped extension imports nothing from npm, no bundlers, no frameworks.
+- **Test-only `devDependencies` are the one allowed exception.** `vitest` lives in `package.json` for running pure-helper unit tests under Node. It is never bundled into the extension zip — the release workflow's zip step only copies `manifest.json`, `background.js`, `LICENSE`, `icons/`, `_locales/`, and `lib/`. If you find yourself wanting to add another devDep, justify it in the PR.
 - No new permissions in `manifest.json` without a documented reason in the PR.
 - No telemetry, analytics, remote calls, or background fetches.
 - No popup UI, options page, or content scripts unless the feature genuinely requires it.

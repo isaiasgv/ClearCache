@@ -7,6 +7,8 @@
 //
 // Per-origin scoping requires Chrome 114+ (see manifest.minimum_chrome_version).
 
+import { originOf } from "./lib/origin.js";
+
 const DATA_BASE = {
   cache: true,
   cacheStorage: true,
@@ -185,16 +187,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   pendingToasts.delete(tabId);
   showToast(tabId, mode);
 });
-
-function originOf(url) {
-  if (!url) return null;
-  try {
-    const u = new URL(url);
-    return u.protocol === "http:" || u.protocol === "https:" ? u.origin : null;
-  } catch {
-    return null;
-  }
-}
 
 async function clearAndReload(tab, mode) {
   const origin = originOf(tab?.url);

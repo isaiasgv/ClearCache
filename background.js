@@ -238,7 +238,9 @@ async function activeTab() {
 
 chrome.action.onClicked.addListener((tab) => clearAndReload(tab, "origin"));
 
-async function clearOriginAndReloadWindow(tab) {
+async function clearOriginAndReloadTabs(tab, scope) {
+  // scope: "window" -> only tabs in tab.windowId
+  //        "all"    -> tabs across every window
   const origin = originOf(tab?.url);
 
   let ok = true;
@@ -255,15 +257,17 @@ async function clearOriginAndReloadWindow(tab) {
   const feedbackKey = ok ? "origin" : "error";
   await flashBadge(tab?.id, feedbackKey);
 
-  if (typeof tab?.windowId !== "number") return;
-  // Show the toast on the originally active tab only, not on every reloaded
-  // tab in the window — confirmation should not be a barrage.
-  if (typeof tab.id === "number") {
+  // Show the toast on the originally active tab only — not on every reloaded
+  // tab — to avoid a barrage of confirmations.
+  if (typeof tab?.id === "number") {
     pendingToasts.set(tab.id, feedbackKey);
     startTelemetry(tab.id);
   }
 
-  const tabs = await chrome.tabs.query({ windowId: tab.windowId });
+  const query = scope === "all" ? {} : { windowId: tab?.windowId };
+  if (scope !== "all" && typeof tab?.windowId !== "number") return;
+
+  const tabs = await chrome.tabs.query(query);
   await Promise.all(
     tabs
       .filter((t) => typeof t.id === "number")
@@ -275,19 +279,61 @@ async function clearOriginAndReloadWindow(tab) {
   );
 }
 
+async function deepClearAndReopenIncognito(tab) {
+  const origin = originOf(tab?.url);
+  const url = tab?.url;
+
+  let ok = true;
+  try {
+    await chrome.browsingData.remove(
+      origin ? { since: 0, origins: [origin] } : { since: 0 },
+      DATA_DEEP
+    );
+  } catch (err) {
+    console.error("[ClearCache] Deep clear failed:", err);
+    ok = false;
+  }
+
+  await flashBadge(tab?.id, ok ? "deep" : "error");
+
+  if (!url || !ok) return;
+
+  try {
+    await chrome.windows.create({ url, incognito: true });
+  } catch (err) {
+    // Most common failure: extension is not allowed in incognito mode by user.
+    console.error("[ClearCache] Could not open incognito window:", err);
+    if (typeof tab?.id === "number") {
+      // Inject a one-off error toast since there's no reload to attach to.
+      const text = chrome.i18n.getMessage("toastIncognitoBlockedText");
+      const style = TOAST_STYLE.error;
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: renderToast,
+          args: [{ bg: style.bg, fg: style.fg, icon: style.icon, text, durationMs: TOAST_MS + 1500 }]
+        });
+      } catch { /* page disallows scripting */ }
+    }
+  }
+}
+
 chrome.commands.onCommand.addListener(async (command) => {
   const tab = await activeTab();
   if (!tab) return;
-  if (command === "clear-all-origins") return clearAndReload(tab, "all");
-  if (command === "clear-deep")        return clearAndReload(tab, "deep");
-  if (command === "reload-all-tabs")   return clearOriginAndReloadWindow(tab);
+  if (command === "clear-all-origins")   return clearAndReload(tab, "all");
+  if (command === "clear-deep")          return clearAndReload(tab, "deep");
+  if (command === "reload-all-tabs")     return clearOriginAndReloadTabs(tab, "window");
+  if (command === "reload-all-windows")  return clearOriginAndReloadTabs(tab, "all");
 });
 
 const MENU_ITEMS = [
-  { id: "clearcache-origin",      messageId: "menuOriginTitle",        handler: (tab) => clearAndReload(tab, "origin") },
-  { id: "clearcache-all",         messageId: "menuAllTitle",           handler: (tab) => clearAndReload(tab, "all")    },
-  { id: "clearcache-deep",        messageId: "menuDeepTitle",          handler: (tab) => clearAndReload(tab, "deep")   },
-  { id: "clearcache-window-tabs", messageId: "menuReloadAllTabsTitle", handler: (tab) => clearOriginAndReloadWindow(tab) }
+  { id: "clearcache-origin",        messageId: "menuOriginTitle",          handler: (tab) => clearAndReload(tab, "origin") },
+  { id: "clearcache-all",           messageId: "menuAllTitle",             handler: (tab) => clearAndReload(tab, "all")    },
+  { id: "clearcache-deep",          messageId: "menuDeepTitle",            handler: (tab) => clearAndReload(tab, "deep")   },
+  { id: "clearcache-window-tabs",   messageId: "menuReloadAllTabsTitle",   handler: (tab) => clearOriginAndReloadTabs(tab, "window") },
+  { id: "clearcache-all-windows",   messageId: "menuReloadAllWindowsTitle", handler: (tab) => clearOriginAndReloadTabs(tab, "all") },
+  { id: "clearcache-incognito",     messageId: "menuReopenIncognitoTitle", handler: (tab) => deepClearAndReopenIncognito(tab) }
 ];
 
 function installContextMenus() {

@@ -41,7 +41,23 @@
   },
   "menuReloadAllTabsTitle": {
     "message": "Clear cache & reload all tabs in this window",
-    "description": "Right-click context menu entry for reload-all-tabs."
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Clear cache & reload all tabs in ALL windows",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Deep clear & reopen this page in a new incognito window",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Clear cache for current site & reload all tabs in ALL windows",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "Could not open incognito — enable extension access in incognito mode",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
   },
   "toastOriginText": {
     "message": "Cache cleared for this site",

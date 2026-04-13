@@ -41,7 +41,23 @@
   },
   "menuReloadAllTabsTitle": {
     "message": "Limpiar caché y recargar todas las pestañas de esta ventana",
-    "description": "Right-click context menu entry for reload-all-tabs."
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Limpiar caché y recargar todas las pestañas de TODAS las ventanas",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Limpieza profunda y reabrir esta página en una ventana de incógnito",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Limpiar caché del sitio actual y recargar todas las pestañas de TODAS las ventanas",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "No se pudo abrir incógnito — habilita el acceso de la extensión en modo incógnito",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
   },
   "toastOriginText": {
     "message": "Caché limpiada para este sitio",

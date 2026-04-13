@@ -45,6 +45,9 @@
     "reload-all-tabs": {
       "suggested_key": { "default": "Alt+Shift+W" },
       "description": "__MSG_commandReloadAllTabsDescription__"
+    },
+    "reload-all-windows": {
+      "description": "__MSG_commandReloadAllWindowsDescription__"
     }
   },
   "icons": {

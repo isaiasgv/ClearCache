@@ -10,7 +10,8 @@
   "permissions": [
     "browsingData",
     "tabs",
-    "contextMenus"
+    "contextMenus",
+    "scripting"
   ],
   "host_permissions": [
     "<all_urls>"

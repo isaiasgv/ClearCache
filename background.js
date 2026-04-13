@@ -21,6 +21,7 @@ const DATA_DEEP = {
 };
 
 const BADGE_MS = 1500;
+const TOAST_MS = 2200;
 
 const BADGE = {
   origin: { text: "\u2713", color: "#0a8a3a" },   // ✓ green
@@ -28,6 +29,25 @@ const BADGE = {
   deep:   { text: "\u2620", color: "#b91c1c" },   // ☠ red
   error:  { text: "!",      color: "#b91c1c" }
 };
+
+const TOAST_STYLE = {
+  origin: { bg: "#0a8a3a", fg: "#ffffff", icon: "\u2713" },
+  all:    { bg: "#d97706", fg: "#ffffff", icon: "\u2605" },
+  deep:   { bg: "#b91c1c", fg: "#ffffff", icon: "\u2620" },
+  error:  { bg: "#b91c1c", fg: "#ffffff", icon: "!" }
+};
+
+const TOAST_MESSAGE_ID = {
+  origin: "toastOriginText",
+  all:    "toastAllText",
+  deep:   "toastDeepText",
+  error:  "toastErrorText"
+};
+
+// Tracks tabs awaiting a post-reload toast: tabId -> mode key.
+// Best-effort — survives normal reloads; lost only if the service worker is
+// torn down between the reload trigger and the tab's "complete" event.
+const pendingToasts = new Map();
 
 async function flashBadge(tabId, key) {
   if (typeof tabId !== "number") return;
@@ -42,6 +62,87 @@ async function flashBadge(tabId, key) {
     console.error("[ClearCache] Badge update failed:", err);
   }
 }
+
+// Runs in the target page's isolated world. Keep self-contained — closures
+// over outer-scope identifiers are not available across the boundary.
+function renderToast(opts) {
+  const ID = "__clearcache_toast__";
+  document.getElementById(ID)?.remove();
+
+  const host = document.createElement("div");
+  host.id = ID;
+  Object.assign(host.style, {
+    position: "fixed",
+    top: "16px",
+    right: "16px",
+    zIndex: "2147483647",
+    padding: "10px 14px",
+    background: opts.bg,
+    color: opts.fg,
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    fontSize: "13px",
+    fontWeight: "600",
+    lineHeight: "1.3",
+    borderRadius: "6px",
+    boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
+    opacity: "0",
+    transform: "translateY(-8px)",
+    transition: "opacity 180ms ease-out, transform 180ms ease-out",
+    pointerEvents: "none",
+    maxWidth: "320px",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px"
+  });
+
+  const icon = document.createElement("span");
+  icon.textContent = opts.icon;
+  icon.style.fontSize = "16px";
+  icon.style.lineHeight = "1";
+  host.appendChild(icon);
+
+  const text = document.createElement("span");
+  text.textContent = opts.text;
+  host.appendChild(text);
+
+  (document.body || document.documentElement).appendChild(host);
+
+  requestAnimationFrame(() => {
+    host.style.opacity = "1";
+    host.style.transform = "translateY(0)";
+  });
+
+  setTimeout(() => {
+    host.style.opacity = "0";
+    host.style.transform = "translateY(-8px)";
+    setTimeout(() => host.remove(), 220);
+  }, opts.durationMs);
+}
+
+async function showToast(tabId, key) {
+  if (typeof tabId !== "number") return;
+  const style = TOAST_STYLE[key] ?? TOAST_STYLE.error;
+  const text = chrome.i18n.getMessage(TOAST_MESSAGE_ID[key] ?? TOAST_MESSAGE_ID.error);
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      func: renderToast,
+      args: [{ bg: style.bg, fg: style.fg, icon: style.icon, text, durationMs: TOAST_MS }]
+    });
+  } catch (err) {
+    // Page disallows scripting (chrome://, edge://, store pages, view-source:).
+    // Badge already fired as immediate feedback — silently skip.
+  }
+}
+
+// Fires the queued toast when the reloaded tab finishes loading.
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.status !== "complete") return;
+  const mode = pendingToasts.get(tabId);
+  if (!mode) return;
+  pendingToasts.delete(tabId);
+  showToast(tabId, mode);
+});
 
 function originOf(url) {
   if (!url) return null;
@@ -73,13 +174,16 @@ async function clearAndReload(tab, mode) {
     ok = false;
   }
 
-  await flashBadge(tab?.id, ok ? effectiveMode : "error");
+  const feedbackKey = ok ? effectiveMode : "error";
+  await flashBadge(tab?.id, feedbackKey);
 
   if (typeof tab?.id !== "number") return;
+  pendingToasts.set(tab.id, feedbackKey);
   try {
     await chrome.tabs.reload(tab.id, { bypassCache: true });
   } catch (err) {
     console.error("[ClearCache] Reload failed:", err);
+    pendingToasts.delete(tab.id);
   }
 }
 
@@ -104,9 +208,14 @@ async function clearOriginAndReloadWindow(tab) {
     ok = false;
   }
 
-  await flashBadge(tab?.id, ok ? "origin" : "error");
+  const feedbackKey = ok ? "origin" : "error";
+  await flashBadge(tab?.id, feedbackKey);
 
   if (typeof tab?.windowId !== "number") return;
+  // Show the toast on the originally active tab only, not on every reloaded
+  // tab in the window — confirmation should not be a barrage.
+  if (typeof tab.id === "number") pendingToasts.set(tab.id, feedbackKey);
+
   const tabs = await chrome.tabs.query({ windowId: tab.windowId });
   await Promise.all(
     tabs

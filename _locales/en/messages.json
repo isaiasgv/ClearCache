@@ -42,5 +42,21 @@
   "menuReloadAllTabsTitle": {
     "message": "Clear cache & reload all tabs in this window",
     "description": "Right-click context menu entry for reload-all-tabs."
+  },
+  "toastOriginText": {
+    "message": "Cache cleared for this site",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "Cache cleared for ALL sites",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Cache, cookies & storage cleared for this site",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastErrorText": {
+    "message": "Failed to clear cache",
+    "description": "Toast shown when the clear operation throws."
   }
 }

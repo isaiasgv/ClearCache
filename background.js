@@ -90,17 +90,48 @@ async function activeTab() {
 
 chrome.action.onClicked.addListener((tab) => clearAndReload(tab, "origin"));
 
+async function clearOriginAndReloadWindow(tab) {
+  const origin = originOf(tab?.url);
+
+  let ok = true;
+  try {
+    await chrome.browsingData.remove(
+      origin ? { since: 0, origins: [origin] } : { since: 0 },
+      DATA_BASE
+    );
+  } catch (err) {
+    console.error("[ClearCache] Clear failed:", err);
+    ok = false;
+  }
+
+  await flashBadge(tab?.id, ok ? "origin" : "error");
+
+  if (typeof tab?.windowId !== "number") return;
+  const tabs = await chrome.tabs.query({ windowId: tab.windowId });
+  await Promise.all(
+    tabs
+      .filter((t) => typeof t.id === "number")
+      .map((t) =>
+        chrome.tabs.reload(t.id, { bypassCache: true }).catch((err) =>
+          console.error(`[ClearCache] Reload of tab ${t.id} failed:`, err)
+        )
+      )
+  );
+}
+
 chrome.commands.onCommand.addListener(async (command) => {
   const tab = await activeTab();
   if (!tab) return;
   if (command === "clear-all-origins") return clearAndReload(tab, "all");
   if (command === "clear-deep")        return clearAndReload(tab, "deep");
+  if (command === "reload-all-tabs")   return clearOriginAndReloadWindow(tab);
 });
 
 const MENU_ITEMS = [
-  { id: "clearcache-origin", title: "Clear cache for this site & reload",                    mode: "origin" },
-  { id: "clearcache-all",    title: "Clear cache for ALL sites & reload",                    mode: "all"    },
-  { id: "clearcache-deep",   title: "Clear cache + cookies + storage for this site & reload", mode: "deep"   }
+  { id: "clearcache-origin",      title: "Clear cache for this site & reload",                    handler: (tab) => clearAndReload(tab, "origin") },
+  { id: "clearcache-all",         title: "Clear cache for ALL sites & reload",                    handler: (tab) => clearAndReload(tab, "all")    },
+  { id: "clearcache-deep",        title: "Clear cache + cookies + storage for this site & reload", handler: (tab) => clearAndReload(tab, "deep")   },
+  { id: "clearcache-window-tabs", title: "Clear cache & reload all tabs in this window",           handler: (tab) => clearOriginAndReloadWindow(tab) }
 ];
 
 function installContextMenus() {
@@ -121,5 +152,5 @@ chrome.runtime.onStartup.addListener(installContextMenus);
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (!tab) return;
   const item = MENU_ITEMS.find((m) => m.id === info.menuItemId);
-  if (item) clearAndReload(tab, item.mode);
+  if (item) item.handler(tab);
 });

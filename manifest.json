@@ -38,6 +38,10 @@
     "clear-deep": {
       "suggested_key": { "default": "Alt+Shift+D" },
       "description": "Clear cache + cookies + storage for this site & reload"
+    },
+    "reload-all-tabs": {
+      "suggested_key": { "default": "Alt+Shift+W" },
+      "description": "Clear cache for current site & reload all tabs in this window"
     }
   },
   "icons": {

@@ -1,197 +1,224 @@
-<div align="center">
+<p align="center">
+  <img src="./icons/icon128.png" alt="ClearCache" width="128" height="128" />
+</p>
 
-<img src="icons/icon128.png" alt="ClearCache logo" width="128" height="128" />
+<h1 align="center">Clear Cache &amp; Hard Reload</h1>
 
-# Clear Cache & Hard Reload
+<p align="center">
+  <em>One click. One site. One fresh load.</em>
+</p>
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Manifest V3](https://img.shields.io/badge/Manifest-V3-green.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
-[![CI](https://github.com/isaiasgv/ClearCache/actions/workflows/ci.yml/badge.svg)](https://github.com/isaiasgv/ClearCache/actions/workflows/ci.yml)
-[![Release](https://github.com/isaiasgv/ClearCache/actions/workflows/release.yml/badge.svg)](https://github.com/isaiasgv/ClearCache/actions/workflows/release.yml)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
+<p align="center">
+  <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3" /></a>
+  <a href="https://developer.chrome.com/docs/extensions/mv3/intro/"><img src="https://img.shields.io/badge/Manifest-V3-green.svg" alt="Manifest V3" /></a>
+  <a href="https://github.com/isaiasgv/ClearCache/actions/workflows/ci.yml"><img src="https://github.com/isaiasgv/ClearCache/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/isaiasgv/ClearCache/actions/workflows/release.yml"><img src="https://github.com/isaiasgv/ClearCache/actions/workflows/release.yml/badge.svg" alt="Release" /></a>
+  <a href="https://github.com/isaiasgv/ClearCache/releases/latest"><img src="https://img.shields.io/github/v/release/isaiasgv/ClearCache?include_prereleases&sort=semver" alt="Latest release" /></a>
+  <a href="#contributing"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome" /></a>
+</p>
 
-</div>
+---
 
-A minimal, zero-dependency browser extension that clears the browser cache and performs a hard reload — scoped to the current site by default, with keyboard shortcuts and a right-click menu for broader wipes when you need them.
+A minimal, zero-dependency Chromium browser extension that **clears the cache for the current site and hard-reloads it** — in one click, with no settings to configure and no data leaving your browser.
 
-No popups. No options page. No telemetry. Just one button (and a few sensible escape hatches).
+When you need a bigger hammer, keyboard shortcuts and a right-click menu give you all-sites and deep-clear modes too.
 
-## Features
+> **No popups. No options page. No telemetry. No remote calls. ~100 lines of vanilla JS.**
 
-- **Per-site cache clear by default** — clicking the toolbar icon clears cache, Cache Storage, and Service Workers for the **current site only**, then hard-reloads. Other sites' cached data is left alone.
-- **Three escalation modes** via keyboard shortcuts or the right-click menu:
-  - Clear current site (default — `Alt+Shift+R` or click)
-  - Clear **all sites** — `Alt+Shift+A`
-  - Deep clear current site (cache + cookies + localStorage + IndexedDB) — `Alt+Shift+D`
-- **Reload all tabs in the current window** — `Alt+Shift+W`. Clears the current tab's site cache, then hard-reloads every tab in the window. Useful when an app is open across several tabs.
-- **Visual confirmation** — a 1.5-second color-coded badge on the toolbar icon after each action (✓ green / ★ amber / ☠ red).
-- **Internationalized** — all UI strings live in `_locales/`. Adding a new language is a drop-in `_locales/<lang>/messages.json`.
-- **Manifest V3** — modern service-worker architecture.
-- **Tiny footprint** — single service worker, no third-party libraries, no remote calls, no tracking.
+## Why ClearCache?
 
-## Screenshots
+The browser already gives you several cache-clearing tools — and each is annoying in its own way:
 
-> Screenshots will be added after the first store-ready build. Placeholders for now — see [docs/screenshots/README.md](docs/screenshots/README.md) for the capture spec.
+| Built-in option              | What it does                                            | Problem                                                                       |
+| ---------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `Ctrl+Shift+R` (hard reload) | Reloads with `bypassCache: true` for *that* navigation  | Doesn't unregister Service Workers; subsequent navigations may still be stale |
+| DevTools → Disable cache     | Bypasses cache *while DevTools is open*                 | You have to keep DevTools open. Doesn't help users testing your dev build.   |
+| Settings → Clear browsing data | Wipes everything, with a confirmation dialog           | Nukes every site's cache. Multi-step. Loses your auth sessions everywhere.    |
 
-| Toolbar icon | Badge confirmation | Right-click menu |
-| ------------ | ------------------ | ---------------- |
-| ![Toolbar icon](docs/screenshots/toolbar-icon.png) | ![Badge confirmation](docs/screenshots/badge-confirmation.png) | ![Context menu](docs/screenshots/context-menu.png) |
+**ClearCache fills the gap:** one click, scoped to the current site, with the Service Worker actually unregistered. The "all sites" and deep-clear modes are still there for when you really do want the big hammer — they just aren't the default.
 
 ## Install
 
-### From source (developer mode)
+> The Chrome Web Store and Edge Add-ons listings are not yet published. For now, install via side-load from a GitHub Release or build from source. Store badges will appear here once submissions are approved.
 
-1. Clone or download this repository:
-   ```bash
-   git clone https://github.com/isaiasgv/ClearCache.git
-   ```
-2. Open your Chromium-based browser (Chrome, Edge, Brave, Arc, Opera) and navigate to the extensions page:
-   - Chrome / Brave / Arc: `chrome://extensions`
+### Side-load from a GitHub Release (recommended)
+
+1. Download the latest `clearcache-X.Y.Z.zip` from the [Releases page](https://github.com/isaiasgv/ClearCache/releases/latest).
+2. Verify the SHA-256 against the `.sha256` file attached to the same release (optional but recommended).
+3. Extract the zip somewhere stable (don't delete the folder — Chrome reads from it on every browser launch).
+4. Open your browser's extensions page:
+   - Chrome / Brave / Arc / Opera: `chrome://extensions`
    - Edge: `edge://extensions`
-3. Enable **Developer mode** (toggle in the top-right corner).
-4. Click **Load unpacked** and select the cloned `ClearCache` folder.
-5. Pin the extension to the toolbar for quick access.
+5. Toggle **Developer mode** on (top-right corner).
+6. Click **Load unpacked** and select the extracted folder.
+7. Pin the icon to your toolbar.
+
+### Build from source
+
+```bash
+git clone https://github.com/isaiasgv/ClearCache.git
+```
+
+Then load the cloned folder via **Load unpacked** (steps 4–7 above). There is no build step.
 
 ## Usage
 
-### Default: click the toolbar icon
+Click the toolbar icon. The current site's cache is cleared and the tab hard-reloads.
 
-Clears cache, Cache Storage, and Service Workers **for the current site only**, then hard-reloads. The badge flashes green ✓ on success.
+A toast appears in the top-right of the freshly loaded page confirming what got cleared. The toolbar icon also flashes a color-coded badge as a fallback (for chrome:// pages, the PDF viewer, and other surfaces where the extension can't inject the toast).
 
-### Other modes
+### All four modes
 
-| Action                                              | Keyboard          | Where else                                |
-| --------------------------------------------------- | ----------------- | ----------------------------------------- |
-| Clear current site & reload                         | `Alt+Shift+R`     | Toolbar click, right-click menu           |
-| Clear **all sites** & reload current tab            | `Alt+Shift+A`     | Right-click menu                          |
-| Deep clear current site (cache+cookies+storage)     | `Alt+Shift+D`     | Right-click menu                          |
-| Reload all tabs in this window (clears current site)| `Alt+Shift+W`     | Right-click menu                          |
+| Action                                           | Shortcut          | Right-click menu | Toast / badge color |
+| ------------------------------------------------ | ----------------- | ---------------- | ------------------- |
+| Clear current site &amp; reload **(default)**    | `Alt+Shift+R`     | ✓                | ✓ green             |
+| Clear **all sites** &amp; reload current tab     | `Alt+Shift+A`     | ✓                | ★ amber             |
+| Deep clear current site (cache + cookies + storage) | `Alt+Shift+D`  | ✓                | ☠ red               |
+| Reload all tabs in this window (clears current site) | `Alt+Shift+W` | ✓                | ✓ green             |
 
 Rebind any shortcut at `chrome://extensions/shortcuts`.
 
-### Badge colors
+### Screenshots
 
-- ✓ green — current-site clear succeeded
-- ★ amber — all-sites clear succeeded
-- ☠ red — deep clear succeeded
-- ! red — clear failed (check the service worker console for `[ClearCache]` errors)
+> Screenshots will be added before the first store submission. Capture spec lives in [docs/screenshots/README.md](docs/screenshots/README.md).
+
+| Toolbar icon | Toast confirmation | Right-click menu |
+| ------------ | ------------------ | ---------------- |
+| ![Toolbar icon](docs/screenshots/toolbar-icon.png) | ![Toast](docs/screenshots/badge-confirmation.png) | ![Context menu](docs/screenshots/context-menu.png) |
 
 ## Permissions
 
-| Permission         | Why it's needed                                                       |
-| ------------------ | --------------------------------------------------------------------- |
-| `browsingData`     | To clear cache, Cache Storage, Service Workers, and (in deep mode) cookies / localStorage / IndexedDB. |
-| `tabs`             | To read the active tab's URL (for per-site scoping) and reload it.    |
-| `contextMenus`     | To add the right-click menu entries on the toolbar icon.              |
-| `<all_urls>`       | Required so the per-site scoping logic can resolve any origin you're on. The extension never reads page contents. |
+Every permission is justified. There are no "just in case" requests.
 
-The extension does **not** read page contents, track usage, or send data anywhere. See [docs/privacy.md](docs/privacy.md) for the full privacy policy.
+| Permission       | Why it's needed                                                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `browsingData`   | Calling `chrome.browsingData.remove` to clear cache, Cache Storage, Service Workers, and (deep mode only) cookies / localStorage / IndexedDB. |
+| `tabs`           | Reading the active tab's URL to scope the clear to its origin, and reloading it.                                             |
+| `contextMenus`   | Adding the right-click entries on the toolbar icon.                                                                          |
+| `scripting`      | Injecting the confirmation toast into the freshly reloaded page. Toast injection is the *only* use of this permission.       |
+| `<all_urls>`     | The per-site scoping logic must be able to resolve any origin you visit. The extension never reads page contents.            |
+
+## Privacy
+
+**The extension collects nothing, transmits nothing, and contacts no remote servers.** No analytics, no error reporting, no usage tracking. The full policy is at [docs/privacy.md](docs/privacy.md), and you can verify every claim by reading [`background.js`](background.js) — it's about 100 lines.
 
 ## Browser compatibility
 
-Tested on:
+| Browser                 | Status                                                       |
+| ----------------------- | ------------------------------------------------------------ |
+| Google Chrome 114+      | Supported (recommended)                                      |
+| Microsoft Edge 114+     | Supported                                                    |
+| Brave, Arc, Opera       | Supported (Chromium-based, latest)                           |
+| Firefox                 | Not supported — `browsingData` API surface differs           |
+| Safari                  | Not supported — different extension model                    |
 
-- Google Chrome 114+ (latest recommended)
-- Microsoft Edge 114+
-- Brave, Arc, Opera (Chromium-based, latest)
+`minimum_chrome_version` is `114` because the per-origin scoping in `chrome.browsingData.remove` requires it.
 
-`minimum_chrome_version` is `114` because per-origin scoping in `chrome.browsingData.remove` requires it. Firefox is not supported (the `browsingData` API surface differs).
+---
 
-## Project layout
+## For developers
+
+### Project layout
 
 ```
 ClearCache/
-├── background.js              # Service worker (~100 lines, handles all modes)
+├── background.js              # Service worker — the entire runtime (~150 lines)
 ├── manifest.json              # Manifest V3 declaration
 ├── icons/                     # Toolbar icons (16, 32, 48, 128 px)
-├── _locales/en/messages.json  # i18n strings (add more locales here)
+├── _locales/en/messages.json  # i18n strings (drop in _locales/<lang>/ to add a locale)
 ├── LICENSE                    # GPL-3.0
 ├── README.md
 ├── CHANGELOG.md               # Auto-maintained by the release workflow
 ├── CONTRIBUTING.md
 ├── SECURITY.md
+├── CLAUDE.md                  # Hard rules for AI-assisted contributions
 ├── docs/
 │   ├── privacy.md             # Privacy policy
 │   └── screenshots/           # README-embedded screenshots
-└── store/                     # Listing assets for Chrome Web Store / Edge
+└── store/                     # Listing assets for Chrome Web Store / Edge Add-ons
 ```
 
-## Branching & releases
+### Branching model
 
-This project uses a two-branch model with **fully automated semver versioning** driven by [Conventional Commits](https://www.conventionalcommits.org/).
+| Branch    | Purpose                                                                       | Releases produced               |
+| --------- | ----------------------------------------------------------------------------- | ------------------------------- |
+| `release` | Active development. All feature/fix PRs target this branch.                   | **Prereleases** (`vX.Y.Z-rc.N`) |
+| `main`    | Stable. Mirrors what's published to the stores. Updated monthly from `release`. | **Stable releases** (`vX.Y.Z`)  |
 
-### Branches
+Push to `release` → automatic prerelease.
+Merge `release` → `main` → automatic stable release.
+Hotfix → PR direct to `main` with a `fix:` commit.
 
-| Branch    | Purpose                                                                                                          | Releases produced                |
-| --------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| `release` | Active development. All feature/fix PRs target this branch.                                                      | **Prereleases** (`vX.Y.Z-rc.N`)  |
-| `main`    | Stable. Mirrors what's published to the Chrome Web Store / Edge Add-ons. Updated monthly via PR from `release`.  | **Stable releases** (`vX.Y.Z`)   |
+### Versioning policy
 
-### Release cadence
+Versioning is fully automated by the [Release workflow](.github/workflows/release.yml) using [Conventional Commits](https://www.conventionalcommits.org/).
 
-- **Push to `release`** → automatic **prerelease** (`vX.Y.Z-rc.N`) for every push that contains releasable commits. Use these to test the actual built zip before promoting.
-- **Monthly:** open a PR `release` → `main`, review the rolled-up changes, merge → automatic **stable release** (`vX.Y.Z`).
-- **Hotfix:** PR direct to `main` with a `fix:` commit. Patch release goes out immediately.
+**Default: every releasable commit produces a patch.** This project deliberately stays in `0.x` and bumps minor/major only when explicitly stated.
 
-### Conventional Commits → semver mapping
+| Commit type                                          | Triggers a release? | Default bump |
+| ---------------------------------------------------- | ------------------- | ------------ |
+| `feat:` / `fix:` / `perf:` / `refactor:` (with or without `!`) | yes       | **patch**    |
+| `docs:` / `test:` / `chore:` / `ci:` / `build:` / `style:` / `revert:` | no | —          |
 
-The [Release workflow](.github/workflows/release.yml) parses every commit since the last stable `v*` tag (rc tags are ignored when computing diffs) and determines the bump from prefixes:
+To request a higher bump, **state it explicitly** via either:
 
-- `feat!:`, `fix!:`, or `BREAKING CHANGE:` in body → **major**
-- `feat:` → **minor**
-- `fix:`, `perf:`, `refactor:` → **patch**
-- Only `chore:`/`docs:`/`test:`/`ci:`/`build:`/`style:` → **no release** (workflow exits cleanly)
+- A `Release-Bump:` trailer in any commit body in the release range:
+  ```
+  feat: rework the toast renderer
 
-### What happens on push to `release` (prerelease)
+  Release-Bump: minor
+  ```
+- A manual workflow run with `bump_override = minor` or `major` from the Actions tab.
 
-1. Parses Conventional Commits since the last stable tag → computes the next semver base.
-2. Counts existing `vX.Y.Z-rc.*` tags for that base, increments to get `rc.N`.
-3. Sets the manifest version *inside the zip only* to `X.Y.Z.N` (Chrome's 4-digit form — the closest legal encoding of `X.Y.Z-rc.N`). The repo's `manifest.json` is **not** modified or committed back.
-4. Builds `clearcache-X.Y.Z-rc.N.zip`, computes SHA-256, generates rc-flagged release notes.
-5. Tags `vX.Y.Z-rc.N` on the release-branch commit and publishes a GitHub Release marked as **prerelease**.
+The highest level signaled across all commits in the range wins.
+
+### Release workflow details
+
+**On push to `release` (prerelease):**
+
+1. Compute the next semver base from commits since the last stable tag.
+2. Count existing `vX.Y.Z-rc.*` tags for that base, increment to get `rc.N`.
+3. Set the manifest version *inside the zip only* to `X.Y.Z.N` (Chrome's 4-digit form — the closest legal encoding of `X.Y.Z-rc.N`). The repo's `manifest.json` is **not** modified.
+4. Build `clearcache-X.Y.Z-rc.N.zip` + SHA-256.
+5. Tag `vX.Y.Z-rc.N` and publish a GitHub Release marked **prerelease**.
 6. `CHANGELOG.md` is **not** updated (only stable releases write to it).
 
-### What happens on push to `main` (stable)
+**On push to `main` (stable):**
 
 1. Same bump computation.
-2. Sets the manifest version to `X.Y.Z`.
-3. Builds `clearcache-X.Y.Z.zip` + SHA-256 + release notes.
-4. Prepends the notes to `CHANGELOG.md`.
-5. Commits `manifest.json` + `CHANGELOG.md` together as `chore(release): vX.Y.Z [skip ci]` and pushes to `main`.
-6. Tags `vX.Y.Z` and publishes a GitHub Release (not prerelease).
+2. Set the manifest version to `X.Y.Z`, build the zip + SHA-256.
+3. Prepend release notes to `CHANGELOG.md`.
+4. Commit `manifest.json` + `CHANGELOG.md` together as `chore(release): vX.Y.Z [skip ci]`, push to `main`.
+5. Tag `vX.Y.Z` and publish a GitHub Release.
 
-### Manual dispatch
-
-You can also run the workflow manually from the Actions tab with a `bump_override` (`major`/`minor`/`patch`). It produces a prerelease or stable release depending on which branch you ran it from.
+**Branch protection:** once `main` is protected, allow `github-actions[bot]` to bypass, **or** create a fine-grained PAT with `contents: write` and store it as repo secret `RELEASE_TOKEN`. The workflow picks it up automatically.
 
 ### Store submission (manual)
 
-After the GitHub Release appears, download the zip and upload it to:
+After the GitHub Release for a stable `vX.Y.Z` appears, download the zip and upload it to:
 
 - [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
 - [Microsoft Edge Add-ons Partner Center](https://partner.microsoft.com/dashboard/microsoftedge)
 
-Store submission stays manual on purpose — both stores require a human to confirm the listing copy and permission justifications on every update.
-
-### Branch protection (recommended)
-
-Once you enable branch protection on `main`, the `github-actions[bot]` needs an exception to push the bump commit. Either:
-
-- Allow `github-actions[bot]` to bypass branch protection rules, **or**
-- Generate a fine-grained PAT with `contents: write` on this repo, store it as a repo secret named `RELEASE_TOKEN`. The workflow picks it up automatically.
+Submission stays manual on purpose — both stores require a human to confirm listing copy and permission justifications.
 
 ## Contributing
 
-Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or pull request.
+Contributions welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
 
-A few non-negotiables:
+Hard rules (also in [CLAUDE.md](CLAUDE.md)):
 
-- **Do not include AI-assistant attribution** (Claude, Copilot, ChatGPT, etc.) in commit messages, commit trailers, author/committer fields, or PR descriptions. See [CLAUDE.md](CLAUDE.md) for the full rule.
-- Keep the extension dependency-free and the permission set minimal.
+- **No AI-assistant attribution** in commits, trailers, author/committer fields, or PR descriptions.
+- **No new dependencies, telemetry, or build steps.** This extension stays minimal.
+- **Manifest V3 only.**
+- **Don't manually edit `manifest.json`'s `version` field** — the release workflow owns it.
+
+Reporting bugs → use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.yml).
+Reporting security issues → see [SECURITY.md](SECURITY.md) (private disclosure via GitHub Security Advisories).
 
 ## License
 
-This project is licensed under the **GNU General Public License v3.0** — see the [LICENSE](LICENSE) file for the full text.
+GNU General Public License v3.0 — see [LICENSE](LICENSE).
 
 ```
 ClearCache — a one-click cache-clear and hard-reload browser extension.
@@ -202,3 +229,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 ```
+
+---
+
+<p align="center">
+  Made with care, no analytics, and no AI co-authors.<br />
+  <sub>Issues and PRs: <a href="https://github.com/isaiasgv/ClearCache/issues">github.com/isaiasgv/ClearCache</a></sub>
+</p>

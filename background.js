@@ -128,10 +128,10 @@ chrome.commands.onCommand.addListener(async (command) => {
 });
 
 const MENU_ITEMS = [
-  { id: "clearcache-origin",      title: "Clear cache for this site & reload",                    handler: (tab) => clearAndReload(tab, "origin") },
-  { id: "clearcache-all",         title: "Clear cache for ALL sites & reload",                    handler: (tab) => clearAndReload(tab, "all")    },
-  { id: "clearcache-deep",        title: "Clear cache + cookies + storage for this site & reload", handler: (tab) => clearAndReload(tab, "deep")   },
-  { id: "clearcache-window-tabs", title: "Clear cache & reload all tabs in this window",           handler: (tab) => clearOriginAndReloadWindow(tab) }
+  { id: "clearcache-origin",      messageId: "menuOriginTitle",        handler: (tab) => clearAndReload(tab, "origin") },
+  { id: "clearcache-all",         messageId: "menuAllTitle",           handler: (tab) => clearAndReload(tab, "all")    },
+  { id: "clearcache-deep",        messageId: "menuDeepTitle",          handler: (tab) => clearAndReload(tab, "deep")   },
+  { id: "clearcache-window-tabs", messageId: "menuReloadAllTabsTitle", handler: (tab) => clearOriginAndReloadWindow(tab) }
 ];
 
 function installContextMenus() {
@@ -139,7 +139,7 @@ function installContextMenus() {
     for (const item of MENU_ITEMS) {
       chrome.contextMenus.create({
         id: item.id,
-        title: item.title,
+        title: chrome.i18n.getMessage(item.messageId),
         contexts: ["action"]
       });
     }

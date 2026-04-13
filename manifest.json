@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Clear Cache & Hard Reload",
+  "name": "__MSG_extName__",
   "version": "0.0.0",
-  "description": "Click to clear the cache and hard-reload the current tab.",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
   "author": "Isaias Garcia",
   "homepage_url": "https://github.com/isaiasgv/ClearCache",
   "minimum_chrome_version": "114",
@@ -18,7 +19,7 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Clear cache & hard reload (this site)",
+    "default_title": "__MSG_actionTitle__",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -29,19 +30,19 @@
   "commands": {
     "_execute_action": {
       "suggested_key": { "default": "Alt+Shift+R" },
-      "description": "Clear cache for this site & reload"
+      "description": "__MSG_commandClearOriginDescription__"
     },
     "clear-all-origins": {
       "suggested_key": { "default": "Alt+Shift+A" },
-      "description": "Clear cache for ALL sites & reload current tab"
+      "description": "__MSG_commandClearAllDescription__"
     },
     "clear-deep": {
       "suggested_key": { "default": "Alt+Shift+D" },
-      "description": "Clear cache + cookies + storage for this site & reload"
+      "description": "__MSG_commandClearDeepDescription__"
     },
     "reload-all-tabs": {
       "suggested_key": { "default": "Alt+Shift+W" },
-      "description": "Clear cache for current site & reload all tabs in this window"
+      "description": "__MSG_commandReloadAllTabsDescription__"
     }
   },
   "icons": {

@@ -1,0 +1,46 @@
+{
+  "extName": {
+    "message": "Clear Cache & Hard Reload",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Click to clear the cache and hard-reload the current site.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Clear cache & hard reload (this site)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Clear cache for this site & reload",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "Clear cache for ALL sites & reload current tab",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Clear cache + cookies + storage for this site & reload",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Clear cache for current site & reload all tabs in this window",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Clear cache for this site & reload",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "Clear cache for ALL sites & reload",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Clear cache + cookies + storage for this site & reload",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Clear cache & reload all tabs in this window",
+    "description": "Right-click context menu entry for reload-all-tabs."
+  }
+}

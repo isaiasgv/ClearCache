@@ -1,0 +1,48 @@
+name: Feature request
+description: Suggest a new feature or improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before opening a request, please read [CLAUDE.md](../blob/main/CLAUDE.md) — this project deliberately stays minimal. Features that add new permissions, dependencies, build steps, telemetry, or settings UIs are usually out of scope.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the use case or workflow that prompted this request. Skip the proposed solution for now.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: How would you expect this to work from a user's perspective?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Existing extensions, browser features, or workarounds you've tried.
+  - type: dropdown
+    id: permissions
+    attributes:
+      label: Does this require new permissions?
+      options:
+        - "No new permissions"
+        - "Adds one new permission (e.g. cookies, alarms, storage)"
+        - "Adds multiple new permissions"
+        - "Not sure"
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues and didn't find a duplicate.
+          required: true
+        - label: I read CLAUDE.md and believe this fits the project's minimal scope.
+          required: true

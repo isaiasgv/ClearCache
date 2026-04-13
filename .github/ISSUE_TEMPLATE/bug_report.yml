@@ -1,0 +1,72 @@
+name: Bug report
+description: Report a bug or unexpected behavior in the extension.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. Please fill out the fields below — incomplete reports get closed.
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      description: e.g. "Chrome 124.0.6367.61", "Edge 124.0.2478.51", "Brave 1.65.123"
+      placeholder: "Chrome 124.0.6367.61"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      description: e.g. "Windows 11 23H2", "macOS 14.4.1", "Ubuntu 22.04"
+    validations:
+      required: true
+  - type: input
+    id: extension_version
+    attributes:
+      label: Extension version
+      description: Find this on chrome://extensions or in the extension's footer.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Number the steps. Be specific about the page or site you were on.
+      placeholder: |
+        1. Open https://example.com
+        2. Click the toolbar icon
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: console
+    attributes:
+      label: Service worker console output
+      description: |
+        Open chrome://extensions, click "Service worker" under this extension's card,
+        then paste any errors prefixed with `[ClearCache]`.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues and didn't find a duplicate.
+          required: true
+        - label: I'm using the latest version of the extension.
+          required: true

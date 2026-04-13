@@ -20,6 +20,29 @@ const DATA_DEEP = {
   indexedDB: true
 };
 
+const BADGE_MS = 1500;
+
+const BADGE = {
+  origin: { text: "\u2713", color: "#0a8a3a" },   // ✓ green
+  all:    { text: "\u2605", color: "#d97706" },   // ★ amber
+  deep:   { text: "\u2620", color: "#b91c1c" },   // ☠ red
+  error:  { text: "!",      color: "#b91c1c" }
+};
+
+async function flashBadge(tabId, key) {
+  if (typeof tabId !== "number") return;
+  const { text, color } = BADGE[key] ?? BADGE.error;
+  try {
+    await chrome.action.setBadgeBackgroundColor({ color, tabId });
+    await chrome.action.setBadgeText({ text, tabId });
+    setTimeout(() => {
+      chrome.action.setBadgeText({ text: "", tabId }).catch(() => {});
+    }, BADGE_MS);
+  } catch (err) {
+    console.error("[ClearCache] Badge update failed:", err);
+  }
+}
+
 function originOf(url) {
   if (!url) return null;
   try {
@@ -42,11 +65,15 @@ async function clearAndReload(tab, mode) {
     ? { since: 0 }
     : { since: 0, origins: [origin] };
 
+  let ok = true;
   try {
     await chrome.browsingData.remove(filter, dataTypes);
   } catch (err) {
     console.error("[ClearCache] Clear failed:", err);
+    ok = false;
   }
+
+  await flashBadge(tab?.id, ok ? effectiveMode : "error");
 
   if (typeof tab?.id !== "number") return;
   try {

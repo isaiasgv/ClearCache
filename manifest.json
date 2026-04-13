@@ -11,7 +11,8 @@
     "browsingData",
     "tabs",
     "contextMenus",
-    "scripting"
+    "scripting",
+    "webRequest"
   ],
   "host_permissions": [
     "<all_urls>"

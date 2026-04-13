@@ -49,6 +49,33 @@ const TOAST_MESSAGE_ID = {
 // torn down between the reload trigger and the tab's "complete" event.
 const pendingToasts = new Map();
 
+// Per-tab cache-hit telemetry collected via chrome.webRequest after a reload.
+// tabId -> { network, cached, startedAt }. Window of ~4s post-reload, then frozen.
+const RELOAD_TELEMETRY_MS = 4000;
+const reloadTelemetry = new Map();
+
+function startTelemetry(tabId) {
+  if (typeof tabId !== "number") return;
+  reloadTelemetry.set(tabId, { network: 0, cached: 0, startedAt: Date.now() });
+}
+
+function consumeTelemetry(tabId) {
+  const t = reloadTelemetry.get(tabId);
+  reloadTelemetry.delete(tabId);
+  return t ?? null;
+}
+
+chrome.webRequest.onCompleted.addListener(
+  (details) => {
+    const t = reloadTelemetry.get(details.tabId);
+    if (!t) return;
+    if (Date.now() - t.startedAt > RELOAD_TELEMETRY_MS) return;
+    if (details.fromCache) t.cached++;
+    else t.network++;
+  },
+  { urls: ["<all_urls>"] }
+);
+
 async function flashBadge(tabId, key) {
   if (typeof tabId !== "number") return;
   const { text, color } = BADGE[key] ?? BADGE.error;
@@ -119,15 +146,30 @@ function renderToast(opts) {
   }, opts.durationMs);
 }
 
+function formatTelemetrySuffix(t) {
+  if (!t) return "";
+  const total = t.network + t.cached;
+  if (total === 0) return "";
+  const fresh = chrome.i18n.getMessage("toastTelemetryFresh");
+  const cached = chrome.i18n.getMessage("toastTelemetryCached");
+  if (t.cached === 0) return ` (${t.network} ${fresh})`;
+  return ` (${t.network} ${fresh}, ${t.cached} ${cached})`;
+}
+
 async function showToast(tabId, key) {
   if (typeof tabId !== "number") return;
   const style = TOAST_STYLE[key] ?? TOAST_STYLE.error;
-  const text = chrome.i18n.getMessage(TOAST_MESSAGE_ID[key] ?? TOAST_MESSAGE_ID.error);
+  const baseText = chrome.i18n.getMessage(TOAST_MESSAGE_ID[key] ?? TOAST_MESSAGE_ID.error);
+  const telemetry = consumeTelemetry(tabId);
+  // If any subresources came back from cache after a clear, surface that as a warning.
+  const warn = key !== "error" && telemetry && telemetry.cached > 0;
+  const renderStyle = warn ? TOAST_STYLE.all : style; // amber/star for the partial-cache case
+  const text = baseText + formatTelemetrySuffix(telemetry);
   try {
     await chrome.scripting.executeScript({
       target: { tabId },
       func: renderToast,
-      args: [{ bg: style.bg, fg: style.fg, icon: style.icon, text, durationMs: TOAST_MS }]
+      args: [{ bg: renderStyle.bg, fg: renderStyle.fg, icon: renderStyle.icon, text, durationMs: TOAST_MS }]
     });
   } catch (err) {
     // Page disallows scripting (chrome://, edge://, store pages, view-source:).
@@ -179,11 +221,13 @@ async function clearAndReload(tab, mode) {
 
   if (typeof tab?.id !== "number") return;
   pendingToasts.set(tab.id, feedbackKey);
+  startTelemetry(tab.id);
   try {
     await chrome.tabs.reload(tab.id, { bypassCache: true });
   } catch (err) {
     console.error("[ClearCache] Reload failed:", err);
     pendingToasts.delete(tab.id);
+    consumeTelemetry(tab.id);
   }
 }
 
@@ -214,7 +258,10 @@ async function clearOriginAndReloadWindow(tab) {
   if (typeof tab?.windowId !== "number") return;
   // Show the toast on the originally active tab only, not on every reloaded
   // tab in the window — confirmation should not be a barrage.
-  if (typeof tab.id === "number") pendingToasts.set(tab.id, feedbackKey);
+  if (typeof tab.id === "number") {
+    pendingToasts.set(tab.id, feedbackKey);
+    startTelemetry(tab.id);
+  }
 
   const tabs = await chrome.tabs.query({ windowId: tab.windowId });
   await Promise.all(

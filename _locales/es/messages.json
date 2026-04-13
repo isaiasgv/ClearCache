@@ -58,5 +58,13 @@
   "toastErrorText": {
     "message": "Error al limpiar la caché",
     "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "frescos",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "en caché",
+    "description": "Suffix word used in toast for resources still served from local cache."
   }
 }

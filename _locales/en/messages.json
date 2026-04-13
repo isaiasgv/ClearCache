@@ -58,5 +58,13 @@
   "toastErrorText": {
     "message": "Failed to clear cache",
     "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "fresh",
+    "description": "Suffix word used in toast for resources fetched from network. Example: '(12 fresh, 3 cached)'."
+  },
+  "toastTelemetryCached": {
+    "message": "cached",
+    "description": "Suffix word used in toast for resources still served from local cache."
   }
 }

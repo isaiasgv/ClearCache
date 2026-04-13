@@ -1,0 +1,62 @@
+{
+  "extName": {
+    "message": "Limpiar Caché y Recargar",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Haz clic para limpiar la caché y forzar la recarga del sitio actual.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Limpiar caché y recargar (este sitio)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Limpiar caché de este sitio y recargar",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "Limpiar caché de TODOS los sitios y recargar la pestaña",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Limpiar caché + cookies + almacenamiento de este sitio y recargar",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Limpiar caché del sitio actual y recargar todas las pestañas de esta ventana",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Limpiar caché de este sitio y recargar",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "Limpiar caché de TODOS los sitios y recargar",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Limpiar caché + cookies + almacenamiento de este sitio y recargar",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Limpiar caché y recargar todas las pestañas de esta ventana",
+    "description": "Right-click context menu entry for reload-all-tabs."
+  },
+  "toastOriginText": {
+    "message": "Caché limpiada para este sitio",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "Caché limpiada para TODOS los sitios",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Caché, cookies y almacenamiento limpiados para este sitio",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastErrorText": {
+    "message": "Error al limpiar la caché",
+    "description": "Toast shown when the clear operation throws."
+  }
+}

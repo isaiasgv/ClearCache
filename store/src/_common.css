@@ -1,0 +1,10 @@
+/* Shared styles for all generated store assets.
+   Keep self-contained so headless Chrome renders identically on any machine. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { overflow: hidden; }
+body {
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.logo-svg { width: 100%; height: 100%; display: block; }

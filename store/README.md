@@ -1,33 +1,59 @@
 # Store assets
 
-This folder holds promotional and listing assets for the Chrome Web Store and Microsoft Edge Add-ons. **None of these files are bundled into the extension zip** — the release workflow only packages `manifest.json`, `background.js`, `LICENSE`, `icons/`, and `_locales/`.
+Promotional and listing assets for the Chrome Web Store and Microsoft Edge Add-ons.
 
-## Required asset checklist
+**None of these files are bundled into the extension zip** — the release workflow only packages `manifest.json`, `background.js`, `LICENSE`, `icons/`, `_locales/`, and `lib/`.
 
-| File                       | Dimensions | Format     | Used by         | Notes                                            |
-| -------------------------- | ---------- | ---------- | --------------- | ------------------------------------------------ |
-| `screenshot-01.png`        | 1280×800   | PNG        | Chrome, Edge    | Hero shot — toolbar icon pinned, in context.     |
-| `screenshot-02.png`        | 1280×800   | PNG        | Chrome, Edge    | DevTools Network panel showing fresh load.       |
-| `screenshot-03.png`        | 1280×800   | PNG        | Chrome, Edge    | Right-click context menu open on the toolbar.    |
-| `promo-440x280.png`        | 440×280    | PNG / JPEG | Chrome (req'd)  | Small promo tile.                                |
-| `promo-1400x560.png`       | 1400×560   | PNG / JPEG | Chrome (opt'l)  | Marquee — only matters if Google features you.   |
-| `edge-logo-300.png`        | 300×300    | PNG        | Edge (req'd)    | Edge listing requires this in addition to 128×128. |
+## What's here
 
-## Screenshot guidelines
+### Generated (promotional tiles + logo)
 
-Both stores reject screenshots that:
+The HTML sources live in [`src/`](src/). Run the build script to render them to PNG at exact pixel dimensions:
 
-- Show **only the toolbar icon** with no context — pair the icon with whatever the user just did (DevTools, an open tab, etc.).
-- Use **non-English text** in a listing localized to English.
-- Contain **competitor branding** or trademarked logos.
-- Have **misleading mockups** — the screenshot must show real extension behavior.
+```bash
+node store/build-assets.mjs
+```
 
-Recommended: keep a `~/.clearcache-store/` profile with the extension installed and a couple of known sites bookmarked, so you can reproduce identical screenshots when re-shooting for new versions.
+The script auto-detects an installed Chrome, Edge, Brave, or Chromium and uses it in headless mode — no npm dependencies. Override with `CHROMIUM=/path/to/browser node store/build-assets.mjs`.
+
+| Generated file                          | Dimensions | Used by          |
+| --------------------------------------- | ---------- | ---------------- |
+| `extension-logo-300x300.png`            | 300×300    | Edge Add-ons (required), Chrome Web Store (icon field) |
+| `small-promo-tile-440x280.png`          | 440×280    | Chrome Web Store (required), Edge Add-ons (small promo tile) |
+| `large-promo-tile-1400x560.png`         | 1400×560   | Chrome Web Store (marquee, optional — only if Google features the listing), Edge Add-ons (large promo tile, optional) |
+
+Re-run the build any time you edit files under [`src/`](src/) or the logo in [`src/_logo.svg`](src/_logo.svg).
+
+### Captured (screenshots)
+
+Screenshots of the extension in action are **captured manually, not generated**, because the stores require them to represent real extension behavior. See [`docs/screenshots/CAPTURE_GUIDE.md`](../docs/screenshots/CAPTURE_GUIDE.md) for the exact shot list, dimensions (1280×800), and capture steps.
+
+Store the captured PNGs in [`docs/screenshots/`](../docs/screenshots/) and copy them into this folder before uploading to the store dashboards.
+
+## Upload order (applies to both stores)
+
+1. `extension-logo-300x300.png` → Extension logo field
+2. `small-promo-tile-440x280.png` → Small promotional tile field
+3. `large-promo-tile-1400x560.png` → Large promotional tile field (optional)
+4. Screenshots → Screenshots section (upload the hero shot first so it becomes the default thumbnail)
 
 ## Listing copy
 
 Reuse the description in [../README.md](../README.md). Both stores accept plain text (Chrome strips Markdown). Cap each paragraph at ~500 chars for readability in the listing's truncated preview.
 
+Suggested short description (under the 132-char cap):
+
+> One-click per-site cache clear and hard-reload. Four keyboard modes, zero telemetry, open source.
+
 ## Privacy policy URL
 
-Link to the raw GitHub URL for [docs/privacy.md](../docs/privacy.md), or host a rendered version on GitHub Pages. Both stores accept either.
+Link to:
+
+- The rendered landing page's privacy section once you've deployed the Cloudflare Pages site (e.g. `https://clearcache.yourdomain.com#privacy`), **or**
+- The raw GitHub URL for [`docs/privacy.md`](../docs/privacy.md)
+
+Both stores accept either. A hosted first-party URL is slightly preferred by reviewers.
+
+## Do NOT commit these
+
+The generated PNGs in this folder should **not** be committed — re-running the build any time is cheap and they'd bloat the repo. The `.gitignore` at the repo root excludes them. The HTML sources under [`src/`](src/) and the build script ARE committed.

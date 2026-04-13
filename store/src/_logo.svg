@@ -1,0 +1,13 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="ClearCache logo">
+  <defs>
+    <radialGradient id="bg" cx="35%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#3b8bf0" />
+      <stop offset="100%" stop-color="#1a73e8" />
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="96" fill="url(#bg)" />
+  <g fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 140 72 A 52 52 0 1 0 152 116" />
+  </g>
+  <polygon points="118,40 158,70 118,92" fill="#ffffff" />
+</svg>

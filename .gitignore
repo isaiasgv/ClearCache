@@ -29,3 +29,6 @@ node_modules/
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+# Generated store assets (re-run `node store/build-assets.mjs` to regenerate)
+store/*.png

@@ -1,0 +1,231 @@
+name: Release
+
+# Triggered by:
+#   - Push to main (monthly merges from `release` branch, or hotfix pushes)
+#   - Manual dispatch with optional bump override
+#
+# Behavior:
+#   1. Parses Conventional Commits since the last v* tag.
+#   2. Determines next semver bump (major / minor / patch / none).
+#   3. If no releasable commits, exits with no release.
+#   4. Otherwise: bumps manifest.json, commits with [skip ci], tags vX.Y.Z,
+#      builds the extension zip, and creates a GitHub Release.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      bump_override:
+        description: "Force a specific bump (auto = derive from commits)"
+        required: false
+        default: "auto"
+        type: choice
+        options: [auto, major, minor, patch]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Auto-version, tag, and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (full history for tag analysis)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity (github-actions bot)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Validate manifest.json
+        run: |
+          jq empty manifest.json
+          for field in manifest_version name version description permissions background action icons; do
+            if ! jq -e ".${field}" manifest.json > /dev/null; then
+              echo "::error::manifest.json is missing required field: ${field}"
+              exit 1
+            fi
+          done
+          for size in 16 32 48 128; do
+            test -f "icons/icon${size}.png" || { echo "::error::Missing icons/icon${size}.png"; exit 1; }
+          done
+
+      - name: Determine version bump from Conventional Commits
+        id: bump
+        run: |
+          set -euo pipefail
+
+          LAST_TAG=$(git describe --tags --match 'v*' --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            echo "No prior v* tag found — treating all history as releasable."
+            RANGE=""
+          else
+            echo "Last tag: $LAST_TAG"
+            RANGE="${LAST_TAG}..HEAD"
+          fi
+
+          COMMITS=$(git log ${RANGE} --pretty=format:'%H%x09%s%x09%b%x1e' || true)
+
+          BUMP="none"
+          OVERRIDE="${{ inputs.bump_override }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "$OVERRIDE" != "auto" ] && [ -n "$OVERRIDE" ]; then
+            BUMP="$OVERRIDE"
+            echo "Manual override: bump=$BUMP"
+          else
+            HAS_BREAKING=0; HAS_FEAT=0; HAS_PATCHABLE=0
+            while IFS= read -r -d $'\x1e' record; do
+              [ -z "$record" ] && continue
+              SUBJECT=$(echo "$record" | awk -F'\t' '{print $2}')
+              BODY=$(echo "$record" | awk -F'\t' '{print $3}')
+              # Skip the bot's own bump commits
+              if echo "$SUBJECT" | grep -qE '^chore\(release\):'; then continue; fi
+              # Breaking: type! in subject, OR "BREAKING CHANGE:" in body
+              if echo "$SUBJECT" | grep -qE '^[a-z]+(\([^)]+\))?!:'; then HAS_BREAKING=1; fi
+              if echo "$BODY"    | grep -qE '^BREAKING CHANGE:'; then HAS_BREAKING=1; fi
+              # Minor: feat:
+              if echo "$SUBJECT" | grep -qE '^feat(\([^)]+\))?:'; then HAS_FEAT=1; fi
+              # Patch: fix: / perf: / refactor:
+              if echo "$SUBJECT" | grep -qE '^(fix|perf|refactor)(\([^)]+\))?:'; then HAS_PATCHABLE=1; fi
+            done <<< "$COMMITS"
+
+            if   [ $HAS_BREAKING -eq 1 ]; then BUMP="major"
+            elif [ $HAS_FEAT     -eq 1 ]; then BUMP="minor"
+            elif [ $HAS_PATCHABLE -eq 1 ]; then BUMP="patch"
+            fi
+          fi
+
+          echo "Computed bump: $BUMP"
+          echo "bump=$BUMP" >> "$GITHUB_OUTPUT"
+          echo "last_tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Skip release if no releasable commits
+        if: steps.bump.outputs.bump == 'none'
+        run: |
+          echo "::notice::No releasable commits since ${{ steps.bump.outputs.last_tag }}. Skipping release."
+
+      - name: Compute next version
+        id: version
+        if: steps.bump.outputs.bump != 'none'
+        run: |
+          set -euo pipefail
+          CURRENT=$(jq -r '.version' manifest.json)
+          IFS='.' read -r MAJ MIN PAT <<< "$CURRENT"
+          MAJ=${MAJ:-0}; MIN=${MIN:-0}; PAT=${PAT:-0}
+          case "${{ steps.bump.outputs.bump }}" in
+            major) MAJ=$((MAJ+1)); MIN=0; PAT=0 ;;
+            minor) MIN=$((MIN+1)); PAT=0 ;;
+            patch) PAT=$((PAT+1)) ;;
+          esac
+          NEW="${MAJ}.${MIN}.${PAT}"
+          echo "Current: $CURRENT  →  Next: $NEW"
+          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "next=$NEW"        >> "$GITHUB_OUTPUT"
+          echo "tag=v${NEW}"      >> "$GITHUB_OUTPUT"
+
+      - name: Bump manifest.json and commit
+        if: steps.bump.outputs.bump != 'none'
+        run: |
+          set -euo pipefail
+          NEW="${{ steps.version.outputs.next }}"
+          jq --arg v "$NEW" '.version = $v' manifest.json > manifest.json.tmp
+          mv manifest.json.tmp manifest.json
+          git add manifest.json
+          git commit -m "chore(release): v${NEW} [skip ci]"
+          git push origin HEAD:main
+
+      - name: Create and push tag
+        if: steps.bump.outputs.bump != 'none'
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+
+      - name: Build extension zip
+        id: build
+        if: steps.bump.outputs.bump != 'none'
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.next }}"
+          ZIP_NAME="clearcache-${VERSION}.zip"
+          STAGING="$(mktemp -d)"
+          cp manifest.json background.js LICENSE "$STAGING/"
+          cp -r icons "$STAGING/"
+          (cd "$STAGING" && zip -r "$GITHUB_WORKSPACE/${ZIP_NAME}" .)
+          unzip -l "${ZIP_NAME}"
+          echo "zip_name=${ZIP_NAME}" >> "$GITHUB_OUTPUT"
+          echo "zip_path=${GITHUB_WORKSPACE}/${ZIP_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Compute SHA-256 checksum
+        id: checksum
+        if: steps.bump.outputs.bump != 'none'
+        run: |
+          ZIP="${{ steps.build.outputs.zip_path }}"
+          SHA=$(sha256sum "$ZIP" | awk '{print $1}')
+          echo "sha256=${SHA}" >> "$GITHUB_OUTPUT"
+          echo "${SHA}  ${{ steps.build.outputs.zip_name }}" > "${ZIP}.sha256"
+
+      - name: Generate release notes
+        id: notes
+        if: steps.bump.outputs.bump != 'none'
+        run: |
+          set -euo pipefail
+          LAST_TAG="${{ steps.bump.outputs.last_tag }}"
+          NEW_TAG="${{ steps.version.outputs.tag }}"
+          NOTES="$(mktemp)"
+
+          if [ -z "$LAST_TAG" ]; then RANGE=""; else RANGE="${LAST_TAG}..HEAD^"; fi
+
+          {
+            echo "## ${NEW_TAG}"
+            echo ""
+
+            FEATS=$(git log ${RANGE} --pretty=format:'- %s' --grep='^feat' || true)
+            FIXES=$(git log ${RANGE} --pretty=format:'- %s' --grep='^fix'  || true)
+            PERFS=$(git log ${RANGE} --pretty=format:'- %s' --grep='^perf' || true)
+            BREAK=$(git log ${RANGE} --pretty=format:'- %s' --grep='!:' || true)
+
+            if [ -n "$BREAK" ]; then echo "### Breaking changes";   echo "$BREAK"; echo ""; fi
+            if [ -n "$FEATS" ]; then echo "### Features";           echo "$FEATS"; echo ""; fi
+            if [ -n "$FIXES" ]; then echo "### Fixes";              echo "$FIXES"; echo ""; fi
+            if [ -n "$PERFS" ]; then echo "### Performance";        echo "$PERFS"; echo ""; fi
+
+            echo "### Install"
+            echo ""
+            echo "Download \`${{ steps.build.outputs.zip_name }}\` below and load it as an unpacked extension, or wait for the Chrome Web Store / Edge Add-ons listing to update."
+            echo ""
+            echo "**SHA-256:**"
+            echo ""
+            echo '```'
+            echo "${{ steps.checksum.outputs.sha256 }}"
+            echo '```'
+
+            if [ -n "$LAST_TAG" ]; then
+              echo ""
+              echo "**Full changelog:** https://github.com/${{ github.repository }}/compare/${LAST_TAG}...${NEW_TAG}"
+            fi
+          } > "$NOTES"
+
+          echo "path=${NOTES}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: steps.bump.outputs.bump != 'none'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
+          body_path: ${{ steps.notes.outputs.path }}
+          draft: false
+          prerelease: false
+          files: |
+            ${{ steps.build.outputs.zip_path }}
+            ${{ steps.build.outputs.zip_path }}.sha256

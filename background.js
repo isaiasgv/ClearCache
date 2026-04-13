@@ -83,4 +83,16 @@ async function clearAndReload(tab, mode) {
   }
 }
 
+async function activeTab() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  return tab ?? null;
+}
+
 chrome.action.onClicked.addListener((tab) => clearAndReload(tab, "origin"));
+
+chrome.commands.onCommand.addListener(async (command) => {
+  const tab = await activeTab();
+  if (!tab) return;
+  if (command === "clear-all-origins") return clearAndReload(tab, "all");
+  if (command === "clear-deep")        return clearAndReload(tab, "deep");
+});

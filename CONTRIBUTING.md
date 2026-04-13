@@ -26,22 +26,42 @@ There is no toolchain. Clone the repo, load the folder as an unpacked extension 
 
 ## Conventional Commits (required)
 
-Every commit subject must follow [Conventional Commits](https://www.conventionalcommits.org/) — CI rejects PRs that don't. The version bump on each release is computed from these prefixes:
+Every commit subject must follow [Conventional Commits](https://www.conventionalcommits.org/) — CI rejects PRs that don't.
 
-| Prefix                                | Meaning                          | Release impact |
-| ------------------------------------- | -------------------------------- | -------------- |
-| `feat!:` / `fix!:` / `BREAKING CHANGE:` in body | Breaking change         | **major**      |
-| `feat:`                               | New user-visible feature         | **minor**      |
-| `fix:` / `perf:` / `refactor:`        | Bug fix / perf / safe refactor   | **patch**      |
-| `docs:` / `test:` / `chore:` / `ci:` / `build:` / `style:` / `revert:` | Maintenance | **none**       |
+| Prefix                                                                  | Triggers a release? |
+| ----------------------------------------------------------------------- | ------------------- |
+| `feat:` / `fix:` / `perf:` / `refactor:` (with or without `!`)          | **yes** — patch by default (see below) |
+| `docs:` / `test:` / `chore:` / `ci:` / `build:` / `style:` / `revert:`  | no                  |
 
-Examples:
+### Bump policy
+
+By default, **any releasable commit produces a patch bump**. Even `feat!:` and `BREAKING CHANGE:` do not auto-bump beyond patch — this project deliberately stays in `0.x` and bumps minor/major only when stated.
+
+To request a higher bump, **state it** via either:
+
+- A `Release-Bump:` trailer in any commit body in the release range:
+
+  ```
+  feat: drop Manifest V2 support
+
+  Release-Bump: major
+  ```
+
+- Manually triggering the Release workflow with `bump_override = minor` or `major` from the Actions tab.
+
+The highest level signaled across all commits in a release range wins. If no `Release-Bump:` trailer is present and no manual override is used, the release is patch.
+
+### Commit subject examples
 
 ```
 feat: add keyboard shortcut to trigger reload
 fix: handle tabs without an id (e.g. devtools)
-feat!: drop Firefox compatibility shim
 docs: clarify install steps in README
+
+# When you want a minor bump, signal it in the body:
+feat: rework the toast renderer
+
+Release-Bump: minor
 ```
 
 ## Pull requests

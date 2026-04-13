@@ -46,7 +46,7 @@ Do not propose Manifest V2 patterns (background pages, `chrome.extension.*`, per
 - **`main`** is the stable branch. A monthly PR brings `release` into `main`. Pushes to `main` trigger the release workflow.
 - **Never edit `manifest.json` `"version"` manually.** The [Release workflow](.github/workflows/release.yml) computes the next semver from Conventional Commits and bumps the field itself. Manual edits will be overwritten and confuse the version-derivation logic.
 - Every commit subject must follow [Conventional Commits](https://www.conventionalcommits.org/): `<type>[!]: <description>`. Allowed types: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `chore`, `ci`, `build`, `style`, `revert`. CI rejects PRs that don't conform.
-- Bump mapping: `feat!:`/`fix!:`/`BREAKING CHANGE:` → major; `feat:` → minor; `fix:`/`perf:`/`refactor:` → patch; everything else → no release.
+- Bump policy: any releasable commit (`feat`/`fix`/`perf`/`refactor`, with or without `!`) defaults to **patch**. To request a minor or major bump, add `Release-Bump: minor` or `Release-Bump: major` to the commit body, or trigger the workflow manually with `bump_override`. `BREAKING CHANGE:` and `!` no longer auto-bump beyond patch — they're informational only. Non-releasable types: `docs`, `test`, `chore`, `ci`, `build`, `style`, `revert`.
 
 ## Working with the code
 

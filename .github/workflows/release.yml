@@ -1,20 +1,23 @@
 name: Release
 
 # Triggered by:
-#   - Push to main (monthly merges from `release` branch, or hotfix pushes)
-#   - Manual dispatch with optional bump override
+#   - Push to main    → STABLE release (vX.Y.Z), bumps manifest, updates CHANGELOG
+#   - Push to release → PRERELEASE (vX.Y.Z-rc.N), built from a temporary 4-digit
+#                       manifest version (X.Y.Z.N) inside the zip; no commit-back
+#   - Manual dispatch with optional bump override (respects the branch it ran on)
 #
 # Behavior:
-#   1. Parses Conventional Commits since the last v* tag.
+#   1. Parses Conventional Commits since the last v* tag (excluding rc tags).
 #   2. Determines next semver bump (major / minor / patch / none).
 #   3. If no releasable commits, exits with no release.
-#   4. Otherwise: builds the zip, computes SHA-256, generates release notes,
-#      prepends them to CHANGELOG.md, bumps manifest.json, commits both
-#      with [skip ci], tags vX.Y.Z, and publishes a GitHub Release.
+#   4. Builds the zip, computes SHA-256, generates release notes.
+#   5. STABLE: prepends notes to CHANGELOG.md, commits manifest+CHANGELOG with
+#      [skip ci], tags vX.Y.Z, publishes a (non-prerelease) GitHub Release.
+#      PRERELEASE: tags vX.Y.Z-rc.N, publishes a prerelease GitHub Release.
 
 on:
   push:
-    branches: [main]
+    branches: [main, release]
   workflow_dispatch:
     inputs:
       bump_override:
@@ -48,6 +51,17 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Detect release channel
+        id: channel
+        run: |
+          if [ "${{ github.ref_name }}" = "release" ]; then
+            echo "kind=prerelease" >> "$GITHUB_OUTPUT"
+            echo "Release channel: PRERELEASE (release branch)"
+          else
+            echo "kind=stable" >> "$GITHUB_OUTPUT"
+            echo "Release channel: STABLE (main branch)"
+          fi
+
       - name: Validate manifest.json
         run: |
           jq empty manifest.json
@@ -66,12 +80,13 @@ jobs:
         run: |
           set -euo pipefail
 
-          LAST_TAG=$(git describe --tags --match 'v*' --abbrev=0 2>/dev/null || echo "")
+          # Last STABLE tag only (ignore rc tags so prereleases don't reset the diff window).
+          LAST_TAG=$(git tag --list 'v*.*.*' --sort=-v:refname | grep -vE '\-rc\.' | head -1 || true)
           if [ -z "$LAST_TAG" ]; then
-            echo "No prior v* tag found — treating all history as releasable."
+            echo "No prior stable v* tag found — treating all history as releasable."
             RANGE=""
           else
-            echo "Last tag: $LAST_TAG"
+            echo "Last stable tag: $LAST_TAG"
             RANGE="${LAST_TAG}..HEAD"
           fi
 
@@ -102,8 +117,8 @@ jobs:
           fi
 
           echo "Computed bump: $BUMP"
-          echo "bump=$BUMP" >> "$GITHUB_OUTPUT"
-          echo "last_tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
+          echo "bump=$BUMP"           >> "$GITHUB_OUTPUT"
+          echo "last_tag=$LAST_TAG"   >> "$GITHUB_OUTPUT"
 
       - name: Skip release if no releasable commits
         if: steps.bump.outputs.bump == 'none'
@@ -116,42 +131,67 @@ jobs:
         run: |
           set -euo pipefail
           CURRENT=$(jq -r '.version' manifest.json)
-          IFS='.' read -r MAJ MIN PAT <<< "$CURRENT"
+          IFS='.' read -r MAJ MIN PAT _BUILD <<< "$CURRENT"
           MAJ=${MAJ:-0}; MIN=${MIN:-0}; PAT=${PAT:-0}
           case "${{ steps.bump.outputs.bump }}" in
             major) MAJ=$((MAJ+1)); MIN=0; PAT=0 ;;
             minor) MIN=$((MIN+1)); PAT=0 ;;
             patch) PAT=$((PAT+1)) ;;
           esac
-          NEW="${MAJ}.${MIN}.${PAT}"
-          echo "Current: $CURRENT  →  Next: $NEW"
-          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
-          echo "next=$NEW"        >> "$GITHUB_OUTPUT"
-          echo "tag=v${NEW}"      >> "$GITHUB_OUTPUT"
+          BASE="${MAJ}.${MIN}.${PAT}"
 
-      - name: Stage version bump in manifest.json (pre-build)
+          if [ "${{ steps.channel.outputs.kind }}" = "prerelease" ]; then
+            # Count existing rc tags for this base version, increment.
+            RC_COUNT=$(git tag --list "v${BASE}-rc.*" | wc -l | tr -d ' ')
+            RC_N=$((RC_COUNT + 1))
+            TAG="v${BASE}-rc.${RC_N}"
+            MANIFEST_VERSION="${BASE}.${RC_N}"   # 4-digit form Chrome accepts
+            ZIP_NAME="clearcache-${BASE}-rc.${RC_N}.zip"
+          else
+            TAG="v${BASE}"
+            MANIFEST_VERSION="${BASE}"
+            ZIP_NAME="clearcache-${BASE}.zip"
+          fi
+
+          echo "Channel: ${{ steps.channel.outputs.kind }}"
+          echo "Current manifest version: $CURRENT"
+          echo "Next semver base:         $BASE"
+          echo "Tag:                      $TAG"
+          echo "Zip manifest version:     $MANIFEST_VERSION"
+
+          echo "base=$BASE"                         >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG"                           >> "$GITHUB_OUTPUT"
+          echo "manifest_version=$MANIFEST_VERSION" >> "$GITHUB_OUTPUT"
+          echo "zip_name=$ZIP_NAME"                 >> "$GITHUB_OUTPUT"
+
+      - name: Refuse duplicate tag
+        if: steps.bump.outputs.bump != 'none'
+        run: |
+          if git rev-parse "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "::error::Tag ${{ steps.version.outputs.tag }} already exists. Aborting."
+            exit 1
+          fi
+
+      - name: Stage manifest version (in working copy only — committed only on stable)
         if: steps.bump.outputs.bump != 'none'
         run: |
           set -euo pipefail
-          NEW="${{ steps.version.outputs.next }}"
-          jq --arg v "$NEW" '.version = $v' manifest.json > manifest.json.tmp
+          jq --arg v "${{ steps.version.outputs.manifest_version }}" '.version = $v' manifest.json > manifest.json.tmp
           mv manifest.json.tmp manifest.json
+          jq -r '.version' manifest.json
 
       - name: Build extension zip
         id: build
         if: steps.bump.outputs.bump != 'none'
         run: |
           set -euo pipefail
-          VERSION="${{ steps.version.outputs.next }}"
-          ZIP_NAME="clearcache-${VERSION}.zip"
           STAGING="$(mktemp -d)"
           cp manifest.json background.js LICENSE "$STAGING/"
           cp -r icons "$STAGING/"
           if [ -d _locales ]; then cp -r _locales "$STAGING/"; fi
-          (cd "$STAGING" && zip -r "$GITHUB_WORKSPACE/${ZIP_NAME}" .)
-          unzip -l "${ZIP_NAME}"
-          echo "zip_name=${ZIP_NAME}" >> "$GITHUB_OUTPUT"
-          echo "zip_path=${GITHUB_WORKSPACE}/${ZIP_NAME}" >> "$GITHUB_OUTPUT"
+          (cd "$STAGING" && zip -r "$GITHUB_WORKSPACE/${{ steps.version.outputs.zip_name }}" .)
+          unzip -l "${{ steps.version.outputs.zip_name }}"
+          echo "zip_path=${GITHUB_WORKSPACE}/${{ steps.version.outputs.zip_name }}" >> "$GITHUB_OUTPUT"
 
       - name: Compute SHA-256 checksum
         id: checksum
@@ -160,7 +200,7 @@ jobs:
           ZIP="${{ steps.build.outputs.zip_path }}"
           SHA=$(sha256sum "$ZIP" | awk '{print $1}')
           echo "sha256=${SHA}" >> "$GITHUB_OUTPUT"
-          echo "${SHA}  ${{ steps.build.outputs.zip_name }}" > "${ZIP}.sha256"
+          echo "${SHA}  ${{ steps.version.outputs.zip_name }}" > "${ZIP}.sha256"
 
       - name: Generate release notes
         id: notes
@@ -175,8 +215,15 @@ jobs:
           if [ -z "$LAST_TAG" ]; then RANGE=""; else RANGE="${LAST_TAG}..HEAD"; fi
 
           {
-            echo "## ${NEW_TAG} — ${DATE}"
-            echo ""
+            if [ "${{ steps.channel.outputs.kind }}" = "prerelease" ]; then
+              echo "## ${NEW_TAG} — ${DATE} (release candidate)"
+              echo ""
+              echo "> Pre-release built from the \`release\` branch. Promote to stable by merging \`release\` → \`main\`, which will publish the corresponding \`v${{ steps.version.outputs.base }}\` stable release."
+              echo ""
+            else
+              echo "## ${NEW_TAG} — ${DATE}"
+              echo ""
+            fi
 
             BREAK=$(git log ${RANGE} --pretty=format:'- %s' --grep='!:' || true)
             FEATS=$(git log ${RANGE} --pretty=format:'- %s' --grep='^feat' || true)
@@ -190,7 +237,10 @@ jobs:
 
             echo "### Install"
             echo ""
-            echo "Download \`${{ steps.build.outputs.zip_name }}\` below and load it as an unpacked extension, or wait for the Chrome Web Store / Edge Add-ons listing to update."
+            echo "Download \`${{ steps.version.outputs.zip_name }}\` below and load it as an unpacked extension."
+            if [ "${{ steps.channel.outputs.kind }}" != "prerelease" ]; then
+              echo " Or wait for the Chrome Web Store / Edge Add-ons listing to update."
+            fi
             echo ""
             echo "**SHA-256:**"
             echo ""
@@ -206,8 +256,8 @@ jobs:
 
           echo "path=${NOTES}" >> "$GITHUB_OUTPUT"
 
-      - name: Prepend release notes to CHANGELOG.md
-        if: steps.bump.outputs.bump != 'none'
+      - name: Prepend release notes to CHANGELOG.md (stable only)
+        if: steps.bump.outputs.bump != 'none' && steps.channel.outputs.kind == 'stable'
         run: |
           set -euo pipefail
           NOTES_FILE="${{ steps.notes.outputs.path }}"
@@ -225,7 +275,6 @@ jobs:
           HDR
           fi
 
-          # Split header (lines through first blank after the "# Changelog" heading) from existing entries
           HEADER_END=$(awk '/^# Changelog/{found=1; next} found && NF==0 && !done {print NR; done=1}' CHANGELOG.md | head -1)
           HEADER_END=${HEADER_END:-0}
 
@@ -247,20 +296,25 @@ jobs:
           echo "--- CHANGELOG.md head ---"
           head -40 CHANGELOG.md
 
-      - name: Commit version bump and changelog
-        if: steps.bump.outputs.bump != 'none'
+      - name: Commit version bump and changelog (stable only)
+        if: steps.bump.outputs.bump != 'none' && steps.channel.outputs.kind == 'stable'
         run: |
           set -euo pipefail
-          NEW="${{ steps.version.outputs.next }}"
           git add manifest.json CHANGELOG.md
-          git commit -m "chore(release): v${NEW} [skip ci]"
+          git commit -m "chore(release): ${{ steps.version.outputs.tag }} [skip ci]"
           git push origin HEAD:main
 
       - name: Create and push tag
         if: steps.bump.outputs.bump != 'none'
         run: |
           TAG="${{ steps.version.outputs.tag }}"
-          git tag -a "$TAG" -m "Release $TAG"
+          if [ "${{ steps.channel.outputs.kind }}" = "prerelease" ]; then
+            # Tag the existing release-branch commit (we did not commit any version bump back).
+            git tag -a "$TAG" -m "Pre-release $TAG"
+          else
+            # On stable, the bump commit just landed on main as HEAD.
+            git tag -a "$TAG" -m "Release $TAG"
+          fi
           git push origin "$TAG"
 
       - name: Create GitHub Release
@@ -271,7 +325,7 @@ jobs:
           name: ${{ steps.version.outputs.tag }}
           body_path: ${{ steps.notes.outputs.path }}
           draft: false
-          prerelease: false
+          prerelease: ${{ steps.channel.outputs.kind == 'prerelease' }}
           files: |
             ${{ steps.build.outputs.zip_path }}
             ${{ steps.build.outputs.zip_path }}.sha256

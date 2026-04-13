@@ -122,32 +122,47 @@ This project uses a two-branch model with **fully automated semver versioning** 
 
 ### Branches
 
-| Branch    | Purpose                                                                |
-| --------- | ---------------------------------------------------------------------- |
-| `release` | Active development. All feature/fix PRs target this branch.            |
-| `main`    | Stable. Mirrors what's published to the Chrome Web Store / Edge Add-ons. Updated monthly via PR from `release`. |
+| Branch    | Purpose                                                                                                          | Releases produced                |
+| --------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `release` | Active development. All feature/fix PRs target this branch.                                                      | **Prereleases** (`vX.Y.Z-rc.N`)  |
+| `main`    | Stable. Mirrors what's published to the Chrome Web Store / Edge Add-ons. Updated monthly via PR from `release`.  | **Stable releases** (`vX.Y.Z`)   |
 
 ### Release cadence
 
-- **Monthly:** open a PR `release` → `main`, review the rolled-up changes, merge.
+- **Push to `release`** → automatic **prerelease** (`vX.Y.Z-rc.N`) for every push that contains releasable commits. Use these to test the actual built zip before promoting.
+- **Monthly:** open a PR `release` → `main`, review the rolled-up changes, merge → automatic **stable release** (`vX.Y.Z`).
 - **Hotfix:** PR direct to `main` with a `fix:` commit. Patch release goes out immediately.
 
-### What happens on merge to `main`
+### Conventional Commits → semver mapping
 
-The [Release workflow](.github/workflows/release.yml) runs and:
+The [Release workflow](.github/workflows/release.yml) parses every commit since the last stable `v*` tag (rc tags are ignored when computing diffs) and determines the bump from prefixes:
 
-1. Parses every commit since the last `v*` tag.
-2. Determines the bump from the commit prefixes:
-   - `feat!:`, `fix!:`, or `BREAKING CHANGE:` in body → **major**
-   - `feat:` → **minor**
-   - `fix:`, `perf:`, `refactor:` → **patch**
-   - Only `chore:`/`docs:`/`test:`/`ci:`/`build:`/`style:` → **no release** (workflow exits cleanly)
-3. Bumps `manifest.json` `"version"`, commits the bump as `chore(release): vX.Y.Z [skip ci]`, and pushes.
-4. Creates and pushes the `vX.Y.Z` tag.
-5. Builds `clearcache-X.Y.Z.zip` (the upload artifact for both stores).
-6. Publishes a GitHub Release with auto-generated changelog, SHA-256 checksum, and the zip attached.
+- `feat!:`, `fix!:`, or `BREAKING CHANGE:` in body → **major**
+- `feat:` → **minor**
+- `fix:`, `perf:`, `refactor:` → **patch**
+- Only `chore:`/`docs:`/`test:`/`ci:`/`build:`/`style:` → **no release** (workflow exits cleanly)
 
-You can also run the workflow manually from the Actions tab with a `bump_override` (`major`/`minor`/`patch`) when you need a specific version.
+### What happens on push to `release` (prerelease)
+
+1. Parses Conventional Commits since the last stable tag → computes the next semver base.
+2. Counts existing `vX.Y.Z-rc.*` tags for that base, increments to get `rc.N`.
+3. Sets the manifest version *inside the zip only* to `X.Y.Z.N` (Chrome's 4-digit form — the closest legal encoding of `X.Y.Z-rc.N`). The repo's `manifest.json` is **not** modified or committed back.
+4. Builds `clearcache-X.Y.Z-rc.N.zip`, computes SHA-256, generates rc-flagged release notes.
+5. Tags `vX.Y.Z-rc.N` on the release-branch commit and publishes a GitHub Release marked as **prerelease**.
+6. `CHANGELOG.md` is **not** updated (only stable releases write to it).
+
+### What happens on push to `main` (stable)
+
+1. Same bump computation.
+2. Sets the manifest version to `X.Y.Z`.
+3. Builds `clearcache-X.Y.Z.zip` + SHA-256 + release notes.
+4. Prepends the notes to `CHANGELOG.md`.
+5. Commits `manifest.json` + `CHANGELOG.md` together as `chore(release): vX.Y.Z [skip ci]` and pushes to `main`.
+6. Tags `vX.Y.Z` and publishes a GitHub Release (not prerelease).
+
+### Manual dispatch
+
+You can also run the workflow manually from the Actions tab with a `bump_override` (`major`/`minor`/`patch`). It produces a prerelease or stable release depending on which branch you ran it from.
 
 ### Store submission (manual)
 

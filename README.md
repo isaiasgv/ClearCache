@@ -1,3 +1,7 @@
+<div align="center">
+
+<img src="icons/icon128.png" alt="ClearCache logo" width="128" height="128" />
+
 # Clear Cache & Hard Reload
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
@@ -5,6 +9,8 @@
 [![CI](https://github.com/isaiasgv/ClearCache/actions/workflows/ci.yml/badge.svg)](https://github.com/isaiasgv/ClearCache/actions/workflows/ci.yml)
 [![Release](https://github.com/isaiasgv/ClearCache/actions/workflows/release.yml/badge.svg)](https://github.com/isaiasgv/ClearCache/actions/workflows/release.yml)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
+
+</div>
 
 A minimal, zero-dependency browser extension that clears the browser cache and performs a hard reload — scoped to the current site by default, with keyboard shortcuts and a right-click menu for broader wipes when you need them.
 

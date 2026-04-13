@@ -8,8 +8,9 @@ name: Release
 #   1. Parses Conventional Commits since the last v* tag.
 #   2. Determines next semver bump (major / minor / patch / none).
 #   3. If no releasable commits, exits with no release.
-#   4. Otherwise: bumps manifest.json, commits with [skip ci], tags vX.Y.Z,
-#      builds the extension zip, and creates a GitHub Release.
+#   4. Otherwise: builds the zip, computes SHA-256, generates release notes,
+#      prepends them to CHANGELOG.md, bumps manifest.json, commits both
+#      with [skip ci], tags vX.Y.Z, and publishes a GitHub Release.
 
 on:
   push:
@@ -87,14 +88,10 @@ jobs:
               [ -z "$record" ] && continue
               SUBJECT=$(echo "$record" | awk -F'\t' '{print $2}')
               BODY=$(echo "$record" | awk -F'\t' '{print $3}')
-              # Skip the bot's own bump commits
               if echo "$SUBJECT" | grep -qE '^chore\(release\):'; then continue; fi
-              # Breaking: type! in subject, OR "BREAKING CHANGE:" in body
               if echo "$SUBJECT" | grep -qE '^[a-z]+(\([^)]+\))?!:'; then HAS_BREAKING=1; fi
               if echo "$BODY"    | grep -qE '^BREAKING CHANGE:'; then HAS_BREAKING=1; fi
-              # Minor: feat:
               if echo "$SUBJECT" | grep -qE '^feat(\([^)]+\))?:'; then HAS_FEAT=1; fi
-              # Patch: fix: / perf: / refactor:
               if echo "$SUBJECT" | grep -qE '^(fix|perf|refactor)(\([^)]+\))?:'; then HAS_PATCHABLE=1; fi
             done <<< "$COMMITS"
 
@@ -132,23 +129,13 @@ jobs:
           echo "next=$NEW"        >> "$GITHUB_OUTPUT"
           echo "tag=v${NEW}"      >> "$GITHUB_OUTPUT"
 
-      - name: Bump manifest.json and commit
+      - name: Stage version bump in manifest.json (pre-build)
         if: steps.bump.outputs.bump != 'none'
         run: |
           set -euo pipefail
           NEW="${{ steps.version.outputs.next }}"
           jq --arg v "$NEW" '.version = $v' manifest.json > manifest.json.tmp
           mv manifest.json.tmp manifest.json
-          git add manifest.json
-          git commit -m "chore(release): v${NEW} [skip ci]"
-          git push origin HEAD:main
-
-      - name: Create and push tag
-        if: steps.bump.outputs.bump != 'none'
-        run: |
-          TAG="${{ steps.version.outputs.tag }}"
-          git tag -a "$TAG" -m "Release $TAG"
-          git push origin "$TAG"
 
       - name: Build extension zip
         id: build
@@ -160,6 +147,7 @@ jobs:
           STAGING="$(mktemp -d)"
           cp manifest.json background.js LICENSE "$STAGING/"
           cp -r icons "$STAGING/"
+          if [ -d _locales ]; then cp -r _locales "$STAGING/"; fi
           (cd "$STAGING" && zip -r "$GITHUB_WORKSPACE/${ZIP_NAME}" .)
           unzip -l "${ZIP_NAME}"
           echo "zip_name=${ZIP_NAME}" >> "$GITHUB_OUTPUT"
@@ -181,23 +169,24 @@ jobs:
           set -euo pipefail
           LAST_TAG="${{ steps.bump.outputs.last_tag }}"
           NEW_TAG="${{ steps.version.outputs.tag }}"
+          DATE=$(date -u +'%Y-%m-%d')
           NOTES="$(mktemp)"
 
-          if [ -z "$LAST_TAG" ]; then RANGE=""; else RANGE="${LAST_TAG}..HEAD^"; fi
+          if [ -z "$LAST_TAG" ]; then RANGE=""; else RANGE="${LAST_TAG}..HEAD"; fi
 
           {
-            echo "## ${NEW_TAG}"
+            echo "## ${NEW_TAG} — ${DATE}"
             echo ""
 
+            BREAK=$(git log ${RANGE} --pretty=format:'- %s' --grep='!:' || true)
             FEATS=$(git log ${RANGE} --pretty=format:'- %s' --grep='^feat' || true)
             FIXES=$(git log ${RANGE} --pretty=format:'- %s' --grep='^fix'  || true)
             PERFS=$(git log ${RANGE} --pretty=format:'- %s' --grep='^perf' || true)
-            BREAK=$(git log ${RANGE} --pretty=format:'- %s' --grep='!:' || true)
 
-            if [ -n "$BREAK" ]; then echo "### Breaking changes";   echo "$BREAK"; echo ""; fi
-            if [ -n "$FEATS" ]; then echo "### Features";           echo "$FEATS"; echo ""; fi
-            if [ -n "$FIXES" ]; then echo "### Fixes";              echo "$FIXES"; echo ""; fi
-            if [ -n "$PERFS" ]; then echo "### Performance";        echo "$PERFS"; echo ""; fi
+            if [ -n "$BREAK" ]; then echo "### Breaking changes"; echo "$BREAK"; echo ""; fi
+            if [ -n "$FEATS" ]; then echo "### Features";         echo "$FEATS"; echo ""; fi
+            if [ -n "$FIXES" ]; then echo "### Fixes";            echo "$FIXES"; echo ""; fi
+            if [ -n "$PERFS" ]; then echo "### Performance";      echo "$PERFS"; echo ""; fi
 
             echo "### Install"
             echo ""
@@ -216,6 +205,63 @@ jobs:
           } > "$NOTES"
 
           echo "path=${NOTES}" >> "$GITHUB_OUTPUT"
+
+      - name: Prepend release notes to CHANGELOG.md
+        if: steps.bump.outputs.bump != 'none'
+        run: |
+          set -euo pipefail
+          NOTES_FILE="${{ steps.notes.outputs.path }}"
+
+          if [ ! -f CHANGELOG.md ]; then
+            cat > CHANGELOG.md <<'HDR'
+          # Changelog
+
+          All notable changes to this project are documented in this file.
+
+          The format is based on [Keep a Changelog](https://keepachangelog.com/),
+          and versions follow [Semantic Versioning](https://semver.org/),
+          driven by [Conventional Commits](https://www.conventionalcommits.org/).
+
+          HDR
+          fi
+
+          # Split header (lines through first blank after the "# Changelog" heading) from existing entries
+          HEADER_END=$(awk '/^# Changelog/{found=1; next} found && NF==0 && !done {print NR; done=1}' CHANGELOG.md | head -1)
+          HEADER_END=${HEADER_END:-0}
+
+          NEW_FILE="$(mktemp)"
+          if [ "$HEADER_END" -gt 0 ]; then
+            head -n "$HEADER_END" CHANGELOG.md > "$NEW_FILE"
+            echo "" >> "$NEW_FILE"
+            cat "$NOTES_FILE" >> "$NEW_FILE"
+            echo "" >> "$NEW_FILE"
+            tail -n +"$((HEADER_END + 1))" CHANGELOG.md >> "$NEW_FILE"
+          else
+            cat "$NOTES_FILE" "$NEW_FILE" > "${NEW_FILE}.tmp"
+            mv "${NEW_FILE}.tmp" "$NEW_FILE"
+            echo "" >> "$NEW_FILE"
+            cat CHANGELOG.md >> "$NEW_FILE" 2>/dev/null || true
+          fi
+
+          mv "$NEW_FILE" CHANGELOG.md
+          echo "--- CHANGELOG.md head ---"
+          head -40 CHANGELOG.md
+
+      - name: Commit version bump and changelog
+        if: steps.bump.outputs.bump != 'none'
+        run: |
+          set -euo pipefail
+          NEW="${{ steps.version.outputs.next }}"
+          git add manifest.json CHANGELOG.md
+          git commit -m "chore(release): v${NEW} [skip ci]"
+          git push origin HEAD:main
+
+      - name: Create and push tag
+        if: steps.bump.outputs.bump != 'none'
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
 
       - name: Create GitHub Release
         if: steps.bump.outputs.bump != 'none'

@@ -8,7 +8,8 @@
   "minimum_chrome_version": "114",
   "permissions": [
     "browsingData",
-    "tabs"
+    "tabs",
+    "contextMenus"
   ],
   "host_permissions": [
     "<all_urls>"

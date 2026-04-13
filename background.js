@@ -96,3 +96,30 @@ chrome.commands.onCommand.addListener(async (command) => {
   if (command === "clear-all-origins") return clearAndReload(tab, "all");
   if (command === "clear-deep")        return clearAndReload(tab, "deep");
 });
+
+const MENU_ITEMS = [
+  { id: "clearcache-origin", title: "Clear cache for this site & reload",                    mode: "origin" },
+  { id: "clearcache-all",    title: "Clear cache for ALL sites & reload",                    mode: "all"    },
+  { id: "clearcache-deep",   title: "Clear cache + cookies + storage for this site & reload", mode: "deep"   }
+];
+
+function installContextMenus() {
+  chrome.contextMenus.removeAll(() => {
+    for (const item of MENU_ITEMS) {
+      chrome.contextMenus.create({
+        id: item.id,
+        title: item.title,
+        contexts: ["action"]
+      });
+    }
+  });
+}
+
+chrome.runtime.onInstalled.addListener(installContextMenus);
+chrome.runtime.onStartup.addListener(installContextMenus);
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (!tab) return;
+  const item = MENU_ITEMS.find((m) => m.id === info.menuItemId);
+  if (item) clearAndReload(tab, item.mode);
+});

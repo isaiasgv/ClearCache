@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Clear Cache & Hard Reload",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Click to clear the cache and hard-reload the current tab.",
   "author": "Isaias Garcia",
   "homepage_url": "https://github.com/isaiasgv/ClearCache",

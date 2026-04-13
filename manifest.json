@@ -5,7 +5,7 @@
   "description": "Click to clear the cache and hard-reload the current tab.",
   "author": "Isaias Garcia",
   "homepage_url": "https://github.com/isaiasgv/ClearCache",
-  "minimum_chrome_version": "102",
+  "minimum_chrome_version": "114",
   "permissions": [
     "browsingData",
     "tabs"

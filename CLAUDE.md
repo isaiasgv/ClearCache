@@ -4,13 +4,14 @@ Guidance for Claude (and any other AI coding assistant) when working in this rep
 
 ## Project summary
 
-ClearCache is a Manifest V3 browser extension that clears browsing cache (HTTP cache, Cache Storage, Service Workers) and hard-reloads the active tab on toolbar click. The codebase is intentionally tiny:
+ClearCache is a Manifest V3 browser extension that clears browsing cache (HTTP cache, Cache Storage, Service Workers, optionally cookies/storage) and hard-reloads tabs. The codebase is intentionally tiny:
 
-- [background.js](background.js) — the entire runtime: a single `chrome.action.onClicked` listener.
-- [manifest.json](manifest.json) — MV3 manifest, permissions, icons.
+- [background.js](background.js) — the entire runtime: action click + commands + context menus, all routed through one `clearAndReload(tab, mode)` function. Modes: `"origin"` (default, current site only), `"all"` (every site), `"deep"` (current site + cookies/storage). Plus `clearOriginAndReloadWindow` for the multi-tab variant.
+- [manifest.json](manifest.json) — MV3 manifest, permissions, icons, keyboard `commands`, i18n placeholders (`__MSG_*__`).
+- [_locales/en/messages.json](_locales/en/messages.json) — all user-facing strings. Add new locales by copying this folder.
 - [icons/](icons/) — toolbar icons at 16/32/48/128 px.
 
-There is no build step, no bundler, no package manager, and no test framework. Edits to `background.js` or `manifest.json` are loaded by reloading the unpacked extension in `chrome://extensions`.
+There is no build step, no bundler, no package manager, and no test framework. Edits to `background.js`, `manifest.json`, or `_locales/` are loaded by reloading the unpacked extension in `chrome://extensions`.
 
 ## Hard rules
 

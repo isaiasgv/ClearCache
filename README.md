@@ -6,16 +6,30 @@
 [![Release](https://github.com/isaiasgv/ClearCache/actions/workflows/release.yml/badge.svg)](https://github.com/isaiasgv/ClearCache/actions/workflows/release.yml)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 
-A minimal, zero-dependency browser extension that clears the browser cache and performs a hard reload of the active tab — all from a single toolbar click.
+A minimal, zero-dependency browser extension that clears the browser cache and performs a hard reload — scoped to the current site by default, with keyboard shortcuts and a right-click menu for broader wipes when you need them.
 
-No popups. No options page. No telemetry. Just one button that does one thing well.
+No popups. No options page. No telemetry. Just one button (and a few sensible escape hatches).
 
 ## Features
 
-- **One-click cache wipe** — clears HTTP cache, Cache Storage, and Service Workers for all origins.
-- **Hard reload** — reloads the active tab with `bypassCache: true` (equivalent to `Ctrl+Shift+R`).
-- **Manifest V3** — built on the modern Chromium extension platform.
-- **Tiny footprint** — a single service worker, no third-party libraries, no tracking.
+- **Per-site cache clear by default** — clicking the toolbar icon clears cache, Cache Storage, and Service Workers for the **current site only**, then hard-reloads. Other sites' cached data is left alone.
+- **Three escalation modes** via keyboard shortcuts or the right-click menu:
+  - Clear current site (default — `Alt+Shift+R` or click)
+  - Clear **all sites** — `Alt+Shift+A`
+  - Deep clear current site (cache + cookies + localStorage + IndexedDB) — `Alt+Shift+D`
+- **Reload all tabs in the current window** — `Alt+Shift+W`. Clears the current tab's site cache, then hard-reloads every tab in the window. Useful when an app is open across several tabs.
+- **Visual confirmation** — a 1.5-second color-coded badge on the toolbar icon after each action (✓ green / ★ amber / ☠ red).
+- **Internationalized** — all UI strings live in `_locales/`. Adding a new language is a drop-in `_locales/<lang>/messages.json`.
+- **Manifest V3** — modern service-worker architecture.
+- **Tiny footprint** — single service worker, no third-party libraries, no remote calls, no tracking.
+
+## Screenshots
+
+> Screenshots will be added after the first store-ready build. Placeholders for now — see [docs/screenshots/README.md](docs/screenshots/README.md) for the capture spec.
+
+| Toolbar icon | Badge confirmation | Right-click menu |
+| ------------ | ------------------ | ---------------- |
+| ![Toolbar icon](docs/screenshots/toolbar-icon.png) | ![Badge confirmation](docs/screenshots/badge-confirmation.png) | ![Context menu](docs/screenshots/context-menu.png) |
 
 ## Install
 
@@ -34,42 +48,66 @@ No popups. No options page. No telemetry. Just one button that does one thing we
 
 ## Usage
 
-Click the toolbar icon. That's it.
+### Default: click the toolbar icon
 
-The extension will:
-1. Clear cached HTTP responses, Cache Storage entries, and Service Worker registrations for every origin.
-2. Hard-reload the currently active tab, bypassing whatever cache remains.
+Clears cache, Cache Storage, and Service Workers **for the current site only**, then hard-reloads. The badge flashes green ✓ on success.
+
+### Other modes
+
+| Action                                              | Keyboard          | Where else                                |
+| --------------------------------------------------- | ----------------- | ----------------------------------------- |
+| Clear current site & reload                         | `Alt+Shift+R`     | Toolbar click, right-click menu           |
+| Clear **all sites** & reload current tab            | `Alt+Shift+A`     | Right-click menu                          |
+| Deep clear current site (cache+cookies+storage)     | `Alt+Shift+D`     | Right-click menu                          |
+| Reload all tabs in this window (clears current site)| `Alt+Shift+W`     | Right-click menu                          |
+
+Rebind any shortcut at `chrome://extensions/shortcuts`.
+
+### Badge colors
+
+- ✓ green — current-site clear succeeded
+- ★ amber — all-sites clear succeeded
+- ☠ red — deep clear succeeded
+- ! red — clear failed (check the service worker console for `[ClearCache]` errors)
 
 ## Permissions
 
 | Permission         | Why it's needed                                                       |
 | ------------------ | --------------------------------------------------------------------- |
-| `browsingData`     | To clear cache, Cache Storage, and Service Workers.                   |
-| `tabs`             | To identify and reload the active tab.                                |
-| `<all_urls>`       | The cache wipe applies to all origins — there is no per-site scope.   |
+| `browsingData`     | To clear cache, Cache Storage, Service Workers, and (in deep mode) cookies / localStorage / IndexedDB. |
+| `tabs`             | To read the active tab's URL (for per-site scoping) and reload it.    |
+| `contextMenus`     | To add the right-click menu entries on the toolbar icon.              |
+| `<all_urls>`       | Required so the per-site scoping logic can resolve any origin you're on. The extension never reads page contents. |
 
-The extension does **not** read page contents, track usage, or send data anywhere.
+The extension does **not** read page contents, track usage, or send data anywhere. See [docs/privacy.md](docs/privacy.md) for the full privacy policy.
 
 ## Browser compatibility
 
 Tested on:
 
-- Google Chrome (latest)
-- Microsoft Edge (latest)
-- Brave
-- Arc
+- Google Chrome 114+ (latest recommended)
+- Microsoft Edge 114+
+- Brave, Arc, Opera (Chromium-based, latest)
 
-Any Chromium browser with Manifest V3 support should work. Firefox is not currently supported (the `browsingData` API surface differs).
+`minimum_chrome_version` is `114` because per-origin scoping in `chrome.browsingData.remove` requires it. Firefox is not supported (the `browsingData` API surface differs).
 
 ## Project layout
 
 ```
 ClearCache/
-├── background.js     # Service worker — handles the toolbar click
-├── manifest.json     # Manifest V3 declaration
-├── icons/            # Toolbar icons (16, 32, 48, 128 px)
-├── LICENSE           # GPL-3.0
-└── README.md
+├── background.js              # Service worker (~100 lines, handles all modes)
+├── manifest.json              # Manifest V3 declaration
+├── icons/                     # Toolbar icons (16, 32, 48, 128 px)
+├── _locales/en/messages.json  # i18n strings (add more locales here)
+├── LICENSE                    # GPL-3.0
+├── README.md
+├── CHANGELOG.md               # Auto-maintained by the release workflow
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── docs/
+│   ├── privacy.md             # Privacy policy
+│   └── screenshots/           # README-embedded screenshots
+└── store/                     # Listing assets for Chrome Web Store / Edge
 ```
 
 ## Branching & releases

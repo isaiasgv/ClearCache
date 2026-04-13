@@ -32,7 +32,11 @@ When committing on the user's behalf, use only the user's configured git identit
 ### 2. Keep it minimal
 
 - **No third-party runtime dependencies.** The shipped extension imports nothing from npm, no bundlers, no frameworks.
-- **Test-only `devDependencies` are the one allowed exception.** `vitest` lives in `package.json` for running pure-helper unit tests under Node. It is never bundled into the extension zip — the release workflow's zip step only copies `manifest.json`, `background.js`, `LICENSE`, `icons/`, `_locales/`, and `lib/`. If you find yourself wanting to add another devDep, justify it in the PR.
+- **Dev/build tooling `devDependencies` are the one allowed exception.** Current devDeps:
+  - `vitest` — runs unit tests on pure helpers under Node.
+  - `puppeteer-core` — drives headless Chrome/Edge via `store/build-assets.mjs` to generate extension icons, landing assets, and store promo tiles at exact pixel dimensions. Needed because `chrome --screenshot` enforces a minimum window width on Windows (~484px), breaking renders below 128×128.
+
+  Neither is bundled into the extension zip — the release workflow's zip step only copies `manifest.json`, `background.js`, `LICENSE`, `icons/`, `_locales/`, and `lib/`. Justify any new devDep in its PR.
 - No new permissions in `manifest.json` without a documented reason in the PR.
 - No telemetry, analytics, remote calls, or background fetches.
 - No popup UI, options page, or content scripts unless the feature genuinely requires it.

@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.0.2 — 2026-04-13
+
+### Fixes
+- fix: render store and icon PNGs correctly at all sizes
+
+### Install
+
+Download `clearcache-0.0.2.zip` below and load it as an unpacked extension.
+ Or wait for the Chrome Web Store / Edge Add-ons listing to update.
+
+**SHA-256:**
+
+```
+257ce02bd490c008534ff53390c4d0f19e3c468b78274b75c3d5074108302bba
+```
+
+**Full changelog:** https://github.com/isaiasgv/ClearCache/compare/v0.0.1...v0.0.2
+
+
 ## v0.0.1 — 2026-04-13
 
 ### Breaking changes

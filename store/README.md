@@ -54,6 +54,86 @@ Link to:
 
 Both stores accept either. A hosted first-party URL is slightly preferred by reviewers.
 
+## Search terms
+
+Edge allows up to 7 terms, 30 characters each, max 21 words total. Chrome Web Store doesn't have a search terms field — it indexes the description.
+
+### English
+
+| # | Term                    |
+|---|-------------------------|
+| 1 | clear cache             |
+| 2 | hard reload             |
+| 3 | force refresh           |
+| 4 | refresh cache           |
+| 5 | reload page             |
+| 6 | clear browser cache     |
+| 7 | DevTools                |
+
+### Spanish (Espa&ntilde;ol)
+
+| # | Term                    |
+|---|-------------------------|
+| 1 | limpiar caché           |
+| 2 | recarga forzada         |
+| 3 | forzar recarga          |
+| 4 | actualizar caché        |
+| 5 | recargar página         |
+| 6 | borrar caché navegador  |
+| 7 | DevTools                |
+
+## Store listing copy
+
+### English
+
+**Short description** (under 132 chars — used by Chrome and Edge for the one-liner):
+
+> One-click per-site cache clear and hard-reload. Four keyboard modes, zero telemetry, open source.
+
+**Full description:**
+
+```
+A minimal, zero-dependency Chromium browser extension that clears the cache for the current site and hard-reloads it — in one click, with no settings to configure and no data leaving your browser.
+
+When you need a bigger hammer, keyboard shortcuts and a right-click menu give you all-sites and deep-clear modes too.
+
+No popups. No options page. No telemetry. No remote calls. ~150 lines of vanilla JS.
+
+Features:
+• Per-site cache clear by default — other sites' data stays untouched
+• Four escalation modes: current site, all sites, deep clear (cache + cookies + storage), reload all tabs
+• Keyboard shortcuts: Alt+Shift+R / A / D / W (customizable via chrome://extensions/shortcuts)
+• Post-reload toast with cache hit/miss telemetry so you can verify the wipe worked
+• Right-click context menu with all modes including "reopen in incognito"
+• Available in English and Spanish
+• Manifest V3, open source (GPL-3.0), zero dependencies
+```
+
+### Spanish (Espa&ntilde;ol)
+
+**Short description:**
+
+> Limpia la caché del sitio actual y recarga con un clic. Cuatro modos de teclado, cero telemetría, código abierto.
+
+**Full description:**
+
+```
+Una extensión mínima para navegadores Chromium que limpia la caché del sitio actual y fuerza una recarga — en un solo clic, sin configuración y sin datos saliendo de tu navegador.
+
+Cuando necesitas algo más fuerte, atajos de teclado y un menú contextual te dan modos de limpieza total y profunda.
+
+Sin popups. Sin página de opciones. Sin telemetría. Sin llamadas remotas. ~150 líneas de JavaScript vanilla.
+
+Características:
+• Limpieza de caché por sitio — los datos de otros sitios no se tocan
+• Cuatro modos: sitio actual, todos los sitios, limpieza profunda (caché + cookies + almacenamiento), recargar todas las pestañas
+• Atajos de teclado: Alt+Shift+R / A / D / W (personalizables en chrome://extensions/shortcuts)
+• Toast post-recarga con telemetría de caché para verificar que la limpieza funcionó
+• Menú contextual con todos los modos incluyendo "reabrir en incógnito"
+• Disponible en inglés y español
+• Manifest V3, código abierto (GPL-3.0), cero dependencias
+```
+
 ## Do NOT commit these
 
 The generated PNGs in this folder should **not** be committed — re-running the build any time is cheap and they'd bloat the repo. The `.gitignore` at the repo root excludes them. The HTML sources under [`src/`](src/) and the build script ARE committed.

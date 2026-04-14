@@ -134,6 +134,34 @@ Características:
 • Manifest V3, código abierto (GPL-3.0), cero dependencias
 ```
 
+## Certification notes (Edge / Chrome reviewer field)
+
+Paste this into the "Notes for certification" textarea when submitting. Reviewers see it; users don't.
+
+```
+No accounts, logins, or API keys needed. The extension works immediately after install.
+
+Testing steps:
+1. Pin the extension icon to the toolbar.
+2. Navigate to any website (e.g. https://example.com).
+3. Click the toolbar icon — the page reloads and a green toast appears in the top-right confirming the cache was cleared.
+4. Right-click the toolbar icon to see all six modes (per-site, all-sites, deep clear, reload all tabs in window, reload all tabs in all windows, reopen in incognito).
+5. Press Alt+Shift+R to test the keyboard shortcut (same as clicking the icon).
+6. Press Alt+Shift+D on a site where you're logged in — cookies and storage are cleared, the page reloads, and you're logged out.
+
+No hidden features, no remote services, no dependencies on other products. The entire extension is one service worker (~150 lines) that calls chrome.browsingData.remove and chrome.tabs.reload.
+
+Permissions justification:
+- browsingData: clear cache, Cache Storage, Service Workers, cookies, localStorage, IndexedDB
+- tabs: read the active tab's URL for per-site scoping + reload
+- contextMenus: right-click menu on the toolbar icon
+- scripting: inject the confirmation toast into the reloaded page
+- webRequest: read-only observation of post-reload requests for cache hit/miss telemetry in the toast
+- <all_urls>: required for per-site cache scoping to work on any origin
+
+Source code: https://github.com/isaiasgv/ClearCache
+```
+
 ## Do NOT commit these
 
 The generated PNGs in this folder should **not** be committed — re-running the build any time is cheap and they'd bloat the repo. The `.gitignore` at the repo root excludes them. The HTML sources under [`src/`](src/) and the build script ARE committed.

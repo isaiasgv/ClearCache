@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.0.4 — 2026-04-15
+
+### Features
+- feat: generate 64x64 extension logo for Opera listing
+
+### Install
+
+Download `clearcache-0.0.4.zip` below and load it as an unpacked extension.
+ Or wait for the Chrome Web Store / Edge Add-ons listing to update.
+
+**SHA-256:**
+
+```
+62dde4da56b133a46d32b0e7e15371dc3dccbf68984e11c4857a814a3f12165d
+```
+
+**Full changelog:** https://github.com/isaiasgv/ClearCache/compare/v0.0.3...v0.0.4
+
+
 ## v0.0.3 — 2026-04-15
 
 ### Features

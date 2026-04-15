@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.0.3 — 2026-04-15
+
+### Features
+- feat: generate 300x188 Opera promo tile
+
+### Install
+
+Download `clearcache-0.0.3.zip` below and load it as an unpacked extension.
+ Or wait for the Chrome Web Store / Edge Add-ons listing to update.
+
+**SHA-256:**
+
+```
+9ccfd86bedf8003462fb4c66a8df20a84200ad475b3a5bde2f024970aa80187b
+```
+
+**Full changelog:** https://github.com/isaiasgv/ClearCache/compare/v0.0.2...v0.0.3
+
+
 ## v0.0.2 — 2026-04-13
 
 ### Fixes

@@ -46,7 +46,7 @@ The browser already gives you several cache-clearing tools — and each is annoy
 Each release publishes two zips:
 
 - `clearcache-X.Y.Z.zip` — Chrome, Edge, Brave, Arc, Opera, Vivaldi, or any Chromium MV3 browser.
-- `clearcache-firefox-X.Y.Z.zip` — Firefox 109+.
+- `clearcache-firefox-X.Y.Z.zip` — Firefox 112+.
 
 #### Chromium (Chrome, Edge, Brave, Arc, Opera, Vivaldi)
 
@@ -58,7 +58,7 @@ Each release publishes two zips:
 6. Click **Load unpacked** and select the extracted folder.
 7. Pin the icon to your toolbar.
 
-#### Firefox
+#### Firefox 112+
 
 1. Download `clearcache-firefox-X.Y.Z.zip` from the same release.
 2. Extract the zip somewhere stable.
@@ -124,11 +124,11 @@ Every permission is justified. There are no "just in case" requests.
 | Google Chrome 114+      | Supported (recommended)                                                              |
 | Microsoft Edge 114+     | Supported                                                                            |
 | Brave, Arc, Opera, Vivaldi | Supported (Chromium-based, latest)                                                |
-| Mozilla Firefox 109+    | Supported (download the `clearcache-firefox-X.Y.Z.zip` artifact from each release)   |
+| Mozilla Firefox 112+    | Supported (download the `clearcache-firefox-X.Y.Z.zip` artifact from each release)   |
 | Safari                  | Not supported — different extension model                                            |
 
 - `minimum_chrome_version` is `114` on the Chromium build because the per-origin scoping in `chrome.browsingData.remove` requires it.
-- `strict_min_version` is `109.0` on the Firefox build because that is the first Firefox release with full MV3 + `browsingData` support.
+- `strict_min_version` is `112.0` on the Firefox build because that is when MV3 background scripts gained support for `"type": "module"` (ES module imports in the background event page).
 
 **Firefox caveats:**
 

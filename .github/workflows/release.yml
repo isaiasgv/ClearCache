@@ -317,7 +317,7 @@ jobs:
             echo "Two artifacts are published with every release:"
             echo ""
             echo "- \`${{ steps.version.outputs.zip_name }}\` — Chrome, Edge, Brave, Arc, Opera, Vivaldi (any Chromium MV3 browser)."
-            echo "- \`${{ steps.version.outputs.zip_name_firefox }}\` — Firefox 109+."
+            echo "- \`${{ steps.version.outputs.zip_name_firefox }}\` — Firefox 112+."
             echo ""
             echo "Chromium: open \`chrome://extensions\`, enable Developer mode, click \"Load unpacked\", select the extracted folder."
             echo ""

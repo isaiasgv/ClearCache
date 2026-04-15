@@ -8,7 +8,7 @@ ClearCache is a Manifest V3 browser extension (Chromium and Firefox) that clears
 
 - [background.js](background.js) — the entire runtime: action click + commands + context menus, all routed through one `clearAndReload(tab, mode)` function. Modes: `"origin"` (default, current site only), `"all"` (every site), `"deep"` (current site + cookies/storage). Plus `clearOriginAndReloadWindow` for the multi-tab variant. `IS_FIREFOX` + `siteFilter()` route the per-site filter between Chrome's `origins` and Firefox's `hostnames`.
 - [manifest.json](manifest.json) — Chromium MV3 manifest (service worker, `minimum_chrome_version: 114`).
-- [manifest.firefox.json](manifest.firefox.json) — Firefox MV3 manifest (event page via `background.scripts`, `browser_specific_settings.gecko`, `strict_min_version: 109.0`). The release workflow ships this file renamed to `manifest.json` inside the Firefox zip.
+- [manifest.firefox.json](manifest.firefox.json) — Firefox MV3 manifest (event page via `background.scripts`, `browser_specific_settings.gecko`, `strict_min_version: 112.0`, `data_collection_permissions: { required: ["none"] }` per AMO policy). The release workflow ships this file renamed to `manifest.json` inside the Firefox zip.
 - [_locales/en/messages.json](_locales/en/messages.json) — all user-facing strings. Add new locales by copying this folder.
 - [icons/](icons/) — toolbar icons at 16/32/48/128 px.
 

@@ -1,6 +1,25 @@
 # Changelog
 
 
+## v0.0.5 — 2026-04-15
+
+### Features
+- feat: add Firefox MV3 support
+
+### Install
+
+Download `clearcache-0.0.5.zip` below and load it as an unpacked extension.
+ Or wait for the Chrome Web Store / Edge Add-ons listing to update.
+
+**SHA-256:**
+
+```
+356832f3c8922a50dd1619c5b740e99254d1d52d12dd9e408987942ed66499fc
+```
+
+**Full changelog:** https://github.com/isaiasgv/ClearCache/compare/v0.0.4...v0.0.5
+
+
 ## v0.0.4 — 2026-04-15
 
 ### Features

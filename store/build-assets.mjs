@@ -37,7 +37,8 @@ const ASSETS = [
   { src: "icon-square.html", out: "landing/favicon.png",                 w: 128,  h: 128  },
   { src: "icon-square.html", out: "landing/logo.png",                    w: 300,  h: 300  },
 
-  // Chrome Web Store / Edge Add-ons listing assets
+  // Chrome Web Store / Edge Add-ons / Opera Add-ons listing assets
+  { src: "icon-square.html", out: "store/extension-logo-64x64.png",      w: 64,   h: 64   },
   { src: "icon-square.html", out: "store/extension-logo-300x300.png",    w: 300,  h: 300  },
   { src: "small-tile.html",  out: "store/small-promo-tile-440x280.png",  w: 440,  h: 280  },
   { src: "large-tile.html",  out: "store/large-promo-tile-1400x560.png", w: 1400, h: 560  },

@@ -18,6 +18,7 @@ The script auto-detects an installed Chrome, Edge, Brave, or Chromium and uses i
 
 | Generated file                          | Dimensions | Used by          |
 | --------------------------------------- | ---------- | ---------------- |
+| `extension-logo-64x64.png`              | 64×64      | Opera Add-ons (small icon), generic favicon-sized listing slots |
 | `extension-logo-300x300.png`            | 300×300    | Edge Add-ons (required), Chrome Web Store (icon field) |
 | `small-promo-tile-440x280.png`          | 440×280    | Chrome Web Store (required), Edge Add-ons (small promo tile) |
 | `large-promo-tile-1400x560.png`         | 1400×560   | Chrome Web Store (marquee, optional — only if Google features the listing), Edge Add-ons (large promo tile, optional) |

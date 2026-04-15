@@ -44,6 +44,38 @@ jobs:
             exit 1
           fi
 
+      - name: manifest.firefox.json is valid JSON
+        run: jq empty manifest.firefox.json
+
+      - name: manifest.firefox.json has required fields
+        run: |
+          for field in manifest_version name version description permissions background action icons browser_specific_settings; do
+            if ! jq -e ".${field}" manifest.firefox.json > /dev/null; then
+              echo "::error::manifest.firefox.json is missing required field: ${field}"
+              exit 1
+            fi
+          done
+
+      - name: manifest.firefox.json uses background.scripts (not service_worker)
+        run: |
+          if jq -e '.background.service_worker' manifest.firefox.json > /dev/null 2>&1; then
+            echo "::error::manifest.firefox.json must use background.scripts, not service_worker (Firefox does not support MV3 service workers)"
+            exit 1
+          fi
+          if ! jq -e '.background.scripts' manifest.firefox.json > /dev/null; then
+            echo "::error::manifest.firefox.json must declare background.scripts"
+            exit 1
+          fi
+
+      - name: Chromium and Firefox manifests share the same version
+        run: |
+          V_CHROME=$(jq -r '.version' manifest.json)
+          V_FIREFOX=$(jq -r '.version' manifest.firefox.json)
+          if [ "$V_CHROME" != "$V_FIREFOX" ]; then
+            echo "::error::Version mismatch: manifest.json=${V_CHROME}, manifest.firefox.json=${V_FIREFOX}"
+            exit 1
+          fi
+
       - name: All required icons exist
         run: |
           for size in 16 32 48 128; do

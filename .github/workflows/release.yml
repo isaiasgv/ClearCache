@@ -62,8 +62,9 @@ jobs:
             echo "Release channel: STABLE (main branch)"
           fi
 
-      - name: Validate manifest.json
+      - name: Validate manifests (Chromium + Firefox)
         run: |
+          set -euo pipefail
           jq empty manifest.json
           for field in manifest_version name version description permissions background action icons; do
             if ! jq -e ".${field}" manifest.json > /dev/null; then
@@ -71,6 +72,22 @@ jobs:
               exit 1
             fi
           done
+
+          jq empty manifest.firefox.json
+          for field in manifest_version name version description permissions background action icons browser_specific_settings; do
+            if ! jq -e ".${field}" manifest.firefox.json > /dev/null; then
+              echo "::error::manifest.firefox.json is missing required field: ${field}"
+              exit 1
+            fi
+          done
+
+          V_CHROME=$(jq -r '.version' manifest.json)
+          V_FIREFOX=$(jq -r '.version' manifest.firefox.json)
+          if [ "$V_CHROME" != "$V_FIREFOX" ]; then
+            echo "::error::Version mismatch: manifest.json=${V_CHROME}, manifest.firefox.json=${V_FIREFOX}"
+            exit 1
+          fi
+
           for size in 16 32 48 128; do
             test -f "icons/icon${size}.png" || { echo "::error::Missing icons/icon${size}.png"; exit 1; }
           done
@@ -172,10 +189,12 @@ jobs:
             TAG="v${BASE}-rc.${RC_N}"
             MANIFEST_VERSION="${BASE}.${RC_N}"   # 4-digit form Chrome accepts
             ZIP_NAME="clearcache-${BASE}-rc.${RC_N}.zip"
+            ZIP_NAME_FIREFOX="clearcache-firefox-${BASE}-rc.${RC_N}.zip"
           else
             TAG="v${BASE}"
             MANIFEST_VERSION="${BASE}"
             ZIP_NAME="clearcache-${BASE}.zip"
+            ZIP_NAME_FIREFOX="clearcache-firefox-${BASE}.zip"
           fi
 
           echo "Channel: ${{ steps.channel.outputs.kind }}"
@@ -183,11 +202,14 @@ jobs:
           echo "Next semver base:         $BASE"
           echo "Tag:                      $TAG"
           echo "Zip manifest version:     $MANIFEST_VERSION"
+          echo "Chromium zip:             $ZIP_NAME"
+          echo "Firefox zip:              $ZIP_NAME_FIREFOX"
 
           echo "base=$BASE"                         >> "$GITHUB_OUTPUT"
           echo "tag=$TAG"                           >> "$GITHUB_OUTPUT"
           echo "manifest_version=$MANIFEST_VERSION" >> "$GITHUB_OUTPUT"
           echo "zip_name=$ZIP_NAME"                 >> "$GITHUB_OUTPUT"
+          echo "zip_name_firefox=$ZIP_NAME_FIREFOX" >> "$GITHUB_OUTPUT"
 
       - name: Refuse duplicate tag
         if: steps.bump.outputs.bump != 'none'
@@ -197,36 +219,65 @@ jobs:
             exit 1
           fi
 
-      - name: Stage manifest version (in working copy only — committed only on stable)
+      - name: Stage manifest versions (in working copy — committed only on stable)
         if: steps.bump.outputs.bump != 'none'
         run: |
           set -euo pipefail
-          jq --arg v "${{ steps.version.outputs.manifest_version }}" '.version = $v' manifest.json > manifest.json.tmp
+          V="${{ steps.version.outputs.manifest_version }}"
+          jq --arg v "$V" '.version = $v' manifest.json > manifest.json.tmp
           mv manifest.json.tmp manifest.json
-          jq -r '.version' manifest.json
+          jq --arg v "$V" '.version = $v' manifest.firefox.json > manifest.firefox.json.tmp
+          mv manifest.firefox.json.tmp manifest.firefox.json
+          echo "manifest.json:         $(jq -r '.version' manifest.json)"
+          echo "manifest.firefox.json: $(jq -r '.version' manifest.firefox.json)"
 
-      - name: Build extension zip
+      - name: Build extension zips (Chromium + Firefox)
         id: build
         if: steps.bump.outputs.bump != 'none'
         run: |
           set -euo pipefail
-          STAGING="$(mktemp -d)"
-          cp manifest.json background.js LICENSE "$STAGING/"
-          cp -r icons "$STAGING/"
-          if [ -d _locales ]; then cp -r _locales "$STAGING/"; fi
-          if [ -d lib ]; then cp -r lib "$STAGING/"; fi
-          (cd "$STAGING" && zip -r "$GITHUB_WORKSPACE/${{ steps.version.outputs.zip_name }}" .)
-          unzip -l "${{ steps.version.outputs.zip_name }}"
-          echo "zip_path=${GITHUB_WORKSPACE}/${{ steps.version.outputs.zip_name }}" >> "$GITHUB_OUTPUT"
+          ZIP_CHROME="${{ steps.version.outputs.zip_name }}"
+          ZIP_FIREFOX="${{ steps.version.outputs.zip_name_firefox }}"
 
-      - name: Compute SHA-256 checksum
+          # --- Chromium zip ---
+          STAGING_CHROME="$(mktemp -d)"
+          cp manifest.json background.js LICENSE "$STAGING_CHROME/"
+          cp -r icons "$STAGING_CHROME/"
+          if [ -d _locales ]; then cp -r _locales "$STAGING_CHROME/"; fi
+          if [ -d lib ]; then cp -r lib "$STAGING_CHROME/"; fi
+          (cd "$STAGING_CHROME" && zip -r "$GITHUB_WORKSPACE/${ZIP_CHROME}" .)
+          echo "--- ${ZIP_CHROME} ---"
+          unzip -l "${ZIP_CHROME}"
+
+          # --- Firefox zip (manifest.firefox.json is renamed to manifest.json inside the zip) ---
+          STAGING_FIREFOX="$(mktemp -d)"
+          cp manifest.firefox.json "$STAGING_FIREFOX/manifest.json"
+          cp background.js LICENSE "$STAGING_FIREFOX/"
+          cp -r icons "$STAGING_FIREFOX/"
+          if [ -d _locales ]; then cp -r _locales "$STAGING_FIREFOX/"; fi
+          if [ -d lib ]; then cp -r lib "$STAGING_FIREFOX/"; fi
+          (cd "$STAGING_FIREFOX" && zip -r "$GITHUB_WORKSPACE/${ZIP_FIREFOX}" .)
+          echo "--- ${ZIP_FIREFOX} ---"
+          unzip -l "${ZIP_FIREFOX}"
+
+          echo "zip_path=${GITHUB_WORKSPACE}/${ZIP_CHROME}"                 >> "$GITHUB_OUTPUT"
+          echo "zip_path_firefox=${GITHUB_WORKSPACE}/${ZIP_FIREFOX}"        >> "$GITHUB_OUTPUT"
+
+      - name: Compute SHA-256 checksums (both zips)
         id: checksum
         if: steps.bump.outputs.bump != 'none'
         run: |
-          ZIP="${{ steps.build.outputs.zip_path }}"
-          SHA=$(sha256sum "$ZIP" | awk '{print $1}')
-          echo "sha256=${SHA}" >> "$GITHUB_OUTPUT"
-          echo "${SHA}  ${{ steps.version.outputs.zip_name }}" > "${ZIP}.sha256"
+          set -euo pipefail
+          ZIP_CHROME="${{ steps.build.outputs.zip_path }}"
+          ZIP_FIREFOX="${{ steps.build.outputs.zip_path_firefox }}"
+
+          SHA_CHROME=$(sha256sum "$ZIP_CHROME" | awk '{print $1}')
+          echo "${SHA_CHROME}  ${{ steps.version.outputs.zip_name }}" > "${ZIP_CHROME}.sha256"
+          echo "sha256=${SHA_CHROME}"                 >> "$GITHUB_OUTPUT"
+
+          SHA_FIREFOX=$(sha256sum "$ZIP_FIREFOX" | awk '{print $1}')
+          echo "${SHA_FIREFOX}  ${{ steps.version.outputs.zip_name_firefox }}" > "${ZIP_FIREFOX}.sha256"
+          echo "sha256_firefox=${SHA_FIREFOX}"        >> "$GITHUB_OUTPUT"
 
       - name: Generate release notes
         id: notes
@@ -263,15 +314,24 @@ jobs:
 
             echo "### Install"
             echo ""
-            echo "Download \`${{ steps.version.outputs.zip_name }}\` below and load it as an unpacked extension."
+            echo "Two artifacts are published with every release:"
+            echo ""
+            echo "- \`${{ steps.version.outputs.zip_name }}\` — Chrome, Edge, Brave, Arc, Opera, Vivaldi (any Chromium MV3 browser)."
+            echo "- \`${{ steps.version.outputs.zip_name_firefox }}\` — Firefox 109+."
+            echo ""
+            echo "Chromium: open \`chrome://extensions\`, enable Developer mode, click \"Load unpacked\", select the extracted folder."
+            echo ""
+            echo "Firefox: open \`about:debugging#/runtime/this-firefox\`, click \"Load Temporary Add-on\", select any file inside the extracted folder. Temporary installs are removed on browser restart — use the signed AMO build for permanent install."
             if [ "${{ steps.channel.outputs.kind }}" != "prerelease" ]; then
-              echo " Or wait for the Chrome Web Store / Edge Add-ons listing to update."
+              echo ""
+              echo "Or wait for the Chrome Web Store / Edge Add-ons / Firefox Add-ons listing to update."
             fi
             echo ""
             echo "**SHA-256:**"
             echo ""
             echo '```'
-            echo "${{ steps.checksum.outputs.sha256 }}"
+            echo "${{ steps.checksum.outputs.sha256 }}         ${{ steps.version.outputs.zip_name }}"
+            echo "${{ steps.checksum.outputs.sha256_firefox }}  ${{ steps.version.outputs.zip_name_firefox }}"
             echo '```'
 
             if [ -n "$LAST_TAG" ]; then
@@ -326,7 +386,7 @@ jobs:
         if: steps.bump.outputs.bump != 'none' && steps.channel.outputs.kind == 'stable'
         run: |
           set -euo pipefail
-          git add manifest.json CHANGELOG.md
+          git add manifest.json manifest.firefox.json CHANGELOG.md
           git commit -m "chore(release): ${{ steps.version.outputs.tag }} [skip ci]"
           git push origin HEAD:main
 
@@ -355,3 +415,5 @@ jobs:
           files: |
             ${{ steps.build.outputs.zip_path }}
             ${{ steps.build.outputs.zip_path }}.sha256
+            ${{ steps.build.outputs.zip_path_firefox }}
+            ${{ steps.build.outputs.zip_path_firefox }}.sha256

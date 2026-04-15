@@ -130,7 +130,12 @@ Every permission is justified. There are no "just in case" requests.
 - `minimum_chrome_version` is `114` on the Chromium build because the per-origin scoping in `chrome.browsingData.remove` requires it.
 - `strict_min_version` is `109.0` on the Firefox build because that is the first Firefox release with full MV3 + `browsingData` support.
 
-**Firefox caveat:** Firefox's `browsingData.remove` accepts a `hostnames` array (no port) rather than Chrome's `origins` array (full origin). As a consequence, clearing `http://localhost:3000` also clears cache for any other port on `localhost`. This is a Firefox API limitation, not a ClearCache bug.
+**Firefox caveats:**
+
+- Firefox's `browsingData.remove` accepts a `hostnames` array (no port) rather than Chrome's `origins` array (full origin). As a consequence, clearing `http://localhost:3000` also clears cache for any other port on `localhost`.
+- Firefox's `browsingData.remove` does not support the `cacheStorage` or `serviceWorkers` data types. ClearCache strips those keys when running on Firefox so the call succeeds, but on sites that use a Service Worker for offline caching you may still see cached content after a default clear. Use deep-clear mode (`Alt+Shift+D`) to also wipe cookies / localStorage / IndexedDB — which unregisters enough Service Worker state to fully bust the cache on most sites.
+
+Both are Firefox API limitations, not ClearCache bugs.
 
 ---
 

@@ -10,6 +10,7 @@
 // in browsingData.remove — the two APIs are otherwise compatible.
 
 import { originOf, hostnameOf } from "./lib/origin.js";
+import { dataTypesFor } from "./lib/browser-compat.js";
 
 // browser.runtime.getBrowserInfo is Firefox-only. Chrome/Edge/etc. do not expose it.
 const IS_FIREFOX = typeof globalThis.browser?.runtime?.getBrowserInfo === "function";
@@ -221,7 +222,7 @@ async function clearAndReload(tab, mode) {
 
   let ok = true;
   try {
-    await chrome.browsingData.remove(filter, dataTypes);
+    await chrome.browsingData.remove(filter, dataTypesFor(IS_FIREFOX, dataTypes));
   } catch (err) {
     console.error("[ClearCache] Clear failed:", err);
     ok = false;
@@ -256,7 +257,7 @@ async function clearOriginAndReloadTabs(tab, scope) {
 
   let ok = true;
   try {
-    await chrome.browsingData.remove(siteFilter(origin, tab?.url), DATA_BASE);
+    await chrome.browsingData.remove(siteFilter(origin, tab?.url), dataTypesFor(IS_FIREFOX, DATA_BASE));
   } catch (err) {
     console.error("[ClearCache] Clear failed:", err);
     ok = false;
@@ -293,7 +294,7 @@ async function deepClearAndReopenIncognito(tab) {
 
   let ok = true;
   try {
-    await chrome.browsingData.remove(siteFilter(origin, tab?.url), DATA_DEEP);
+    await chrome.browsingData.remove(siteFilter(origin, tab?.url), dataTypesFor(IS_FIREFOX, DATA_DEEP));
   } catch (err) {
     console.error("[ClearCache] Deep clear failed:", err);
     ok = false;

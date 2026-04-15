@@ -4,14 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ClearCache — one-click per-site cache clear &amp; hard reload</title>
-  <meta name="description" content="A minimal Chromium browser extension that clears the cache for the current site and hard-reloads it. No popups, no telemetry, no remote calls. Open source under GPL-3.0." />
+  <meta name="description" content="A minimal browser extension for Chrome, Edge, and Firefox that clears the cache for the current site and hard-reloads it. No popups, no telemetry, no remote calls. Open source under GPL-3.0." />
   <meta name="theme-color" content="#0a8a3a" />
   <link rel="icon" type="image/png" href="favicon.png" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="ClearCache — one-click per-site cache clear &amp; hard reload" />
-  <meta property="og:description" content="Minimal Chromium extension. Per-site cache clear by default. Keyboard shortcuts, right-click menu, post-reload toast confirmation. Zero telemetry, GPL-3.0." />
+  <meta property="og:description" content="Minimal extension for Chrome, Edge, and Firefox. Per-site cache clear by default. Keyboard shortcuts, right-click menu, post-reload toast confirmation. Zero telemetry, GPL-3.0." />
   <meta property="og:image" content="logo.png" />
 
   <style>
@@ -275,7 +275,8 @@
       <div class="pills">
         <span class="pill">Manifest V3</span>
         <span class="pill">Chrome 114+</span>
-        <span class="pill">Edge · Brave · Arc · Opera</span>
+        <span class="pill">Edge · Brave · Arc · Opera · Vivaldi</span>
+        <span class="pill">Firefox 109+</span>
         <span class="pill">GPL-3.0</span>
         <span class="pill">No telemetry</span>
       </div>
@@ -402,21 +403,35 @@
 
     <section>
       <h2>Install</h2>
-      <p class="lede">The Chrome Web Store and Edge Add-ons listings are coming soon. For now, side-load the latest GitHub Release.</p>
+      <p class="lede">Store listings are coming soon. For now, side-load the latest GitHub Release. Every release publishes two zips — one for Chromium browsers, one for Firefox.</p>
       <div class="install">
+        <h3 style="margin: 18px 0 8px; font-size: 1.05rem;">Chromium (Chrome, Edge, Brave, Arc, Opera, Vivaldi)</h3>
         <ol>
           <li>Download <code>clearcache-X.Y.Z.zip</code> from the <a href="https://github.com/isaiasgv/ClearCache/releases/latest" rel="noopener">latest release</a>.</li>
           <li>Verify the SHA-256 against the <code>.sha256</code> file (optional but recommended).</li>
           <li>Extract the zip somewhere stable — the browser reads from this folder on every launch.</li>
-          <li>Open <code>chrome://extensions</code> (or <code>edge://extensions</code>).</li>
+          <li>Open <code>chrome://extensions</code> (or <code>edge://extensions</code>, <code>brave://extensions</code>, etc.).</li>
           <li>Toggle <strong>Developer mode</strong> on (top-right corner).</li>
           <li>Click <strong>Load unpacked</strong> and select the extracted folder.</li>
           <li>Pin the icon to your toolbar.</li>
         </ol>
+
+        <h3 style="margin: 24px 0 8px; font-size: 1.05rem;">Firefox 109+</h3>
+        <ol>
+          <li>Download <code>clearcache-firefox-X.Y.Z.zip</code> from the same release.</li>
+          <li>Extract the zip somewhere stable.</li>
+          <li>Open <code>about:debugging#/runtime/this-firefox</code>.</li>
+          <li>Click <strong>Load Temporary Add-on</strong> and select any file inside the extracted folder.</li>
+          <li>Pin the icon to your toolbar.</li>
+        </ol>
+        <div class="note">
+          Firefox temporary add-ons are removed on browser restart. A permanent install will be available once the signed build lands on <a href="https://addons.mozilla.org/" rel="noopener">addons.mozilla.org</a>.
+        </div>
+
         <div class="note">
           Or build from source — there is no build step:
           <pre>git clone https://github.com/isaiasgv/ClearCache.git</pre>
-          Then load the cloned folder via <strong>Load unpacked</strong>.
+          Then load the cloned folder via <strong>Load unpacked</strong> (Chromium) or <strong>Load Temporary Add-on</strong> (Firefox).
         </div>
       </div>
     </section>
@@ -445,7 +460,7 @@
           <tr><th>Permission</th><th>Why it's needed</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>browsingData</code></td><td>Calling <code>chrome.browsingData.remove</code> to clear cache, Cache Storage, Service Workers, and (deep mode) cookies / localStorage / IndexedDB.</td></tr>
+          <tr><td><code>browsingData</code></td><td>Calling <code>chrome.browsingData.remove</code> (or <code>browser.browsingData.remove</code> on Firefox) to clear cache, Cache Storage, Service Workers, and (deep mode) cookies / localStorage / IndexedDB.</td></tr>
           <tr><td><code>tabs</code></td><td>Reading the active tab's URL to scope the clear, and reloading it.</td></tr>
           <tr><td><code>contextMenus</code></td><td>Adding the right-click entries on the toolbar icon.</td></tr>
           <tr><td><code>scripting</code></td><td>Injecting the post-reload toast into the page. Toast injection is the only use.</td></tr>

@@ -19,7 +19,7 @@
 
 ---
 
-A minimal, zero-dependency Chromium browser extension that **clears the cache for the current site and hard-reloads it** — in one click, with no settings to configure and no data leaving your browser.
+A minimal, zero-dependency browser extension for **Chrome, Edge, and Firefox** that **clears the cache for the current site and hard-reloads it** — in one click, with no settings to configure and no data leaving your browser.
 
 When you need a bigger hammer, keyboard shortcuts and a right-click menu give you all-sites and deep-clear modes too.
 
@@ -43,15 +43,30 @@ The browser already gives you several cache-clearing tools — and each is annoy
 
 ### Side-load from a GitHub Release (recommended)
 
-1. Download the latest `clearcache-X.Y.Z.zip` from the [Releases page](https://github.com/isaiasgv/ClearCache/releases/latest).
+Each release publishes two zips:
+
+- `clearcache-X.Y.Z.zip` — Chrome, Edge, Brave, Arc, Opera, Vivaldi, or any Chromium MV3 browser.
+- `clearcache-firefox-X.Y.Z.zip` — Firefox 109+.
+
+#### Chromium (Chrome, Edge, Brave, Arc, Opera, Vivaldi)
+
+1. Download `clearcache-X.Y.Z.zip` from the [Releases page](https://github.com/isaiasgv/ClearCache/releases/latest).
 2. Verify the SHA-256 against the `.sha256` file attached to the same release (optional but recommended).
-3. Extract the zip somewhere stable (don't delete the folder — Chrome reads from it on every browser launch).
-4. Open your browser's extensions page:
-   - Chrome / Brave / Arc / Opera: `chrome://extensions`
-   - Edge: `edge://extensions`
-5. Toggle **Developer mode** on (top-right corner).
+3. Extract the zip somewhere stable (don't delete the folder — the browser reads from it on every launch).
+4. Open your browser's extensions page (`chrome://extensions`, `edge://extensions`, `brave://extensions`, etc.).
+5. Toggle **Developer mode** on.
 6. Click **Load unpacked** and select the extracted folder.
 7. Pin the icon to your toolbar.
+
+#### Firefox
+
+1. Download `clearcache-firefox-X.Y.Z.zip` from the same release.
+2. Extract the zip somewhere stable.
+3. Open `about:debugging#/runtime/this-firefox`.
+4. Click **Load Temporary Add-on** and select any file inside the extracted folder (e.g. `manifest.json`).
+5. Pin the icon to your toolbar.
+
+> **Note:** Firefox temporary add-ons are removed when the browser restarts. For a permanent install, wait for the signed build on [addons.mozilla.org](https://addons.mozilla.org/) once the listing is approved, or sign the zip yourself via [web-ext sign](https://extensionworkshop.com/documentation/publish/signing-and-distribution-overview/).
 
 ### Build from source
 
@@ -104,15 +119,18 @@ Every permission is justified. There are no "just in case" requests.
 
 ## Browser compatibility
 
-| Browser                 | Status                                                       |
-| ----------------------- | ------------------------------------------------------------ |
-| Google Chrome 114+      | Supported (recommended)                                      |
-| Microsoft Edge 114+     | Supported                                                    |
-| Brave, Arc, Opera       | Supported (Chromium-based, latest)                           |
-| Firefox                 | Not supported — `browsingData` API surface differs           |
-| Safari                  | Not supported — different extension model                    |
+| Browser                 | Status                                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| Google Chrome 114+      | Supported (recommended)                                                              |
+| Microsoft Edge 114+     | Supported                                                                            |
+| Brave, Arc, Opera, Vivaldi | Supported (Chromium-based, latest)                                                |
+| Mozilla Firefox 109+    | Supported (download the `clearcache-firefox-X.Y.Z.zip` artifact from each release)   |
+| Safari                  | Not supported — different extension model                                            |
 
-`minimum_chrome_version` is `114` because the per-origin scoping in `chrome.browsingData.remove` requires it.
+- `minimum_chrome_version` is `114` on the Chromium build because the per-origin scoping in `chrome.browsingData.remove` requires it.
+- `strict_min_version` is `109.0` on the Firefox build because that is the first Firefox release with full MV3 + `browsingData` support.
+
+**Firefox caveat:** Firefox's `browsingData.remove` accepts a `hostnames` array (no port) rather than Chrome's `origins` array (full origin). As a consequence, clearing `http://localhost:3000` also clears cache for any other port on `localhost`. This is a Firefox API limitation, not a ClearCache bug.
 
 ---
 
@@ -122,8 +140,10 @@ Every permission is justified. There are no "just in case" requests.
 
 ```
 ClearCache/
-├── background.js              # Service worker — the entire runtime (~150 lines)
-├── manifest.json              # Manifest V3 declaration
+├── background.js              # Service worker / event page — the entire runtime (~350 lines)
+├── manifest.json              # Chromium MV3 manifest (service_worker)
+├── manifest.firefox.json      # Firefox MV3 manifest (scripts + browser_specific_settings)
+├── lib/origin.js              # Pure helpers (originOf, hostnameOf)
 ├── icons/                     # Toolbar icons (16, 32, 48, 128 px)
 ├── _locales/en/messages.json  # i18n strings (drop in _locales/<lang>/ to add a locale)
 ├── LICENSE                    # GPL-3.0
@@ -135,7 +155,7 @@ ClearCache/
 ├── docs/
 │   ├── privacy.md             # Privacy policy
 │   └── screenshots/           # README-embedded screenshots
-└── store/                     # Listing assets for Chrome Web Store / Edge Add-ons
+└── store/                     # Listing assets for Chrome Web Store / Edge Add-ons / AMO / Opera
 ```
 
 ### Branching model
@@ -195,12 +215,20 @@ The highest level signaled across all commits in the range wins.
 
 ### Store submission (manual)
 
-After the GitHub Release for a stable `vX.Y.Z` appears, download the zip and upload it to:
+After the GitHub Release for a stable `vX.Y.Z` appears, download the matching zip and upload it to:
 
-- [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-- [Microsoft Edge Add-ons Partner Center](https://partner.microsoft.com/dashboard/microsoftedge)
+| Store | Zip | Fee |
+| ----- | --- | --- |
+| [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole) | `clearcache-X.Y.Z.zip` | $5 one-time registration |
+| [Microsoft Edge Add-ons Partner Center](https://partner.microsoft.com/dashboard/microsoftedge) | `clearcache-X.Y.Z.zip` | Free |
+| [Opera Add-ons Developer Dashboard](https://addons.opera.com/developer/) | `clearcache-X.Y.Z.zip` | Free |
+| [Firefox Add-ons (AMO)](https://addons.mozilla.org/developers/) | `clearcache-firefox-X.Y.Z.zip` | Free |
 
-Submission stays manual on purpose — both stores require a human to confirm listing copy and permission justifications.
+Submission stays manual on purpose — every store requires a human to confirm listing copy and permission justifications. Canonical answers for each store's privacy / justification forms live in [store/](store/):
+
+- [store/chrome-webstore-answers.md](store/chrome-webstore-answers.md)
+- [store/edge-addons-answers.md](store/edge-addons-answers.md)
+- [store/opera-addons-answers.md](store/opera-addons-answers.md)
 
 ## Contributing
 

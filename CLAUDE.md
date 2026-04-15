@@ -4,10 +4,11 @@ Guidance for Claude (and any other AI coding assistant) when working in this rep
 
 ## Project summary
 
-ClearCache is a Manifest V3 browser extension that clears browsing cache (HTTP cache, Cache Storage, Service Workers, optionally cookies/storage) and hard-reloads tabs. The codebase is intentionally tiny:
+ClearCache is a Manifest V3 browser extension (Chromium and Firefox) that clears browsing cache (HTTP cache, Cache Storage, Service Workers, optionally cookies/storage) and hard-reloads tabs. The codebase is intentionally tiny:
 
-- [background.js](background.js) — the entire runtime: action click + commands + context menus, all routed through one `clearAndReload(tab, mode)` function. Modes: `"origin"` (default, current site only), `"all"` (every site), `"deep"` (current site + cookies/storage). Plus `clearOriginAndReloadWindow` for the multi-tab variant.
-- [manifest.json](manifest.json) — MV3 manifest, permissions, icons, keyboard `commands`, i18n placeholders (`__MSG_*__`).
+- [background.js](background.js) — the entire runtime: action click + commands + context menus, all routed through one `clearAndReload(tab, mode)` function. Modes: `"origin"` (default, current site only), `"all"` (every site), `"deep"` (current site + cookies/storage). Plus `clearOriginAndReloadWindow` for the multi-tab variant. `IS_FIREFOX` + `siteFilter()` route the per-site filter between Chrome's `origins` and Firefox's `hostnames`.
+- [manifest.json](manifest.json) — Chromium MV3 manifest (service worker, `minimum_chrome_version: 114`).
+- [manifest.firefox.json](manifest.firefox.json) — Firefox MV3 manifest (event page via `background.scripts`, `browser_specific_settings.gecko`, `strict_min_version: 109.0`). The release workflow ships this file renamed to `manifest.json` inside the Firefox zip.
 - [_locales/en/messages.json](_locales/en/messages.json) — all user-facing strings. Add new locales by copying this folder.
 - [icons/](icons/) — toolbar icons at 16/32/48/128 px.
 
@@ -43,7 +44,7 @@ When committing on the user's behalf, use only the user's configured git identit
 
 ### 3. Manifest V3 only
 
-Do not propose Manifest V2 patterns (background pages, `chrome.extension.*`, persistent background scripts). All work targets MV3 service workers.
+Do not propose Manifest V2 patterns (background pages, `chrome.extension.*`, persistent background scripts). All work targets MV3 — service workers on Chromium, event pages on Firefox (Firefox does not yet support MV3 service workers, which is why `manifest.firefox.json` uses `background.scripts`).
 
 ### 4. Branching and versioning are automated — don't fight them
 
@@ -73,6 +74,6 @@ Do not, without an explicit request:
 
 - Add a popup, options page, or settings persistence.
 - Add per-site scoping or a domain allowlist.
-- Add Firefox support (the `browsingData` surface differs and would require a fork of `background.js`).
+- Add Safari support (different extension model, requires an Xcode wrapper, and imposes a $99/year Apple Developer Program fee).
 - Add a build pipeline, TypeScript, linting, or CI.
 - Refactor the single listener into modules.

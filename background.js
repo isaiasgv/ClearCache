@@ -6,8 +6,27 @@
 //   "deep"   - clear cache + cookies + localStorage + indexedDB for the current site
 //
 // Per-origin scoping requires Chrome 114+ (see manifest.minimum_chrome_version).
+// Firefox uses the same code path but swaps `origins: [...]` for `hostnames: [...]`
+// in browsingData.remove — the two APIs are otherwise compatible.
 
-import { originOf } from "./lib/origin.js";
+import { originOf, hostnameOf } from "./lib/origin.js";
+
+// browser.runtime.getBrowserInfo is Firefox-only. Chrome/Edge/etc. do not expose it.
+const IS_FIREFOX = typeof globalThis.browser?.runtime?.getBrowserInfo === "function";
+
+// Build the per-site filter for browsingData.remove. Chrome accepts `origins`
+// (full protocol+host+port); Firefox accepts `hostnames` (bare host, no port).
+// If there's no usable origin (chrome://, file://, about:, etc.) callers should
+// already have promoted the mode to "all" — but we still fall back to a global
+// wipe here as a safety net.
+function siteFilter(origin, url) {
+  if (!origin) return { since: 0 };
+  if (IS_FIREFOX) {
+    const hostname = hostnameOf(url);
+    return hostname ? { since: 0, hostnames: [hostname] } : { since: 0 };
+  }
+  return { since: 0, origins: [origin] };
+}
 
 const DATA_BASE = {
   cache: true,
@@ -198,7 +217,7 @@ async function clearAndReload(tab, mode) {
   const dataTypes = effectiveMode === "deep" ? DATA_DEEP : DATA_BASE;
   const filter = effectiveMode === "all"
     ? { since: 0 }
-    : { since: 0, origins: [origin] };
+    : siteFilter(origin, tab?.url);
 
   let ok = true;
   try {
@@ -237,10 +256,7 @@ async function clearOriginAndReloadTabs(tab, scope) {
 
   let ok = true;
   try {
-    await chrome.browsingData.remove(
-      origin ? { since: 0, origins: [origin] } : { since: 0 },
-      DATA_BASE
-    );
+    await chrome.browsingData.remove(siteFilter(origin, tab?.url), DATA_BASE);
   } catch (err) {
     console.error("[ClearCache] Clear failed:", err);
     ok = false;
@@ -277,10 +293,7 @@ async function deepClearAndReopenIncognito(tab) {
 
   let ok = true;
   try {
-    await chrome.browsingData.remove(
-      origin ? { since: 0, origins: [origin] } : { since: 0 },
-      DATA_DEEP
-    );
+    await chrome.browsingData.remove(siteFilter(origin, tab?.url), DATA_DEEP);
   } catch (err) {
     console.error("[ClearCache] Deep clear failed:", err);
     ok = false;
@@ -328,16 +341,17 @@ const MENU_ITEMS = [
   { id: "clearcache-incognito",     messageId: "menuReopenIncognitoTitle", handler: (tab) => deepClearAndReopenIncognito(tab) }
 ];
 
-function installContextMenus() {
-  chrome.contextMenus.removeAll(() => {
-    for (const item of MENU_ITEMS) {
-      chrome.contextMenus.create({
-        id: item.id,
-        title: chrome.i18n.getMessage(item.messageId),
-        contexts: ["action"]
-      });
-    }
-  });
+async function installContextMenus() {
+  // Chrome MV3 and Firefox both return Promises from contextMenus.removeAll;
+  // the legacy callback form would break Firefox.
+  await chrome.contextMenus.removeAll();
+  for (const item of MENU_ITEMS) {
+    chrome.contextMenus.create({
+      id: item.id,
+      title: chrome.i18n.getMessage(item.messageId),
+      contexts: ["action"]
+    });
+  }
 }
 
 chrome.runtime.onInstalled.addListener(installContextMenus);

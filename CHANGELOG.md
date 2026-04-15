@@ -1,6 +1,34 @@
 # Changelog
 
 
+## v0.0.6 — 2026-04-15
+
+### Fixes
+- fix: ship Firefox build as a release artifact
+
+### Install
+
+Two artifacts are published with every release:
+
+- `clearcache-0.0.6.zip` — Chrome, Edge, Brave, Arc, Opera, Vivaldi (any Chromium MV3 browser).
+- `clearcache-firefox-0.0.6.zip` — Firefox 109+.
+
+Chromium: open `chrome://extensions`, enable Developer mode, click "Load unpacked", select the extracted folder.
+
+Firefox: open `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on", select any file inside the extracted folder. Temporary installs are removed on browser restart — use the signed AMO build for permanent install.
+
+Or wait for the Chrome Web Store / Edge Add-ons / Firefox Add-ons listing to update.
+
+**SHA-256:**
+
+```
+1d1876448d872b8147c89ad045c10634697f4442cb8f5c1adb4e6c7b11c61e3d         clearcache-0.0.6.zip
+eced215997680ca545f05b03c0a2696a33cc5f315ae00802f7c32bc91f31c8a9  clearcache-firefox-0.0.6.zip
+```
+
+**Full changelog:** https://github.com/isaiasgv/ClearCache/compare/v0.0.5...v0.0.6
+
+
 ## v0.0.5 — 2026-04-15
 
 ### Features

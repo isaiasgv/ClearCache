@@ -163,6 +163,110 @@ Opera does not have a dedicated privacy practices form like Chrome/Edge. The **P
 
 ---
 
+## Translations tab
+
+Plain text only — no HTML, no BBCode. Non-technical language.
+
+### English (en)
+
+**Summary** (catalog listing — keep short):
+
+```
+Click to clear the cache and hard-reload the current site.
+```
+
+**Description** (details page):
+
+```
+Ever updated a website but still see the old version? ClearCache fixes that in one click.
+
+Click the toolbar icon and ClearCache wipes the cache for the site you are on and reloads the page, so you always see the latest version. Other sites are never touched.
+
+A small confirmation appears in the top-right of the page so you know it worked, with a quick count showing how many files came back fresh vs. still cached.
+
+Four modes, each with a keyboard shortcut and a right-click menu entry:
+
+• Clear this site and reload — Alt+Shift+R (default click)
+• Clear all sites and reload this tab — Alt+Shift+A
+• Deep clear this site (cache, cookies, and storage) and reload — Alt+Shift+D
+• Clear this site and reload every tab in this window — Alt+Shift+W
+
+You can also right-click the toolbar icon to reopen the current page in a fresh incognito window after a deep clear.
+
+Privacy: ClearCache collects nothing, sends nothing to any server, and stores nothing. It only clears data — the opposite of tracking. Every line of code is open source on GitHub.
+
+Available in English and Spanish. Free and open source under GPL-3.0.
+```
+
+**Length:** ~1,180 chars
+
+**Changelog** (v0.0.2):
+
+```
+Version 0.0.2
+- Fixed: store and extension icons now render correctly at all sizes (16, 32, 48, 128).
+
+Previous highlights (0.0.1):
+- One-click per-site cache clear with hard reload.
+- Keyboard shortcuts: Alt+Shift+R / A / D / W.
+- Right-click menu with all four modes plus "reopen in incognito".
+- On-page toast confirmation with a fresh-vs-cached counter.
+- Color-coded toolbar badge as a fallback on system pages.
+- Available in English and Spanish.
+```
+
+---
+
+### Spanish (es)
+
+**Summary** (resumen del catálogo — breve):
+
+```
+Haz clic para limpiar la caché y recargar el sitio actual.
+```
+
+**Description** (descripción de la página de detalles):
+
+```
+¿Actualizaste un sitio web pero sigues viendo la versión vieja? ClearCache lo soluciona con un solo clic.
+
+Haz clic en el icono de la barra y ClearCache borra la caché del sitio en el que estás y recarga la página, para que siempre veas la última versión. Los demás sitios no se tocan.
+
+Aparece una pequeña confirmación en la esquina superior derecha de la página para que sepas que funcionó, con un contador que muestra cuántos archivos llegaron frescos y cuántos seguían en caché.
+
+Cuatro modos, cada uno con un atajo de teclado y una opción en el menú contextual:
+
+• Limpiar este sitio y recargar — Alt+Shift+R (clic por defecto)
+• Limpiar todos los sitios y recargar esta pestaña — Alt+Shift+A
+• Limpieza profunda de este sitio (caché, cookies y almacenamiento) y recargar — Alt+Shift+D
+• Limpiar este sitio y recargar todas las pestañas de esta ventana — Alt+Shift+W
+
+También puedes hacer clic derecho en el icono para reabrir la página actual en una ventana de incógnito nueva tras una limpieza profunda.
+
+Privacidad: ClearCache no recopila nada, no envía nada a ningún servidor y no almacena nada. Solo borra datos — lo contrario de rastrear. Todo el código es abierto en GitHub.
+
+Disponible en inglés y español. Gratis y de código abierto bajo GPL-3.0.
+```
+
+**Length:** ~1,260 chars
+
+**Changelog** (v0.0.2):
+
+```
+Versión 0.0.2
+- Corregido: los iconos de la tienda y de la extensión ahora se renderizan correctamente en todos los tamaños (16, 32, 48, 128).
+
+Novedades anteriores (0.0.1):
+- Limpieza de caché por sitio con un clic y recarga forzada.
+- Atajos de teclado: Alt+Shift+R / A / D / W.
+- Menú contextual con los cuatro modos y "reabrir en incógnito".
+- Confirmación en la página con contador de recursos frescos vs. en caché.
+- Insignia con color en la barra como respaldo en páginas del sistema.
+- Disponible en inglés y español.
+```
+
+---
+
 ## Changelog
 
 | Date | Change |

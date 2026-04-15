@@ -48,9 +48,10 @@ Do not propose Manifest V2 patterns (background pages, `chrome.extension.*`, per
 
 ### 4. Branching and versioning are automated — don't fight them
 
-- Day-to-day work happens on the **`release`** branch. PRs target `release`.
-- **`main`** is the stable branch. A monthly PR brings `release` into `main`. Pushes to `main` trigger the release workflow.
-- **Never edit `manifest.json` `"version"` manually.** The [Release workflow](.github/workflows/release.yml) computes the next semver from Conventional Commits and bumps the field itself. Manual edits will be overwritten and confuse the version-derivation logic.
+- Day-to-day work happens on the **`release`** branch. PRs target `release`. This includes **hotfixes** — they go through `release` first so every change gets a prerelease build before hitting the stable branch, and `main` stays a pure mirror of what shipped.
+- **`main`** is the stable branch. A PR brings `release` into `main` when a batch of commits is ready to ship (typically monthly, or sooner for a hotfix). Pushes to `main` trigger the stable release workflow.
+- **No direct PRs to `main`** — all work, features and fixes alike, lands on `release` first. For an urgent hotfix, land the `fix:` on `release`, let the prerelease build confirm it, then immediately PR `release` → `main`.
+- **Never edit `manifest.json` `"version"` manually.** The [Release workflow](.github/workflows/release.yml) computes the next semver from Conventional Commits and bumps the field itself. Manual edits will be overwritten and confuse the version-derivation logic. The same applies to `manifest.firefox.json` — the workflow bumps both in lockstep.
 - Every commit subject must follow [Conventional Commits](https://www.conventionalcommits.org/): `<type>[!]: <description>`. Allowed types: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `chore`, `ci`, `build`, `style`, `revert`. CI rejects PRs that don't conform.
 - Bump policy: any releasable commit (`feat`/`fix`/`perf`/`refactor`, with or without `!`) defaults to **patch**. To request a minor or major bump, add `Release-Bump: minor` or `Release-Bump: major` to the commit body, or trigger the workflow manually with `bump_override`. `BREAKING CHANGE:` and `!` no longer auto-bump beyond patch — they're informational only. Non-releasable types: `docs`, `test`, `chore`, `ci`, `build`, `style`, `revert`.
 

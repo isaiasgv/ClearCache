@@ -16,12 +16,13 @@ There is no toolchain. Clone the repo, load the folder as an unpacked extension 
 
 ## Branching model
 
-- **`release`** is the active development branch. **All feature/fix PRs target `release`.**
-- **`main`** is stable and mirrors what's in the stores. It receives a PR from `release` once a month.
-- Hotfixes are the only thing that may PR directly to `main`.
+- **`release`** is the active development branch. **Every PR targets `release`** — features, fixes, and hotfixes alike.
+- **`main`** is stable and mirrors what's in the stores. It receives a PR from `release` when a batch of commits is ready to ship (typically monthly, or sooner for an urgent hotfix).
+- **No direct PRs to `main`.** Even a critical hotfix lands on `release` first so it gets a prerelease build, then rides an immediate `release` → `main` PR into stable.
 
 ```
-   your-feature-branch ──▶ release ──(monthly PR)──▶ main ──▶ auto-version + GitHub Release
+   your-feature-branch ──▶ release ──▶ main ──▶ auto-version + GitHub Release
+                           (prereleases)      (stable release)
 ```
 
 ## Conventional Commits (required)
@@ -66,7 +67,7 @@ Release-Bump: minor
 
 ## Pull requests
 
-- Target `release` (not `main`) unless it's a hotfix.
+- Target `release` (not `main`) for every PR — including hotfixes.
 - One logical change per PR. Keep diffs reviewable.
 - **Do not** edit `manifest.json` `"version"` manually — the release workflow owns that field.
 - Update [README.md](README.md) if you change behavior, permissions, or installation steps.

@@ -167,7 +167,7 @@ ClearCache/
 
 Push to `release` → automatic prerelease.
 Merge `release` → `main` → automatic stable release.
-Hotfix → PR direct to `main` with a `fix:` commit.
+Hotfix → land `fix:` on `release` (prerelease runs), then immediately PR `release` → `main` for the stable promotion. No direct PRs to `main`.
 
 ### Versioning policy
 

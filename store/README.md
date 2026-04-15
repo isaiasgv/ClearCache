@@ -1,6 +1,21 @@
 # Store assets
 
-Promotional and listing assets for the Chrome Web Store and Microsoft Edge Add-ons.
+Promotional and listing assets for the Chrome Web Store, Microsoft Edge Add-ons, and Opera Add-ons.
+
+## Submission answer docs
+
+Canonical, copy-pasteable answers for every store form are kept alongside this README. Reuse them verbatim on resubmission and for new stores.
+
+| Store | Doc | Covers |
+|---|---|---|
+| Chrome Web Store | [chrome-webstore-answers.md](./chrome-webstore-answers.md) | Single purpose, permission justifications, remote code, data usage, privacy practices form |
+| Microsoft Edge Add-ons | [edge-addons-answers.md](./edge-addons-answers.md) | Same form as Chrome plus Edge-specific listing fields (search terms, age rating) |
+| Opera Add-ons | [opera-addons-answers.md](./opera-addons-answers.md) | General tab (URLs, build instructions, EULA, privacy policy) + Translations tab (en/es summary, description, changelog) |
+
+The **listing copy** (short description, full description, search terms — in both English and Spanish) lives further down in this README under [Store listing copy](#store-listing-copy). That copy is shared across all three stores.
+
+---
+
 
 **None of these files are bundled into the extension zip** — the release workflow only packages `manifest.json`, `background.js`, `LICENSE`, `icons/`, `_locales/`, and `lib/`.
 

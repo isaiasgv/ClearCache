@@ -103,6 +103,17 @@ See [store/README.md — Certification notes](./README.md#certification-notes-ed
 
 ---
 
+## Listing translations (English + Spanish)
+
+Chrome Web Store asks for summary and detailed description per language.
+
+- **English** — see [README.md — Store listing copy (English)](./README.md#english)
+- **Spanish** — see [README.md — Store listing copy (Spanish)](./README.md#spanish-espanol)
+
+Opera's Translations tab uses slightly friendlier non-technical copy — if Chrome rejects the technical description, fall back to the Opera-style copy in [opera-addons-answers.md — Translations tab](./opera-addons-answers.md#translations-tab).
+
+---
+
 ## Reuse for other stores
 
 | Store | Same answers? | Notes |

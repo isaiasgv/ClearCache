@@ -100,10 +100,15 @@ jobs:
 
       - name: No AI-assistant attribution in commit history (last 50)
         run: |
+          # The rule forbids AI-assistant attribution, not references to the
+          # CLAUDE.md guidance file by name. Strip filename-like mentions
+          # (CLAUDE.md, .claude/, claude.md) before the regex runs so they
+          # don't produce false positives.
           BAD=$(git log -n 50 --pretty=format:'AUTHOR:%an <%ae>%nCOMMITTER:%cn <%ce>%nMESSAGE:%B%n---' \
+            | sed -E 's#\.?[Cc][Ll][Aa][Uu][Dd][Ee](\.md|/)##g' \
             | grep -iE '\b(claude|anthropic|copilot|chatgpt|cursor)\b|generated with claude|🤖 generated|co-authored-by:[[:space:]]*(claude|copilot|chatgpt|cursor|anthropic)' || true)
           if [ -n "$BAD" ]; then
-            echo "::error::Commit history contains AI-assistant attribution. See CLAUDE.md."
+            echo "::error::Commit history contains AI-assistant attribution. See the project guidance file."
             echo "$BAD"
             exit 1
           fi

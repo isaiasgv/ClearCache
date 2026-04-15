@@ -21,6 +21,7 @@ The script auto-detects an installed Chrome, Edge, Brave, or Chromium and uses i
 | `extension-logo-300x300.png`            | 300×300    | Edge Add-ons (required), Chrome Web Store (icon field) |
 | `small-promo-tile-440x280.png`          | 440×280    | Chrome Web Store (required), Edge Add-ons (small promo tile) |
 | `large-promo-tile-1400x560.png`         | 1400×560   | Chrome Web Store (marquee, optional — only if Google features the listing), Edge Add-ons (large promo tile, optional) |
+| `opera-promo-tile-300x188.png`          | 300×188    | Opera Add-ons (optional promotional image — used if the site editors feature the extension) |
 
 Re-run the build any time you edit files under [`src/`](src/) or the logo in [`src/_logo.svg`](src/_logo.svg).
 

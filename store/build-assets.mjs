@@ -40,7 +40,8 @@ const ASSETS = [
   // Chrome Web Store / Edge Add-ons listing assets
   { src: "icon-square.html", out: "store/extension-logo-300x300.png",    w: 300,  h: 300  },
   { src: "small-tile.html",  out: "store/small-promo-tile-440x280.png",  w: 440,  h: 280  },
-  { src: "large-tile.html",  out: "store/large-promo-tile-1400x560.png", w: 1400, h: 560  }
+  { src: "large-tile.html",  out: "store/large-promo-tile-1400x560.png", w: 1400, h: 560  },
+  { src: "opera-tile.html",  out: "store/opera-promo-tile-300x188.png",  w: 300,  h: 188  }
 ];
 
 function findBrowser() {

@@ -82,14 +82,17 @@ Click the toolbar icon. The current site's cache is cleared and the tab hard-rel
 
 A toast appears in the top-right of the freshly loaded page confirming what got cleared. The toolbar icon also flashes a color-coded badge as a fallback (for chrome:// pages, the PDF viewer, and other surfaces where the extension can't inject the toast).
 
-### All four modes
+### All five modes
 
 | Action                                           | Shortcut          | Right-click menu | Toast / badge color |
 | ------------------------------------------------ | ----------------- | ---------------- | ------------------- |
 | Clear current site &amp; reload **(default)**    | `Alt+Shift+R`     | ✓                | ✓ green             |
+| Clear current site **+ open subdomains** &amp; reload | `Alt+Shift+S` | ✓                | ✓ green             |
 | Clear **all sites** &amp; reload current tab     | `Alt+Shift+A`     | ✓                | ★ amber             |
 | Deep clear current site (cache + cookies + storage) | `Alt+Shift+D`  | ✓                | ☠ red               |
 | Reload all tabs in this window (clears current site) | `Alt+Shift+W` | ✓                | ✓ green             |
+
+**Subdomain mode details:** the extension enumerates every open tab whose hostname shares the same registrable domain as the current tab (e.g. `www.example.com`, `api.example.com`, `docs.example.com` all roll up to `example.com`), clears cache for that set of origins, and hard-reloads each of those tabs. Only open tabs are considered — sites you haven't opened are untouched. Registrable-domain detection uses a small built-in allow-list for common multi-label public suffixes (`.co.uk`, `.github.io`, `.vercel.app`, etc.) — not a full PSL, but enough for 95% of real-world sites.
 
 Rebind any shortcut at `chrome://extensions/shortcuts`.
 

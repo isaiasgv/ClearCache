@@ -1,15 +1,16 @@
 // Clear browsing data and hard-reload the active tab.
 //
 // Modes (selected via toolbar click, keyboard shortcut, or context menu):
-//   "origin" - clear cache/cacheStorage/serviceWorkers for the current site only (default)
-//   "all"    - clear cache/cacheStorage/serviceWorkers for every site
-//   "deep"   - clear cache + cookies + localStorage + indexedDB for the current site
+//   "origin"     - clear cache/cacheStorage/serviceWorkers for the current site only (default)
+//   "subdomains" - same, but also every open subdomain of the current site's registrable domain
+//   "all"        - clear cache/cacheStorage/serviceWorkers for every site
+//   "deep"       - clear cache + cookies + localStorage + indexedDB for the current site
 //
 // Per-origin scoping requires Chrome 114+ (see manifest.minimum_chrome_version).
 // Firefox uses the same code path but swaps `origins: [...]` for `hostnames: [...]`
 // in browsingData.remove — the two APIs are otherwise compatible.
 
-import { originOf, hostnameOf } from "./lib/origin.js";
+import { originOf, hostnameOf, siblingOrigins } from "./lib/origin.js";
 import { dataTypesFor } from "./lib/browser-compat.js";
 
 // browser.runtime.getBrowserInfo is Firefox-only. Chrome/Edge/etc. do not expose it.
@@ -29,6 +30,18 @@ function siteFilter(origin, url) {
   return { since: 0, origins: [origin] };
 }
 
+// Same idea as siteFilter but for a Set of origins (used by the "clear
+// current site + subdomains" mode). Firefox wants bare hostnames; Chrome
+// wants full origins.
+function multiSiteFilter(origins) {
+  if (!origins || origins.size === 0) return { since: 0 };
+  const list = [...origins];
+  if (IS_FIREFOX) {
+    return { since: 0, hostnames: list.map((o) => new URL(o).hostname) };
+  }
+  return { since: 0, origins: list };
+}
+
 const DATA_BASE = {
   cache: true,
   cacheStorage: true,
@@ -46,24 +59,27 @@ const BADGE_MS = 1500;
 const TOAST_MS = 2200;
 
 const BADGE = {
-  origin: { text: "\u2713", color: "#0a8a3a" },   // ✓ green
-  all:    { text: "\u2605", color: "#d97706" },   // ★ amber
-  deep:   { text: "\u2620", color: "#b91c1c" },   // ☠ red
-  error:  { text: "!",      color: "#b91c1c" }
+  origin:     { text: "✓", color: "#0a8a3a" },   // ✓ green
+  subdomains: { text: "✓", color: "#0a8a3a" },   // ✓ green (scoped clear)
+  all:        { text: "★", color: "#d97706" },   // ★ amber
+  deep:       { text: "☠", color: "#b91c1c" },   // ☠ red
+  error:      { text: "!",      color: "#b91c1c" }
 };
 
 const TOAST_STYLE = {
-  origin: { bg: "#0a8a3a", fg: "#ffffff", icon: "\u2713" },
-  all:    { bg: "#d97706", fg: "#ffffff", icon: "\u2605" },
-  deep:   { bg: "#b91c1c", fg: "#ffffff", icon: "\u2620" },
-  error:  { bg: "#b91c1c", fg: "#ffffff", icon: "!" }
+  origin:     { bg: "#0a8a3a", fg: "#ffffff", icon: "✓" },
+  subdomains: { bg: "#0a8a3a", fg: "#ffffff", icon: "✓" },
+  all:        { bg: "#d97706", fg: "#ffffff", icon: "★" },
+  deep:       { bg: "#b91c1c", fg: "#ffffff", icon: "☠" },
+  error:      { bg: "#b91c1c", fg: "#ffffff", icon: "!" }
 };
 
 const TOAST_MESSAGE_ID = {
-  origin: "toastOriginText",
-  all:    "toastAllText",
-  deep:   "toastDeepText",
-  error:  "toastErrorText"
+  origin:     "toastOriginText",
+  subdomains: "toastSubdomainsText",
+  all:        "toastAllText",
+  deep:       "toastDeepText",
+  error:      "toastErrorText"
 };
 
 // Tracks tabs awaiting a post-reload toast: tabId -> mode key.
@@ -288,6 +304,49 @@ async function clearOriginAndReloadTabs(tab, scope) {
   );
 }
 
+// Clear cache for the current tab's registrable domain AND every open tab
+// that shares it (www/api/cdn/static subdomains etc.), then reload each of
+// those tabs. Scoped by "open tabs only" so we never touch sites the user
+// hasn't opened. If the current tab is non-web, behaves as a silent no-op
+// like the other site-scoped modes.
+async function clearSubdomainsAndReload(tab) {
+  const allTabs = await chrome.tabs.query({});
+  const origins = siblingOrigins(tab?.url, allTabs);
+
+  let ok = true;
+  if (origins.size > 0) {
+    try {
+      await chrome.browsingData.remove(multiSiteFilter(origins), dataTypesFor(IS_FIREFOX, DATA_BASE));
+    } catch (err) {
+      console.error("[ClearCache] Subdomain clear failed:", err);
+      ok = false;
+    }
+  }
+
+  const feedbackKey = ok ? "subdomains" : "error";
+  await flashBadge(tab?.id, feedbackKey);
+
+  // Only the triggering tab gets a toast; reloading every sibling would
+  // flood the user.
+  if (typeof tab?.id === "number") {
+    pendingToasts.set(tab.id, feedbackKey);
+    startTelemetry(tab.id);
+  }
+
+  // Reload every tab whose origin is in the set (across all windows).
+  const toReload = allTabs.filter((t) => {
+    const o = originOf(t?.url);
+    return typeof t.id === "number" && o && origins.has(o);
+  });
+  await Promise.all(
+    toReload.map((t) =>
+      chrome.tabs.reload(t.id, { bypassCache: true }).catch((err) =>
+        console.error(`[ClearCache] Reload of tab ${t.id} failed:`, err)
+      )
+    )
+  );
+}
+
 // Clear the cache for a link's origin, then open the link in a new tab.
 // Triggered from the "Open link with fresh cache" right-click context menu
 // on any hyperlink. The link's host tab is not touched.
@@ -354,6 +413,7 @@ chrome.commands.onCommand.addListener(async (command) => {
   if (!tab) return;
   if (command === "clear-all-origins")   return clearAndReload(tab, "all");
   if (command === "clear-deep")          return clearAndReload(tab, "deep");
+  if (command === "clear-subdomains")    return clearSubdomainsAndReload(tab);
   if (command === "reload-all-tabs")     return clearOriginAndReloadTabs(tab, "window");
   if (command === "reload-all-windows")  return clearOriginAndReloadTabs(tab, "all");
 });
@@ -365,6 +425,7 @@ chrome.commands.onCommand.addListener(async (command) => {
 // user was on when they triggered the menu.
 const MENU_ITEMS = [
   { id: "clearcache-origin",        messageId: "menuOriginTitle",           contexts: ["action"], handler: (_info, tab) => clearAndReload(tab, "origin") },
+  { id: "clearcache-subdomains",    messageId: "menuSubdomainsTitle",       contexts: ["action"], handler: (_info, tab) => clearSubdomainsAndReload(tab) },
   { id: "clearcache-all",           messageId: "menuAllTitle",              contexts: ["action"], handler: (_info, tab) => clearAndReload(tab, "all")    },
   { id: "clearcache-deep",          messageId: "menuDeepTitle",             contexts: ["action"], handler: (_info, tab) => clearAndReload(tab, "deep")   },
   { id: "clearcache-window-tabs",   messageId: "menuReloadAllTabsTitle",    contexts: ["action"], handler: (_info, tab) => clearOriginAndReloadTabs(tab, "window") },

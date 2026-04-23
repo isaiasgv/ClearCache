@@ -23,6 +23,10 @@
     "message": "Clear cache + cookies + storage for this site & reload",
     "description": "Description for the deep-clear keyboard shortcut."
   },
+  "commandClearSubdomainsDescription": {
+    "message": "Clear cache for this site + all open subdomains & reload",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
   "commandReloadAllTabsDescription": {
     "message": "Clear cache for current site & reload all tabs in this window",
     "description": "Description for the reload-all-tabs keyboard shortcut."
@@ -38,6 +42,10 @@
   "menuDeepTitle": {
     "message": "Clear cache + cookies + storage for this site & reload",
     "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "Clear cache for this site + all open subdomains & reload",
+    "description": "Right-click context menu entry for clear-subdomains."
   },
   "menuReloadAllTabsTitle": {
     "message": "Clear cache & reload all tabs in this window",
@@ -74,6 +82,10 @@
   "toastDeepText": {
     "message": "Cache, cookies & storage cleared for this site",
     "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "Cache cleared for this site + subdomains",
+    "description": "Toast shown after a clear-subdomains operation."
   },
   "toastErrorText": {
     "message": "Failed to clear cache",

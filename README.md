@@ -93,6 +93,10 @@ A toast appears in the top-right of the freshly loaded page confirming what got 
 
 Rebind any shortcut at `chrome://extensions/shortcuts`.
 
+### On any link
+
+Right-click any hyperlink on any page → **"Open link with fresh cache"**. ClearCache clears the cache for the link's origin (not the current page's), then opens the link in a new tab. Useful for jumping to a subdomain, an API endpoint, or a staging URL that you suspect is stale without touching the tab you're on.
+
 ### Screenshots
 
 > Screenshots will be added before the first store submission. Capture spec lives in [docs/screenshots/README.md](docs/screenshots/README.md).

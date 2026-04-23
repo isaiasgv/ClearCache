@@ -288,6 +288,31 @@ async function clearOriginAndReloadTabs(tab, scope) {
   );
 }
 
+// Clear the cache for a link's origin, then open the link in a new tab.
+// Triggered from the "Open link with fresh cache" right-click context menu
+// on any hyperlink. The link's host tab is not touched.
+async function clearAndOpenLink(linkUrl) {
+  const origin = originOf(linkUrl);
+
+  if (origin) {
+    try {
+      await chrome.browsingData.remove(
+        siteFilter(origin, linkUrl),
+        dataTypesFor(IS_FIREFOX, DATA_BASE)
+      );
+    } catch (err) {
+      console.error("[ClearCache] Clear before opening link failed:", err);
+      // Fall through — still open the link so the user isn't stranded.
+    }
+  }
+
+  try {
+    await chrome.tabs.create({ url: linkUrl, active: true });
+  } catch (err) {
+    console.error("[ClearCache] Could not open link:", err);
+  }
+}
+
 async function deepClearAndReopenIncognito(tab) {
   const origin = originOf(tab?.url);
   const url = tab?.url;
@@ -333,13 +358,19 @@ chrome.commands.onCommand.addListener(async (command) => {
   if (command === "reload-all-windows")  return clearOriginAndReloadTabs(tab, "all");
 });
 
+// Each menu item declares which surface it appears on via `contexts`:
+//   "action" — the right-click menu on the toolbar icon itself
+//   "link"   — the right-click menu on any hyperlink inside a page
+// The handler receives both the click info (for link URLs) and the tab the
+// user was on when they triggered the menu.
 const MENU_ITEMS = [
-  { id: "clearcache-origin",        messageId: "menuOriginTitle",          handler: (tab) => clearAndReload(tab, "origin") },
-  { id: "clearcache-all",           messageId: "menuAllTitle",             handler: (tab) => clearAndReload(tab, "all")    },
-  { id: "clearcache-deep",          messageId: "menuDeepTitle",            handler: (tab) => clearAndReload(tab, "deep")   },
-  { id: "clearcache-window-tabs",   messageId: "menuReloadAllTabsTitle",   handler: (tab) => clearOriginAndReloadTabs(tab, "window") },
-  { id: "clearcache-all-windows",   messageId: "menuReloadAllWindowsTitle", handler: (tab) => clearOriginAndReloadTabs(tab, "all") },
-  { id: "clearcache-incognito",     messageId: "menuReopenIncognitoTitle", handler: (tab) => deepClearAndReopenIncognito(tab) }
+  { id: "clearcache-origin",        messageId: "menuOriginTitle",           contexts: ["action"], handler: (_info, tab) => clearAndReload(tab, "origin") },
+  { id: "clearcache-all",           messageId: "menuAllTitle",              contexts: ["action"], handler: (_info, tab) => clearAndReload(tab, "all")    },
+  { id: "clearcache-deep",          messageId: "menuDeepTitle",             contexts: ["action"], handler: (_info, tab) => clearAndReload(tab, "deep")   },
+  { id: "clearcache-window-tabs",   messageId: "menuReloadAllTabsTitle",    contexts: ["action"], handler: (_info, tab) => clearOriginAndReloadTabs(tab, "window") },
+  { id: "clearcache-all-windows",   messageId: "menuReloadAllWindowsTitle", contexts: ["action"], handler: (_info, tab) => clearOriginAndReloadTabs(tab, "all") },
+  { id: "clearcache-incognito",     messageId: "menuReopenIncognitoTitle",  contexts: ["action"], handler: (_info, tab) => deepClearAndReopenIncognito(tab) },
+  { id: "clearcache-open-link",     messageId: "menuOpenLinkFreshTitle",    contexts: ["link"],   handler: (info) => clearAndOpenLink(info.linkUrl) }
 ];
 
 async function installContextMenus() {
@@ -350,7 +381,7 @@ async function installContextMenus() {
     chrome.contextMenus.create({
       id: item.id,
       title: chrome.i18n.getMessage(item.messageId),
-      contexts: ["action"]
+      contexts: item.contexts
     });
   }
 }
@@ -359,7 +390,8 @@ chrome.runtime.onInstalled.addListener(installContextMenus);
 chrome.runtime.onStartup.addListener(installContextMenus);
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (!tab) return;
   const item = MENU_ITEMS.find((m) => m.id === info.menuItemId);
-  if (item) item.handler(tab);
+  if (!item) return;
+  // Action-context items need a tab; link-context items read info.linkUrl.
+  item.handler(info, tab);
 });

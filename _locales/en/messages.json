@@ -51,6 +51,10 @@
     "message": "Deep clear & reopen this page in a new incognito window",
     "description": "Right-click context menu entry for reopen-in-incognito."
   },
+  "menuOpenLinkFreshTitle": {
+    "message": "Open link with fresh cache",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
   "commandReloadAllWindowsDescription": {
     "message": "Clear cache for current site & reload all tabs in ALL windows",
     "description": "Description for the all-windows reload shortcut."

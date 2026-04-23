@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "清除缓存并强制刷新",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "点击清除当前站点的缓存并强制刷新。",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "清除缓存并强制刷新 (当前站点)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "清除此站点的缓存并重新加载",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "清除所有站点的缓存并重新加载当前标签页",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "清除此站点的缓存 + Cookie + 存储并重新加载",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "清除此站点及所有打开子域名的缓存并重新加载",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "清除当前站点缓存并重新加载此窗口的所有标签页",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "清除此站点的缓存并重新加载",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "清除所有站点的缓存并重新加载",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "清除此站点的缓存 + Cookie + 存储并重新加载",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "清除此站点及所有打开子域名的缓存并重新加载",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "清除缓存并重新加载此窗口的所有标签页",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "清除缓存并重新加载所有窗口的所有标签页",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "深度清理并在新的隐身窗口中重新打开此页面",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "使用新缓存打开链接",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "清除当前站点缓存并重新加载所有窗口的所有标签页",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "无法打开隐身窗口 — 请在隐身模式下启用扩展访问",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "已清除此站点的缓存",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "已清除所有站点的缓存",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "已清除此站点的缓存、Cookie 和存储",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "已清除此站点及其子域名的缓存",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "清除缓存失败",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "新鲜",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "来自缓存",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

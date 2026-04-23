@@ -13,7 +13,7 @@ Canonical, copy-pasteable answers for every store form are kept alongside this R
 | Opera Add-ons | [opera-addons-answers.md](./opera-addons-answers.md) | General tab (URLs, build instructions, EULA, privacy policy) + Translations tab (en/es summary, description, changelog) |
 | Firefox Add-ons (AMO) | [firefox-amo-answers.md](./firefox-amo-answers.md) | Name, summary, description, categories, license, privacy policy, and Reviewer Notes for the AMO Developer Hub submission form |
 
-The **listing copy** (short description, full description, search terms — in both English and Spanish) lives further down in this README under [Store listing copy](#store-listing-copy). That copy is shared across all three stores.
+The **listing copy** (short description, full description, search terms — in English and Spanish for store listings) lives further down in this README under [Store listing copy](#store-listing-copy). That copy is shared across all three stores. The in-extension UI itself ships in **20 locales** under [`_locales/`](../_locales/).
 
 ---
 
@@ -123,7 +123,7 @@ Features:
 • Keyboard shortcuts: Alt+Shift+R / A / D / W (customizable via chrome://extensions/shortcuts)
 • Post-reload toast with cache hit/miss telemetry so you can verify the wipe worked
 • Right-click context menu with all modes including "reopen in incognito"
-• Available in English and Spanish
+• Available in 20 languages (English, Spanish, French, German, Italian, Dutch, Polish, Portuguese-BR, Russian, Turkish, Japanese, Korean, Chinese Simplified and Traditional, Vietnamese, Indonesian, Thai, Hebrew, Arabic, Persian)
 • Manifest V3, open source (GPL-3.0), zero dependencies
 ```
 

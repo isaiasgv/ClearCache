@@ -21,7 +21,7 @@ Canonical answers for the Edge Add-ons Partner Center. Edge uses the same Chromi
 | **Short description** | One-click per-site cache clear and hard-reload. Four keyboard modes, zero telemetry, open source. |
 | **Description** | See [README.md — Store listing copy (English)](./README.md#english) |
 | **Category** | Developer tools |
-| **Support languages** | English, Spanish |
+| **Support languages** | English, Spanish, French, German, Italian, Dutch, Polish, Portuguese (BR), Russian, Turkish, Japanese, Korean, Chinese Simplified, Chinese Traditional, Vietnamese, Indonesian, Thai, Hebrew, Arabic, Persian |
 | **Website** | https://github.com/isaiasgv/ClearCache |
 | **Support URL** | https://github.com/isaiasgv/ClearCache/issues |
 | **Privacy policy URL** | https://github.com/isaiasgv/ClearCache/blob/main/docs/privacy.md |

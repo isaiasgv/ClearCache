@@ -51,7 +51,7 @@ Privacy: ClearCache collects nothing, sends nothing to any server, and stores no
 
 Firefox note: due to Firefox API limitations, "cacheStorage" and Service Worker registrations cannot be wiped via browsingData. On sites that use Service Workers for offline caching, use deep-clear mode (Alt+Shift+D) which also removes cookies and storage to fully invalidate SW state.
 
-Available in English and Spanish. Free and open source under GPL-3.0.
+Available in 20 languages including English, Spanish, French, German, Italian, Dutch, Polish, Portuguese (BR), Russian, Turkish, Japanese, Korean, Chinese (Simplified and Traditional), Vietnamese, Indonesian, Thai, Hebrew, Arabic, and Persian. Free and open source under GPL-3.0.
 ```
 
 **Length:** ~1,360 chars

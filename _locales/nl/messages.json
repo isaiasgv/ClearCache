@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Cache wissen & opnieuw laden",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Klik om de cache te wissen en de huidige site geforceerd opnieuw te laden.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Cache wissen en geforceerd herladen (deze site)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Cache van deze site wissen en opnieuw laden",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "Cache van ALLE sites wissen en huidige tab opnieuw laden",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Cache + cookies + opslag van deze site wissen en opnieuw laden",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "Cache van deze site + alle geopende subdomeinen wissen en opnieuw laden",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Cache van huidige site wissen en alle tabs in dit venster opnieuw laden",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Cache van deze site wissen en opnieuw laden",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "Cache van ALLE sites wissen en opnieuw laden",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Cache + cookies + opslag van deze site wissen en opnieuw laden",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "Cache van deze site + alle geopende subdomeinen wissen en opnieuw laden",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Cache wissen en alle tabs in dit venster opnieuw laden",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Cache wissen en alle tabs in ALLE vensters opnieuw laden",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Volledige opschoning en deze pagina opnieuw openen in een nieuw incognitovenster",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "Link openen met verse cache",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Cache van huidige site wissen en alle tabs in ALLE vensters opnieuw laden",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "Kan incognito niet openen — extensietoegang in incognitomodus inschakelen",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "Cache gewist voor deze site",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "Cache gewist voor ALLE sites",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Cache, cookies en opslag gewist voor deze site",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "Cache gewist voor deze site en subdomeinen",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "Cache wissen mislukt",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "vers",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "uit cache",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

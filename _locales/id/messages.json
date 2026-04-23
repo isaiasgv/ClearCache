@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Hapus Cache & Muat Ulang",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Klik untuk menghapus cache dan memuat ulang situs saat ini.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Hapus cache & muat ulang paksa (situs ini)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Hapus cache situs ini & muat ulang",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "Hapus cache SEMUA situs & muat ulang tab saat ini",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Hapus cache + cookie + penyimpanan situs ini & muat ulang",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "Hapus cache situs ini + semua subdomain yang terbuka & muat ulang",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Hapus cache situs saat ini & muat ulang semua tab di jendela ini",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Hapus cache situs ini & muat ulang",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "Hapus cache SEMUA situs & muat ulang",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Hapus cache + cookie + penyimpanan situs ini & muat ulang",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "Hapus cache situs ini + semua subdomain yang terbuka & muat ulang",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Hapus cache & muat ulang semua tab di jendela ini",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Hapus cache & muat ulang semua tab di SEMUA jendela",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Hapus penuh & buka ulang halaman ini di jendela penyamaran baru",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "Buka tautan dengan cache segar",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Hapus cache situs saat ini & muat ulang semua tab di SEMUA jendela",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "Tidak dapat membuka jendela penyamaran — aktifkan akses ekstensi dalam mode penyamaran",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "Cache dihapus untuk situs ini",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "Cache dihapus untuk SEMUA situs",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Cache, cookie & penyimpanan dihapus untuk situs ini",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "Cache dihapus untuk situs ini & subdomainnya",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "Gagal menghapus cache",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "segar",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "dari cache",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

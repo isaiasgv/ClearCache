@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "캐시 지우기 및 강제 새로고침",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "클릭하여 현재 사이트의 캐시를 지우고 강제로 새로고침합니다.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "캐시 지우기 및 강제 새로고침 (이 사이트)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "이 사이트의 캐시 지우기 및 새로고침",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "모든 사이트의 캐시 지우기 및 현재 탭 새로고침",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "이 사이트의 캐시 + 쿠키 + 저장소 지우기 및 새로고침",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "이 사이트 + 열려 있는 모든 서브도메인의 캐시 지우기 및 새로고침",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "현재 사이트 캐시 지우기 및 이 창의 모든 탭 새로고침",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "이 사이트의 캐시 지우기 및 새로고침",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "모든 사이트의 캐시 지우기 및 새로고침",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "이 사이트의 캐시 + 쿠키 + 저장소 지우기 및 새로고침",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "이 사이트 + 열려 있는 모든 서브도메인의 캐시 지우기 및 새로고침",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "캐시 지우기 및 이 창의 모든 탭 새로고침",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "캐시 지우기 및 모든 창의 모든 탭 새로고침",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "완전 삭제 후 이 페이지를 새 시크릿 창에서 열기",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "새 캐시로 링크 열기",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "현재 사이트 캐시 지우기 및 모든 창의 모든 탭 새로고침",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "시크릿 창을 열 수 없습니다 — 시크릿 모드에서 확장 프로그램 액세스를 활성화하세요",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "이 사이트의 캐시가 지워졌습니다",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "모든 사이트의 캐시가 지워졌습니다",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "이 사이트의 캐시, 쿠키 및 저장소가 지워졌습니다",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "이 사이트와 서브도메인의 캐시가 지워졌습니다",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "캐시 지우기에 실패했습니다",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "신규",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "캐시됨",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

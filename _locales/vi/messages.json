@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Xóa Cache & Tải Lại",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Nhấp để xóa cache và tải lại trang hiện tại.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Xóa cache và tải lại (trang này)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Xóa cache của trang này và tải lại",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "Xóa cache của TẤT CẢ các trang và tải lại tab hiện tại",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Xóa cache + cookie + bộ nhớ của trang này và tải lại",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "Xóa cache của trang này + tất cả các tên miền phụ đang mở và tải lại",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Xóa cache của trang hiện tại và tải lại tất cả các tab trong cửa sổ này",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Xóa cache của trang này và tải lại",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "Xóa cache của TẤT CẢ các trang và tải lại",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Xóa cache + cookie + bộ nhớ của trang này và tải lại",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "Xóa cache của trang này + tất cả các tên miền phụ đang mở và tải lại",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Xóa cache và tải lại tất cả các tab trong cửa sổ này",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Xóa cache và tải lại tất cả các tab trong TẤT CẢ các cửa sổ",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Xóa sâu và mở lại trang này trong cửa sổ ẩn danh mới",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "Mở liên kết với cache mới",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Xóa cache của trang hiện tại và tải lại tất cả các tab trong TẤT CẢ các cửa sổ",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "Không thể mở cửa sổ ẩn danh — hãy bật quyền truy cập tiện ích mở rộng ở chế độ ẩn danh",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "Đã xóa cache cho trang này",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "Đã xóa cache cho TẤT CẢ các trang",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Đã xóa cache, cookie và bộ nhớ cho trang này",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "Đã xóa cache cho trang này và các tên miền phụ",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "Không thể xóa cache",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "mới",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "từ cache",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

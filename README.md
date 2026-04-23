@@ -157,7 +157,7 @@ ClearCache/
 ├── manifest.firefox.json      # Firefox MV3 manifest (scripts + browser_specific_settings)
 ├── lib/origin.js              # Pure helpers (originOf, hostnameOf)
 ├── icons/                     # Toolbar icons (16, 32, 48, 128 px)
-├── _locales/en/messages.json  # i18n strings (drop in _locales/<lang>/ to add a locale)
+├── _locales/                  # i18n strings — 20 locales (en, es, de, fr, it, nl, pl, pt_BR, ru, tr, ja, ko, zh_CN, zh_TW, vi, id, th, he, ar, fa)
 ├── LICENSE                    # GPL-3.0
 ├── README.md
 ├── CHANGELOG.md               # Auto-maintained by the release workflow

@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Svuota cache e ricarica",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Clicca per svuotare la cache e ricaricare il sito corrente.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Svuota cache e ricarica (questo sito)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Svuota la cache di questo sito e ricarica",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "Svuota la cache di TUTTI i siti e ricarica la scheda corrente",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Svuota cache + cookie + archiviazione di questo sito e ricarica",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "Svuota la cache di questo sito e di tutti i sottodomini aperti e ricarica",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Svuota la cache del sito corrente e ricarica tutte le schede di questa finestra",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Svuota la cache di questo sito e ricarica",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "Svuota la cache di TUTTI i siti e ricarica",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Svuota cache + cookie + archiviazione di questo sito e ricarica",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "Svuota la cache di questo sito e di tutti i sottodomini aperti e ricarica",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Svuota la cache e ricarica tutte le schede di questa finestra",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Svuota la cache e ricarica tutte le schede di TUTTE le finestre",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Pulizia completa e riapri questa pagina in una nuova finestra in incognito",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "Apri il link con cache pulita",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Svuota la cache del sito corrente e ricarica tutte le schede di TUTTE le finestre",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "Impossibile aprire in incognito — abilita l'accesso dell'estensione in modalità incognito",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "Cache svuotata per questo sito",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "Cache svuotata per TUTTI i siti",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Cache, cookie e archiviazione svuotati per questo sito",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "Cache svuotata per questo sito e i suoi sottodomini",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "Impossibile svuotare la cache",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "nuovi",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "in cache",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

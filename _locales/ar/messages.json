@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "مسح الذاكرة المؤقتة وإعادة التحميل",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "انقر لمسح الذاكرة المؤقتة وإعادة تحميل الموقع الحالي.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "مسح الذاكرة المؤقتة وإعادة التحميل (هذا الموقع)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "مسح الذاكرة المؤقتة لهذا الموقع وإعادة التحميل",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "مسح الذاكرة المؤقتة لجميع المواقع وإعادة تحميل علامة التبويب الحالية",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "مسح الذاكرة المؤقتة + ملفات تعريف الارتباط + التخزين لهذا الموقع وإعادة التحميل",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "مسح الذاكرة المؤقتة لهذا الموقع وجميع النطاقات الفرعية المفتوحة وإعادة التحميل",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "مسح الذاكرة المؤقتة للموقع الحالي وإعادة تحميل جميع علامات التبويب في هذه النافذة",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "مسح الذاكرة المؤقتة لهذا الموقع وإعادة التحميل",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "مسح الذاكرة المؤقتة لجميع المواقع وإعادة التحميل",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "مسح الذاكرة المؤقتة + ملفات تعريف الارتباط + التخزين لهذا الموقع وإعادة التحميل",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "مسح الذاكرة المؤقتة لهذا الموقع وجميع النطاقات الفرعية المفتوحة وإعادة التحميل",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "مسح الذاكرة المؤقتة وإعادة تحميل جميع علامات التبويب في هذه النافذة",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "مسح الذاكرة المؤقتة وإعادة تحميل جميع علامات التبويب في جميع النوافذ",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "مسح عميق وإعادة فتح هذه الصفحة في نافذة تصفح متخفي جديدة",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "فتح الرابط بذاكرة مؤقتة جديدة",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "مسح الذاكرة المؤقتة للموقع الحالي وإعادة تحميل جميع علامات التبويب في جميع النوافذ",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "تعذر فتح التصفح المتخفي — قم بتفعيل وصول الامتداد في وضع التصفح المتخفي",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "تم مسح الذاكرة المؤقتة لهذا الموقع",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "تم مسح الذاكرة المؤقتة لجميع المواقع",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "تم مسح الذاكرة المؤقتة وملفات تعريف الارتباط والتخزين لهذا الموقع",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "تم مسح الذاكرة المؤقتة لهذا الموقع ونطاقاته الفرعية",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "فشل مسح الذاكرة المؤقتة",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "جديد",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "من الذاكرة",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

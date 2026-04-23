@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Limpar cache e recarregar",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Clique para limpar o cache e forçar o recarregamento do site atual.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Limpar cache e recarregar (este site)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Limpar cache deste site e recarregar",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "Limpar cache de TODOS os sites e recarregar aba atual",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Limpar cache + cookies + armazenamento deste site e recarregar",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "Limpar cache deste site + todos os subdomínios abertos e recarregar",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Limpar cache do site atual e recarregar todas as abas desta janela",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Limpar cache deste site e recarregar",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "Limpar cache de TODOS os sites e recarregar",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Limpar cache + cookies + armazenamento deste site e recarregar",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "Limpar cache deste site + todos os subdomínios abertos e recarregar",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Limpar cache e recarregar todas as abas desta janela",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Limpar cache e recarregar todas as abas de TODAS as janelas",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Limpeza profunda e reabrir esta página em uma nova janela anônima",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "Abrir link com cache limpo",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Limpar cache do site atual e recarregar todas as abas de TODAS as janelas",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "Não foi possível abrir janela anônima — ative o acesso da extensão no modo anônimo",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "Cache limpo para este site",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "Cache limpo para TODOS os sites",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Cache, cookies e armazenamento limpos para este site",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "Cache limpo para este site e seus subdomínios",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "Falha ao limpar o cache",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "novos",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "em cache",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

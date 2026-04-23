@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "ניקוי מטמון וטעינה מחדש",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "לחצו כדי לנקות את המטמון ולטעון מחדש את האתר הנוכחי.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "ניקוי מטמון וטעינה מחדש (אתר זה)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "ניקוי מטמון של אתר זה וטעינה מחדש",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "ניקוי מטמון של כל האתרים וטעינה מחדש של הכרטיסייה הנוכחית",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "ניקוי מטמון + עוגיות + אחסון של אתר זה וטעינה מחדש",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "ניקוי מטמון של אתר זה וכל תתי־הדומיינים הפתוחים וטעינה מחדש",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "ניקוי מטמון של האתר הנוכחי וטעינה מחדש של כל הכרטיסיות בחלון זה",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "ניקוי מטמון של אתר זה וטעינה מחדש",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "ניקוי מטמון של כל האתרים וטעינה מחדש",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "ניקוי מטמון + עוגיות + אחסון של אתר זה וטעינה מחדש",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "ניקוי מטמון של אתר זה וכל תתי־הדומיינים הפתוחים וטעינה מחדש",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "ניקוי מטמון וטעינה מחדש של כל הכרטיסיות בחלון זה",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "ניקוי מטמון וטעינה מחדש של כל הכרטיסיות בכל החלונות",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "ניקוי עמוק ופתיחת עמוד זה מחדש בחלון גלישה בסתר",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "פתיחת הקישור עם מטמון נקי",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "ניקוי מטמון של האתר הנוכחי וטעינה מחדש של כל הכרטיסיות בכל החלונות",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "לא ניתן לפתוח חלון בסתר — יש להפעיל גישה להרחבה במצב גלישה בסתר",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "המטמון של אתר זה נוקה",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "המטמון של כל האתרים נוקה",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "המטמון, העוגיות והאחסון של אתר זה נוקו",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "המטמון של אתר זה ותתי־הדומיינים שלו נוקה",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "ניקוי המטמון נכשל",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "טרי",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "מהמטמון",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

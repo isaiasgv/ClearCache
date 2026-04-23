@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Cache leeren & Hard Reload",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Klicken, um den Cache zu leeren und die aktuelle Seite neu zu laden.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Cache leeren und Hard Reload (diese Seite)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Cache dieser Seite leeren und neu laden",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "Cache ALLER Seiten leeren und aktuellen Tab neu laden",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Cache + Cookies + Speicher dieser Seite leeren und neu laden",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "Cache dieser Seite + aller offenen Subdomains leeren und neu laden",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Cache der aktuellen Seite leeren und alle Tabs in diesem Fenster neu laden",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Cache dieser Seite leeren und neu laden",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "Cache ALLER Seiten leeren und neu laden",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Cache + Cookies + Speicher dieser Seite leeren und neu laden",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "Cache dieser Seite + aller offenen Subdomains leeren und neu laden",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Cache leeren und alle Tabs in diesem Fenster neu laden",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Cache leeren und alle Tabs in ALLEN Fenstern neu laden",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Vollständig bereinigen und diese Seite in einem neuen Inkognito-Fenster öffnen",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "Link mit frischem Cache öffnen",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Cache der aktuellen Seite leeren und alle Tabs in ALLEN Fenstern neu laden",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "Inkognito konnte nicht geöffnet werden — Erweiterungszugriff im Inkognito-Modus aktivieren",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "Cache für diese Seite geleert",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "Cache für ALLE Seiten geleert",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Cache, Cookies und Speicher dieser Seite geleert",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "Cache für diese Seite und Subdomains geleert",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "Cache konnte nicht geleert werden",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "frisch",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "aus Cache",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

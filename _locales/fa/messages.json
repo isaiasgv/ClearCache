@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "پاک کردن حافظه نهان و بارگذاری مجدد",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "برای پاک کردن حافظه نهان و بارگذاری مجدد اجباری سایت فعلی کلیک کنید.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "پاک کردن حافظه نهان و بارگذاری مجدد (این سایت)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "پاک کردن حافظه نهان این سایت و بارگذاری مجدد",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "پاک کردن حافظه نهان همه سایت‌ها و بارگذاری مجدد برگه فعلی",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "پاک کردن حافظه نهان + کوکی‌ها + ذخیره‌سازی این سایت و بارگذاری مجدد",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "پاک کردن حافظه نهان این سایت و همه زیردامنه‌های باز و بارگذاری مجدد",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "پاک کردن حافظه نهان سایت فعلی و بارگذاری مجدد همه برگه‌های این پنجره",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "پاک کردن حافظه نهان این سایت و بارگذاری مجدد",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "پاک کردن حافظه نهان همه سایت‌ها و بارگذاری مجدد",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "پاک کردن حافظه نهان + کوکی‌ها + ذخیره‌سازی این سایت و بارگذاری مجدد",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "پاک کردن حافظه نهان این سایت و همه زیردامنه‌های باز و بارگذاری مجدد",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "پاک کردن حافظه نهان و بارگذاری مجدد همه برگه‌های این پنجره",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "پاک کردن حافظه نهان و بارگذاری مجدد همه برگه‌های همه پنجره‌ها",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "پاکسازی عمیق و بازکردن مجدد این صفحه در پنجره ناشناس جدید",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "باز کردن پیوند با حافظه نهان تازه",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "پاک کردن حافظه نهان سایت فعلی و بارگذاری مجدد همه برگه‌های همه پنجره‌ها",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "نمی‌توان پنجره ناشناس را باز کرد — دسترسی افزونه را در حالت ناشناس فعال کنید",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "حافظه نهان این سایت پاک شد",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "حافظه نهان همه سایت‌ها پاک شد",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "حافظه نهان، کوکی‌ها و ذخیره‌سازی این سایت پاک شد",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "حافظه نهان این سایت و زیردامنه‌های آن پاک شد",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "پاک کردن حافظه نهان ناموفق بود",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "تازه",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "از حافظه",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

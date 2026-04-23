@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "清除快取並強制重新整理",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "點擊清除目前網站的快取並強制重新整理。",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "清除快取並強制重新整理 (目前網站)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "清除此網站的快取並重新載入",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "清除所有網站的快取並重新載入目前分頁",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "清除此網站的快取 + Cookie + 儲存空間並重新載入",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "清除此網站及所有開啟子網域的快取並重新載入",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "清除目前網站快取並重新載入此視窗的所有分頁",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "清除此網站的快取並重新載入",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "清除所有網站的快取並重新載入",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "清除此網站的快取 + Cookie + 儲存空間並重新載入",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "清除此網站及所有開啟子網域的快取並重新載入",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "清除快取並重新載入此視窗的所有分頁",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "清除快取並重新載入所有視窗的所有分頁",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "深度清理並在新的無痕視窗中重新開啟此頁面",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "以新快取開啟連結",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "清除目前網站快取並重新載入所有視窗的所有分頁",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "無法開啟無痕視窗 — 請在無痕模式下啟用擴充功能存取權限",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "已清除此網站的快取",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "已清除所有網站的快取",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "已清除此網站的快取、Cookie 和儲存空間",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "已清除此網站及其子網域的快取",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "清除快取失敗",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "新鮮",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "來自快取",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

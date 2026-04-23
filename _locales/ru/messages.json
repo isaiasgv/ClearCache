@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Очистить кэш и перезагрузить",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Нажмите, чтобы очистить кэш и принудительно перезагрузить текущий сайт.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Очистить кэш и перезагрузить (этот сайт)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Очистить кэш этого сайта и перезагрузить",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "Очистить кэш ВСЕХ сайтов и перезагрузить текущую вкладку",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Очистить кэш + cookie + хранилище этого сайта и перезагрузить",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "Очистить кэш этого сайта и всех открытых поддоменов и перезагрузить",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Очистить кэш текущего сайта и перезагрузить все вкладки в этом окне",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Очистить кэш этого сайта и перезагрузить",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "Очистить кэш ВСЕХ сайтов и перезагрузить",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Очистить кэш + cookie + хранилище этого сайта и перезагрузить",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "Очистить кэш этого сайта и всех открытых поддоменов и перезагрузить",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Очистить кэш и перезагрузить все вкладки в этом окне",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Очистить кэш и перезагрузить все вкладки во ВСЕХ окнах",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Глубокая очистка и повторно открыть эту страницу в новом окне инкогнито",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "Открыть ссылку с чистым кэшем",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Очистить кэш текущего сайта и перезагрузить все вкладки во ВСЕХ окнах",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "Не удалось открыть инкогнито — включите доступ расширения в режиме инкогнито",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "Кэш очищен для этого сайта",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "Кэш очищен для ВСЕХ сайтов",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Кэш, cookie и хранилище очищены для этого сайта",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "Кэш очищен для этого сайта и поддоменов",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "Не удалось очистить кэш",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "свежих",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "из кэша",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

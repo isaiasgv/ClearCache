@@ -195,7 +195,7 @@ You can also right-click the toolbar icon to reopen the current page in a fresh 
 
 Privacy: ClearCache collects nothing, sends nothing to any server, and stores nothing. It only clears data — the opposite of tracking. Every line of code is open source on GitHub.
 
-Available in English and Spanish. Free and open source under GPL-3.0.
+Available in 20 languages including English, Spanish, French, German, Italian, Dutch, Polish, Portuguese (BR), Russian, Turkish, Japanese, Korean, Chinese (Simplified and Traditional), Vietnamese, Indonesian, Thai, Hebrew, Arabic, and Persian. Free and open source under GPL-3.0.
 ```
 
 **Length:** ~1,180 chars
@@ -212,7 +212,7 @@ Previous highlights (0.0.1):
 - Right-click menu with all four modes plus "reopen in incognito".
 - On-page toast confirmation with a fresh-vs-cached counter.
 - Color-coded toolbar badge as a fallback on system pages.
-- Available in English and Spanish.
+- Available in 20 languages including English, Spanish, French, German, Italian, Dutch, Polish, Portuguese (BR), Russian, Turkish, Japanese, Korean, Chinese (Simplified and Traditional), Vietnamese, Indonesian, Thai, Hebrew, Arabic, and Persian.
 ```
 
 ---

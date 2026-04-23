@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "キャッシュクリアとハードリロード",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "クリックして現在のサイトのキャッシュをクリアし、ハードリロードします。",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "キャッシュクリアとハードリロード (このサイト)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "このサイトのキャッシュをクリアして再読み込み",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "すべてのサイトのキャッシュをクリアして現在のタブを再読み込み",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "このサイトのキャッシュ + Cookie + ストレージをクリアして再読み込み",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "このサイトと開いているすべてのサブドメインのキャッシュをクリアして再読み込み",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "現在のサイトのキャッシュをクリアしてこのウィンドウのすべてのタブを再読み込み",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "このサイトのキャッシュをクリアして再読み込み",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "すべてのサイトのキャッシュをクリアして再読み込み",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "このサイトのキャッシュ + Cookie + ストレージをクリアして再読み込み",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "このサイトと開いているすべてのサブドメインのキャッシュをクリアして再読み込み",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "キャッシュをクリアしてこのウィンドウのすべてのタブを再読み込み",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "キャッシュをクリアしてすべてのウィンドウのすべてのタブを再読み込み",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "完全クリアしてこのページを新しいシークレットウィンドウで再度開く",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "新しいキャッシュでリンクを開く",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "現在のサイトのキャッシュをクリアしてすべてのウィンドウのすべてのタブを再読み込み",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "シークレットウィンドウを開けませんでした — シークレットモードで拡張機能アクセスを有効にしてください",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "このサイトのキャッシュをクリアしました",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "すべてのサイトのキャッシュをクリアしました",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "このサイトのキャッシュ、Cookie、ストレージをクリアしました",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "このサイトとサブドメインのキャッシュをクリアしました",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "キャッシュのクリアに失敗しました",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "新規",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "キャッシュ",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

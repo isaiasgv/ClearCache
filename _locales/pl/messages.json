@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Wyczyść pamięć podręczną i odśwież",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Kliknij, aby wyczyścić pamięć podręczną i wymusić odświeżenie bieżącej strony.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Wyczyść pamięć podręczną i wymuś odświeżenie (ta strona)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Wyczyść pamięć podręczną tej strony i odśwież",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "Wyczyść pamięć podręczną WSZYSTKICH stron i odśwież bieżącą kartę",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Wyczyść pamięć podręczną + pliki cookie + storage tej strony i odśwież",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "Wyczyść pamięć podręczną tej strony + wszystkich otwartych subdomen i odśwież",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Wyczyść pamięć podręczną bieżącej strony i odśwież wszystkie karty w tym oknie",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Wyczyść pamięć podręczną tej strony i odśwież",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "Wyczyść pamięć podręczną WSZYSTKICH stron i odśwież",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Wyczyść pamięć podręczną + pliki cookie + storage tej strony i odśwież",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "Wyczyść pamięć podręczną tej strony + wszystkich otwartych subdomen i odśwież",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Wyczyść pamięć podręczną i odśwież wszystkie karty w tym oknie",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Wyczyść pamięć podręczną i odśwież wszystkie karty we WSZYSTKICH oknach",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Głębokie czyszczenie i otwórz ponownie tę stronę w nowym oknie incognito",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "Otwórz link ze świeżą pamięcią podręczną",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Wyczyść pamięć podręczną bieżącej strony i odśwież wszystkie karty we WSZYSTKICH oknach",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "Nie można otworzyć trybu incognito — włącz dostęp rozszerzenia w trybie incognito",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "Pamięć podręczna wyczyszczona dla tej strony",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "Pamięć podręczna wyczyszczona dla WSZYSTKICH stron",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Pamięć podręczna, pliki cookie i storage wyczyszczone dla tej strony",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "Pamięć podręczna wyczyszczona dla tej strony i subdomen",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "Nie udało się wyczyścić pamięci podręcznej",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "świeże",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "z pamięci",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

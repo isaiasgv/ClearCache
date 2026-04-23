@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "ล้างแคชและรีโหลด",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "คลิกเพื่อล้างแคชและรีโหลดไซต์ปัจจุบัน",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "ล้างแคชและรีโหลด (ไซต์นี้)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "ล้างแคชของไซต์นี้และโหลดใหม่",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "ล้างแคชของไซต์ทั้งหมดและโหลดแท็บปัจจุบันใหม่",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "ล้างแคช + คุกกี้ + ที่จัดเก็บของไซต์นี้และโหลดใหม่",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "ล้างแคชของไซต์นี้ + โดเมนย่อยที่เปิดอยู่ทั้งหมดและโหลดใหม่",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "ล้างแคชของไซต์ปัจจุบันและโหลดแท็บทั้งหมดในหน้าต่างนี้ใหม่",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "ล้างแคชของไซต์นี้และโหลดใหม่",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "ล้างแคชของไซต์ทั้งหมดและโหลดใหม่",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "ล้างแคช + คุกกี้ + ที่จัดเก็บของไซต์นี้และโหลดใหม่",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "ล้างแคชของไซต์นี้ + โดเมนย่อยที่เปิดอยู่ทั้งหมดและโหลดใหม่",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "ล้างแคชและโหลดแท็บทั้งหมดในหน้าต่างนี้ใหม่",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "ล้างแคชและโหลดแท็บทั้งหมดในทุกหน้าต่างใหม่",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "ล้างข้อมูลเชิงลึกและเปิดหน้านี้อีกครั้งในหน้าต่างไม่ระบุตัวตนใหม่",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "เปิดลิงก์ด้วยแคชใหม่",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "ล้างแคชของไซต์ปัจจุบันและโหลดแท็บทั้งหมดในทุกหน้าต่างใหม่",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "ไม่สามารถเปิดไม่ระบุตัวตนได้ — เปิดใช้งานการเข้าถึงส่วนขยายในโหมดไม่ระบุตัวตน",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "ล้างแคชสำหรับไซต์นี้แล้ว",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "ล้างแคชสำหรับไซต์ทั้งหมดแล้ว",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "ล้างแคช คุกกี้ และที่จัดเก็บสำหรับไซต์นี้แล้ว",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "ล้างแคชสำหรับไซต์นี้และโดเมนย่อยแล้ว",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "ล้างแคชไม่สำเร็จ",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "ใหม่",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "จากแคช",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

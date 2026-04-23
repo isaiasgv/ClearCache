@@ -1,0 +1,102 @@
+{
+  "extName": {
+    "message": "Önbelleği Temizle ve Yeniden Yükle",
+    "description": "Extension name shown in the store and toolbar."
+  },
+  "extDescription": {
+    "message": "Geçerli sitenin önbelleğini temizlemek ve zorla yeniden yüklemek için tıklayın.",
+    "description": "Short description shown in the store and the extensions page."
+  },
+  "actionTitle": {
+    "message": "Önbelleği temizle ve yeniden yükle (bu site)",
+    "description": "Tooltip on the toolbar icon."
+  },
+  "commandClearOriginDescription": {
+    "message": "Bu sitenin önbelleğini temizle ve yeniden yükle",
+    "description": "Description for the default keyboard shortcut."
+  },
+  "commandClearAllDescription": {
+    "message": "TÜM sitelerin önbelleğini temizle ve geçerli sekmeyi yeniden yükle",
+    "description": "Description for the all-origins keyboard shortcut."
+  },
+  "commandClearDeepDescription": {
+    "message": "Bu sitenin önbellek + çerez + depolamasını temizle ve yeniden yükle",
+    "description": "Description for the deep-clear keyboard shortcut."
+  },
+  "commandClearSubdomainsDescription": {
+    "message": "Bu sitenin + tüm açık alt alan adlarının önbelleğini temizle ve yeniden yükle",
+    "description": "Description for the clear-subdomains keyboard shortcut."
+  },
+  "commandReloadAllTabsDescription": {
+    "message": "Geçerli sitenin önbelleğini temizle ve bu penceredeki tüm sekmeleri yeniden yükle",
+    "description": "Description for the reload-all-tabs keyboard shortcut."
+  },
+  "menuOriginTitle": {
+    "message": "Bu sitenin önbelleğini temizle ve yeniden yükle",
+    "description": "Right-click context menu entry for current-site clear."
+  },
+  "menuAllTitle": {
+    "message": "TÜM sitelerin önbelleğini temizle ve yeniden yükle",
+    "description": "Right-click context menu entry for all-sites clear."
+  },
+  "menuDeepTitle": {
+    "message": "Bu sitenin önbellek + çerez + depolamasını temizle ve yeniden yükle",
+    "description": "Right-click context menu entry for deep clear."
+  },
+  "menuSubdomainsTitle": {
+    "message": "Bu sitenin + tüm açık alt alan adlarının önbelleğini temizle ve yeniden yükle",
+    "description": "Right-click context menu entry for clear-subdomains."
+  },
+  "menuReloadAllTabsTitle": {
+    "message": "Önbelleği temizle ve bu penceredeki tüm sekmeleri yeniden yükle",
+    "description": "Right-click context menu entry for reload-all-tabs (current window)."
+  },
+  "menuReloadAllWindowsTitle": {
+    "message": "Önbelleği temizle ve TÜM pencerelerdeki tüm sekmeleri yeniden yükle",
+    "description": "Right-click context menu entry for reload-all-tabs across every window."
+  },
+  "menuReopenIncognitoTitle": {
+    "message": "Derinlemesine temizle ve bu sayfayı yeni bir gizli pencerede yeniden aç",
+    "description": "Right-click context menu entry for reopen-in-incognito."
+  },
+  "menuOpenLinkFreshTitle": {
+    "message": "Bağlantıyı temiz önbellekle aç",
+    "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
+  },
+  "commandReloadAllWindowsDescription": {
+    "message": "Geçerli sitenin önbelleğini temizle ve TÜM pencerelerdeki tüm sekmeleri yeniden yükle",
+    "description": "Description for the all-windows reload shortcut."
+  },
+  "toastIncognitoBlockedText": {
+    "message": "Gizli pencere açılamadı — gizli modda uzantı erişimini etkinleştirin",
+    "description": "Toast shown when chrome.windows.create({incognito: true}) is denied."
+  },
+  "toastOriginText": {
+    "message": "Bu site için önbellek temizlendi",
+    "description": "Toast shown after a per-site clear."
+  },
+  "toastAllText": {
+    "message": "TÜM siteler için önbellek temizlendi",
+    "description": "Toast shown after an all-origins clear."
+  },
+  "toastDeepText": {
+    "message": "Bu site için önbellek, çerez ve depolama temizlendi",
+    "description": "Toast shown after a deep clear."
+  },
+  "toastSubdomainsText": {
+    "message": "Bu site ve alt alan adları için önbellek temizlendi",
+    "description": "Toast shown after a clear-subdomains operation."
+  },
+  "toastErrorText": {
+    "message": "Önbellek temizlenemedi",
+    "description": "Toast shown when the clear operation throws."
+  },
+  "toastTelemetryFresh": {
+    "message": "taze",
+    "description": "Suffix word used in toast for resources fetched from network."
+  },
+  "toastTelemetryCached": {
+    "message": "önbellekten",
+    "description": "Suffix word used in toast for resources still served from local cache."
+  }
+}

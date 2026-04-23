@@ -1,6 +1,40 @@
 # Changelog
 
 
+## v0.0.8 — 2026-04-23
+
+### Features
+- feat: add 18 new locales, bringing UI coverage to 20 languages
+- feat: add Alt+Shift+S "clear this site + open subdomains" mode
+- feat: add "Open link with fresh cache" right-click menu on hyperlinks
+
+### Fixes
+- fix: satisfy AMO validation (data_collection_permissions, min Firefox 112)
+- fix: strip Firefox-unsupported browsingData types
+
+### Install
+
+Two artifacts are published with every release:
+
+- `clearcache-0.0.8.zip` — Chrome, Edge, Brave, Arc, Opera, Vivaldi (any Chromium MV3 browser).
+- `clearcache-firefox-0.0.8.zip` — Firefox 112+.
+
+Chromium: open `chrome://extensions`, enable Developer mode, click "Load unpacked", select the extracted folder.
+
+Firefox: open `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on", select any file inside the extracted folder. Temporary installs are removed on browser restart — use the signed AMO build for permanent install.
+
+Or wait for the Chrome Web Store / Edge Add-ons / Firefox Add-ons listing to update.
+
+**SHA-256:**
+
+```
+324f702a46a8975e4e547dbb99a79c2fb906a502d44f0a61b905c83c544c92ce         clearcache-0.0.8.zip
+df816d6812810d762879ac69e40e87ac1230190411754e368f007f48b7c7d3e2  clearcache-firefox-0.0.8.zip
+```
+
+**Full changelog:** https://github.com/isaiasgv/ClearCache/compare/v0.0.7...v0.0.8
+
+
 ## v0.0.7 — 2026-04-15
 
 ### Install

@@ -1,9 +1,11 @@
+<!-- repo-standards:logo -->
 <p align="center">
   <picture>
     <source srcset="./assets/logo.svg" type="image/svg+xml" />
     <img src="./assets/logo.png" alt="ClearCache" width="128" height="128" />
   </picture>
 </p>
+<!-- /repo-standards:logo -->
 
 <h1 align="center">Clear Cache &amp; Hard Reload</h1>
 

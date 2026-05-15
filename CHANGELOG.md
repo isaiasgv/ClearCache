@@ -1,6 +1,34 @@
 # Changelog
 
 
+## v0.0.9 — 2026-05-15
+
+### Fixes
+- fix(ci): make Woodpecker release pipeline schema-valid on 3.x
+
+### Install
+
+Two artifacts are published with every release:
+
+- `clearcache-0.0.9.zip` — Chrome, Edge, Brave, Arc, Opera, Vivaldi (any Chromium MV3 browser).
+- `clearcache-firefox-0.0.9.zip` — Firefox 112+.
+
+Chromium: open `chrome://extensions`, enable Developer mode, click "Load unpacked", select the extracted folder.
+
+Firefox: open `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on", select any file inside the extracted folder. Temporary installs are removed on browser restart — use the signed AMO build for permanent install.
+
+Or wait for the Chrome Web Store / Edge Add-ons / Firefox Add-ons listing to update.
+
+**SHA-256:**
+
+```
+4aa92f7bcb604b13f169c043d21d43210f2c49845649f2c493191f5d27cb6398         clearcache-0.0.9.zip
+39ad02e35e93a5bd202062055a4ba293fd5f0b432444eb137002e6bab6deb075  clearcache-firefox-0.0.9.zip
+```
+
+**Full changelog:** https://github.com/isaiasgv/ClearCache/compare/v0.0.8...v0.0.9
+
+
 ## v0.0.8 — 2026-04-23
 
 ### Features

@@ -1,0 +1,380 @@
+# Woodpecker Release — fallback / manual mirror of .github/workflows/release.yml
+#
+# Triggered only via the Woodpecker UI ("Run pipeline"). GitHub Actions remains
+# the primary release path; this exists so a release can be cut from Woodpecker
+# when needed (e.g., GHA outage, self-hosted publishing).
+#
+# Channel is derived from the branch the pipeline was run on:
+#   - release branch → PRERELEASE (vX.Y.Z-rc.N), no commit-back
+#   - main branch    → STABLE (vX.Y.Z), bumps manifests + CHANGELOG, pushes to main
+#
+# Required Woodpecker secrets:
+#   - release_token  : GitHub Personal Access Token with `repo` scope (or fine-grained
+#                      "contents: read+write" on this repo). Used for pushing the bump
+#                      commit/tag and creating the GitHub Release.
+#   - github_repo    : owner/name of the GitHub repo (e.g. "user/ClearCache"). Used in
+#                      release notes and gh CLI calls.
+#
+# Optional environment override (set in the manual-run dialog as a variable):
+#   - BUMP_OVERRIDE  : auto | major | minor | patch  (default: auto)
+
+when:
+  - event: manual
+
+variables:
+  - &release_image node:20-bookworm
+
+steps:
+  release:
+    image: *release_image
+    environment:
+      RELEASE_TOKEN:
+        from_secret: release_token
+      GITHUB_REPO:
+        from_secret: github_repo
+      BUMP_OVERRIDE: ${BUMP_OVERRIDE:-auto}
+    commands:
+      - set -euo pipefail
+      - apt-get update -qq && apt-get install -y -qq --no-install-recommends jq git zip unzip ca-certificates curl gnupg >/dev/null
+
+      # Install gh CLI (used to create the GitHub Release).
+      - mkdir -p -m 755 /etc/apt/keyrings
+      - curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /etc/apt/keyrings/githubcli-archive-keyring.gpg
+      - chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+      - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list
+      - apt-get update -qq && apt-get install -y -qq --no-install-recommends gh >/dev/null
+
+      - git config --global --add safe.directory "$CI_WORKSPACE"
+      - git config user.name  "woodpecker-ci"
+      - git config user.email "woodpecker-ci@users.noreply.github.com"
+
+      # Make sure we have full history + all tags.
+      - git fetch --tags --unshallow 2>/dev/null || git fetch --tags
+
+      # --- Detect release channel from branch ---
+      - |
+        BRANCH="$CI_COMMIT_BRANCH"
+        if [ "$BRANCH" = "release" ]; then
+          CHANNEL=prerelease
+          echo "Release channel: PRERELEASE (release branch)"
+        elif [ "$BRANCH" = "main" ]; then
+          CHANNEL=stable
+          echo "Release channel: STABLE (main branch)"
+        else
+          echo "ERROR: Release pipeline must be run on 'main' or 'release' branch (got: $BRANCH)"
+          exit 1
+        fi
+        echo "CHANNEL=$CHANNEL" > .release_env
+
+      # --- Validate manifests ---
+      - |
+        . ./.release_env
+        jq empty manifest.json
+        for field in manifest_version name version description permissions background action icons; do
+          if ! jq -e ".${field}" manifest.json > /dev/null; then
+            echo "ERROR: manifest.json missing field: ${field}"; exit 1
+          fi
+        done
+        jq empty manifest.firefox.json
+        for field in manifest_version name version description permissions background action icons browser_specific_settings; do
+          if ! jq -e ".${field}" manifest.firefox.json > /dev/null; then
+            echo "ERROR: manifest.firefox.json missing field: ${field}"; exit 1
+          fi
+        done
+        V_CHROME=$(jq -r '.version' manifest.json)
+        V_FIREFOX=$(jq -r '.version' manifest.firefox.json)
+        if [ "$V_CHROME" != "$V_FIREFOX" ]; then
+          echo "ERROR: Version mismatch: chrome=$V_CHROME firefox=$V_FIREFOX"; exit 1
+        fi
+        for size in 16 32 48 128; do
+          test -f "icons/icon${size}.png" || { echo "ERROR: Missing icons/icon${size}.png"; exit 1; }
+        done
+
+      # --- Determine bump from Conventional Commits ---
+      - |
+        . ./.release_env
+        LAST_TAG=$(git tag --list 'v*.*.*' --sort=-v:refname | grep -vE '\-rc\.' | head -1 || true)
+        if [ -z "$LAST_TAG" ]; then
+          echo "No prior stable v* tag found — treating all history as releasable."
+          RANGE=""
+        else
+          echo "Last stable tag: $LAST_TAG"
+          RANGE="${LAST_TAG}..HEAD"
+        fi
+
+        COMMITS=$(git log ${RANGE} --pretty=format:'%H%x09%s%x09%b%x1e' || true)
+
+        BUMP="none"
+        if [ "$BUMP_OVERRIDE" != "auto" ] && [ -n "$BUMP_OVERRIDE" ]; then
+          BUMP="$BUMP_OVERRIDE"
+          echo "Manual BUMP_OVERRIDE: $BUMP"
+        else
+          HAS_RELEASABLE=0
+          EXPLICIT_BUMP=""
+          EXPLICIT_RANK=0
+          rank_for() { case "$1" in major) echo 3 ;; minor) echo 2 ;; patch) echo 1 ;; *) echo 0 ;; esac; }
+
+          while IFS= read -r -d $'\x1e' record; do
+            [ -z "$record" ] && continue
+            SUBJECT=$(echo "$record" | awk -F'\t' '{print $2}')
+            BODY=$(echo "$record" | awk -F'\t' '{print $3}')
+            if echo "$SUBJECT" | grep -qE '^chore\(release\):'; then continue; fi
+            if echo "$SUBJECT" | grep -qE '^(feat|fix|perf|refactor)(\([^)]+\))?!?:'; then
+              HAS_RELEASABLE=1
+            fi
+            for level in major minor patch; do
+              if echo "$BODY" | grep -qiE "^Release-Bump:[[:space:]]*${level}\b"; then
+                R=$(rank_for "$level")
+                if [ "$R" -gt "$EXPLICIT_RANK" ]; then
+                  EXPLICIT_RANK=$R
+                  EXPLICIT_BUMP=$level
+                fi
+              fi
+            done
+          done <<< "$COMMITS"
+
+          if   [ -n "$EXPLICIT_BUMP" ];   then BUMP="$EXPLICIT_BUMP"
+          elif [ $HAS_RELEASABLE -eq 1 ]; then BUMP="patch"
+          fi
+        fi
+
+        echo "Computed bump: $BUMP"
+        echo "BUMP=$BUMP"         >> .release_env
+        echo "LAST_TAG=$LAST_TAG" >> .release_env
+
+      # --- Skip or compute next version ---
+      - |
+        . ./.release_env
+        if [ "$BUMP" = "none" ]; then
+          echo "NOTICE: No releasable commits since ${LAST_TAG}. Skipping release."
+          touch .release_skip
+          exit 0
+        fi
+
+        CURRENT=$(jq -r '.version' manifest.json)
+        IFS='.' read -r MAJ MIN PAT _BUILD <<< "$CURRENT"
+        MAJ=${MAJ:-0}; MIN=${MIN:-0}; PAT=${PAT:-0}
+        case "$BUMP" in
+          major) MAJ=$((MAJ+1)); MIN=0; PAT=0 ;;
+          minor) MIN=$((MIN+1)); PAT=0 ;;
+          patch) PAT=$((PAT+1)) ;;
+        esac
+        BASE="${MAJ}.${MIN}.${PAT}"
+
+        if [ "$CHANNEL" = "prerelease" ]; then
+          RC_COUNT=$(git tag --list "v${BASE}-rc.*" | wc -l | tr -d ' ')
+          RC_N=$((RC_COUNT + 1))
+          TAG="v${BASE}-rc.${RC_N}"
+          MANIFEST_VERSION="${BASE}.${RC_N}"
+          ZIP_NAME="clearcache-${BASE}-rc.${RC_N}.zip"
+          ZIP_NAME_FIREFOX="clearcache-firefox-${BASE}-rc.${RC_N}.zip"
+        else
+          TAG="v${BASE}"
+          MANIFEST_VERSION="${BASE}"
+          ZIP_NAME="clearcache-${BASE}.zip"
+          ZIP_NAME_FIREFOX="clearcache-firefox-${BASE}.zip"
+        fi
+
+        echo "Channel:              $CHANNEL"
+        echo "Current version:      $CURRENT"
+        echo "Next semver base:     $BASE"
+        echo "Tag:                  $TAG"
+        echo "Zip manifest version: $MANIFEST_VERSION"
+        echo "Chromium zip:         $ZIP_NAME"
+        echo "Firefox zip:          $ZIP_NAME_FIREFOX"
+
+        {
+          echo "BASE=$BASE"
+          echo "TAG=$TAG"
+          echo "MANIFEST_VERSION=$MANIFEST_VERSION"
+          echo "ZIP_NAME=$ZIP_NAME"
+          echo "ZIP_NAME_FIREFOX=$ZIP_NAME_FIREFOX"
+        } >> .release_env
+
+        if git rev-parse "$TAG" >/dev/null 2>&1; then
+          echo "ERROR: Tag $TAG already exists. Aborting."; exit 1
+        fi
+
+      # --- Stage manifest versions ---
+      - |
+        [ -f .release_skip ] && exit 0
+        . ./.release_env
+        jq --arg v "$MANIFEST_VERSION" '.version = $v' manifest.json > manifest.json.tmp
+        mv manifest.json.tmp manifest.json
+        jq --arg v "$MANIFEST_VERSION" '.version = $v' manifest.firefox.json > manifest.firefox.json.tmp
+        mv manifest.firefox.json.tmp manifest.firefox.json
+        echo "manifest.json:         $(jq -r '.version' manifest.json)"
+        echo "manifest.firefox.json: $(jq -r '.version' manifest.firefox.json)"
+
+      # --- Build zips ---
+      - |
+        [ -f .release_skip ] && exit 0
+        . ./.release_env
+
+        STAGING_CHROME="$(mktemp -d)"
+        cp manifest.json background.js LICENSE "$STAGING_CHROME/"
+        cp -r icons "$STAGING_CHROME/"
+        [ -d _locales ] && cp -r _locales "$STAGING_CHROME/" || true
+        [ -d lib ] && cp -r lib "$STAGING_CHROME/" || true
+        (cd "$STAGING_CHROME" && zip -r "$CI_WORKSPACE/${ZIP_NAME}" .)
+        echo "--- ${ZIP_NAME} ---"
+        unzip -l "${ZIP_NAME}"
+
+        STAGING_FIREFOX="$(mktemp -d)"
+        cp manifest.firefox.json "$STAGING_FIREFOX/manifest.json"
+        cp background.js LICENSE "$STAGING_FIREFOX/"
+        cp -r icons "$STAGING_FIREFOX/"
+        [ -d _locales ] && cp -r _locales "$STAGING_FIREFOX/" || true
+        [ -d lib ] && cp -r lib "$STAGING_FIREFOX/" || true
+        (cd "$STAGING_FIREFOX" && zip -r "$CI_WORKSPACE/${ZIP_NAME_FIREFOX}" .)
+        echo "--- ${ZIP_NAME_FIREFOX} ---"
+        unzip -l "${ZIP_NAME_FIREFOX}"
+
+      # --- Compute SHA-256 ---
+      - |
+        [ -f .release_skip ] && exit 0
+        . ./.release_env
+        SHA_CHROME=$(sha256sum "$ZIP_NAME" | awk '{print $1}')
+        echo "${SHA_CHROME}  ${ZIP_NAME}" > "${ZIP_NAME}.sha256"
+        SHA_FIREFOX=$(sha256sum "$ZIP_NAME_FIREFOX" | awk '{print $1}')
+        echo "${SHA_FIREFOX}  ${ZIP_NAME_FIREFOX}" > "${ZIP_NAME_FIREFOX}.sha256"
+        echo "SHA_CHROME=$SHA_CHROME"   >> .release_env
+        echo "SHA_FIREFOX=$SHA_FIREFOX" >> .release_env
+
+      # --- Generate release notes ---
+      - |
+        [ -f .release_skip ] && exit 0
+        . ./.release_env
+        DATE=$(date -u +'%Y-%m-%d')
+        NOTES="$(mktemp)"
+        if [ -z "$LAST_TAG" ]; then RANGE=""; else RANGE="${LAST_TAG}..HEAD"; fi
+
+        {
+          if [ "$CHANNEL" = "prerelease" ]; then
+            echo "## ${TAG} — ${DATE} (release candidate)"
+            echo ""
+            echo "> Pre-release built from the \`release\` branch. Promote to stable by merging \`release\` → \`main\`, which will publish the corresponding \`v${BASE}\` stable release."
+            echo ""
+          else
+            echo "## ${TAG} — ${DATE}"
+            echo ""
+          fi
+
+          BREAK=$(git log ${RANGE} --pretty=format:'- %s' --grep='!:' || true)
+          FEATS=$(git log ${RANGE} --pretty=format:'- %s' --grep='^feat' || true)
+          FIXES=$(git log ${RANGE} --pretty=format:'- %s' --grep='^fix'  || true)
+          PERFS=$(git log ${RANGE} --pretty=format:'- %s' --grep='^perf' || true)
+
+          if [ -n "$BREAK" ]; then echo "### Breaking changes"; echo "$BREAK"; echo ""; fi
+          if [ -n "$FEATS" ]; then echo "### Features";         echo "$FEATS"; echo ""; fi
+          if [ -n "$FIXES" ]; then echo "### Fixes";            echo "$FIXES"; echo ""; fi
+          if [ -n "$PERFS" ]; then echo "### Performance";      echo "$PERFS"; echo ""; fi
+
+          echo "### Install"
+          echo ""
+          echo "Two artifacts are published with every release:"
+          echo ""
+          echo "- \`${ZIP_NAME}\` — Chrome, Edge, Brave, Arc, Opera, Vivaldi (any Chromium MV3 browser)."
+          echo "- \`${ZIP_NAME_FIREFOX}\` — Firefox 112+."
+          echo ""
+          echo "Chromium: open \`chrome://extensions\`, enable Developer mode, click \"Load unpacked\", select the extracted folder."
+          echo ""
+          echo "Firefox: open \`about:debugging#/runtime/this-firefox\`, click \"Load Temporary Add-on\", select any file inside the extracted folder. Temporary installs are removed on browser restart — use the signed AMO build for permanent install."
+          if [ "$CHANNEL" != "prerelease" ]; then
+            echo ""
+            echo "Or wait for the Chrome Web Store / Edge Add-ons / Firefox Add-ons listing to update."
+          fi
+          echo ""
+          echo "**SHA-256:**"
+          echo ""
+          echo '```'
+          echo "${SHA_CHROME}  ${ZIP_NAME}"
+          echo "${SHA_FIREFOX}  ${ZIP_NAME_FIREFOX}"
+          echo '```'
+          if [ -n "$LAST_TAG" ]; then
+            echo ""
+            echo "**Full changelog:** https://github.com/${GITHUB_REPO}/compare/${LAST_TAG}...${TAG}"
+          fi
+        } > "$NOTES"
+
+        echo "NOTES_PATH=$NOTES" >> .release_env
+
+      # --- Prepend to CHANGELOG.md (stable only) ---
+      - |
+        [ -f .release_skip ] && exit 0
+        . ./.release_env
+        if [ "$CHANNEL" != "stable" ]; then exit 0; fi
+
+        if [ ! -f CHANGELOG.md ]; then
+          cat > CHANGELOG.md <<'HDR'
+        # Changelog
+
+        All notable changes to this project are documented in this file.
+
+        The format is based on [Keep a Changelog](https://keepachangelog.com/),
+        and versions follow [Semantic Versioning](https://semver.org/),
+        driven by [Conventional Commits](https://www.conventionalcommits.org/).
+
+        HDR
+        fi
+
+        HEADER_END=$(awk '/^# Changelog/{found=1; next} found && NF==0 && !done {print NR; done=1}' CHANGELOG.md | head -1)
+        HEADER_END=${HEADER_END:-0}
+
+        NEW_FILE="$(mktemp)"
+        if [ "$HEADER_END" -gt 0 ]; then
+          head -n "$HEADER_END" CHANGELOG.md > "$NEW_FILE"
+          echo "" >> "$NEW_FILE"
+          cat "$NOTES_PATH" >> "$NEW_FILE"
+          echo "" >> "$NEW_FILE"
+          tail -n +"$((HEADER_END + 1))" CHANGELOG.md >> "$NEW_FILE"
+        else
+          cat "$NOTES_PATH" "$NEW_FILE" > "${NEW_FILE}.tmp"
+          mv "${NEW_FILE}.tmp" "$NEW_FILE"
+          echo "" >> "$NEW_FILE"
+          cat CHANGELOG.md >> "$NEW_FILE" 2>/dev/null || true
+        fi
+
+        mv "$NEW_FILE" CHANGELOG.md
+        echo "--- CHANGELOG.md head ---"
+        head -40 CHANGELOG.md
+
+      # --- Commit bump + push (stable only) ---
+      - |
+        [ -f .release_skip ] && exit 0
+        . ./.release_env
+        if [ "$CHANNEL" = "stable" ]; then
+          git remote set-url origin "https://x-access-token:${RELEASE_TOKEN}@github.com/${GITHUB_REPO}.git"
+          git add manifest.json manifest.firefox.json CHANGELOG.md
+          git commit -m "chore(release): ${TAG} [skip ci]"
+          git push origin HEAD:main
+        fi
+
+      # --- Create and push tag ---
+      - |
+        [ -f .release_skip ] && exit 0
+        . ./.release_env
+        git remote set-url origin "https://x-access-token:${RELEASE_TOKEN}@github.com/${GITHUB_REPO}.git"
+        if [ "$CHANNEL" = "prerelease" ]; then
+          git tag -a "$TAG" -m "Pre-release $TAG"
+        else
+          git tag -a "$TAG" -m "Release $TAG"
+        fi
+        git push origin "$TAG"
+
+      # --- Create GitHub Release ---
+      - |
+        [ -f .release_skip ] && exit 0
+        . ./.release_env
+        export GH_TOKEN="$RELEASE_TOKEN"
+        PRERELEASE_FLAG=""
+        if [ "$CHANNEL" = "prerelease" ]; then PRERELEASE_FLAG="--prerelease"; fi
+        gh release create "$TAG" \
+          --repo "$GITHUB_REPO" \
+          --title "$TAG" \
+          --notes-file "$NOTES_PATH" \
+          $PRERELEASE_FLAG \
+          "$ZIP_NAME" \
+          "${ZIP_NAME}.sha256" \
+          "$ZIP_NAME_FIREFOX" \
+          "${ZIP_NAME_FIREFOX}.sha256"

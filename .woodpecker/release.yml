@@ -41,8 +41,8 @@ steps:
       - apt-get update -qq && apt-get install -y -qq --no-install-recommends gh >/dev/null
 
       - git config --global --add safe.directory "$CI_WORKSPACE"
-      - git config user.name  "woodpecker-ci"
-      - git config user.email "woodpecker-ci@users.noreply.github.com"
+      - git config user.name  "github-actions[bot]"
+      - git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       # Make sure we have full history + all tags.
       - git fetch --tags --unshallow 2>/dev/null || git fetch --tags
@@ -194,7 +194,7 @@ steps:
 
       # --- Stage manifest versions ---
       - |
-        [ -f .release_skip ] && exit 0
+        if [ -f .release_skip ]; then exit 0; fi
         . ./.release_env
         jq --arg v "$MANIFEST_VERSION" '.version = $v' manifest.json > manifest.json.tmp
         mv manifest.json.tmp manifest.json
@@ -205,7 +205,7 @@ steps:
 
       # --- Build zips ---
       - |
-        [ -f .release_skip ] && exit 0
+        if [ -f .release_skip ]; then exit 0; fi
         . ./.release_env
 
         STAGING_CHROME="$(mktemp -d)"
@@ -229,7 +229,7 @@ steps:
 
       # --- Compute SHA-256 ---
       - |
-        [ -f .release_skip ] && exit 0
+        if [ -f .release_skip ]; then exit 0; fi
         . ./.release_env
         SHA_CHROME=$(sha256sum "$ZIP_NAME" | awk '{print $1}')
         echo "${SHA_CHROME}  ${ZIP_NAME}" > "${ZIP_NAME}.sha256"
@@ -240,7 +240,7 @@ steps:
 
       # --- Generate release notes ---
       - |
-        [ -f .release_skip ] && exit 0
+        if [ -f .release_skip ]; then exit 0; fi
         . ./.release_env
         DATE=$(date -u +'%Y-%m-%d')
         NOTES="$(mktemp)"
@@ -298,7 +298,7 @@ steps:
 
       # --- Prepend to CHANGELOG.md (stable only) ---
       - |
-        [ -f .release_skip ] && exit 0
+        if [ -f .release_skip ]; then exit 0; fi
         . ./.release_env
         if [ "$CHANNEL" != "stable" ]; then exit 0; fi
 
@@ -338,7 +338,7 @@ steps:
 
       # --- Commit bump + push (stable only) ---
       - |
-        [ -f .release_skip ] && exit 0
+        if [ -f .release_skip ]; then exit 0; fi
         . ./.release_env
         if [ "$CHANNEL" = "stable" ]; then
           git remote set-url origin "https://x-access-token:${RELEASE_TOKEN}@github.com/${GITHUB_REPO}.git"
@@ -349,7 +349,7 @@ steps:
 
       # --- Create and push tag ---
       - |
-        [ -f .release_skip ] && exit 0
+        if [ -f .release_skip ]; then exit 0; fi
         . ./.release_env
         git remote set-url origin "https://x-access-token:${RELEASE_TOKEN}@github.com/${GITHUB_REPO}.git"
         if [ "$CHANNEL" = "prerelease" ]; then
@@ -361,7 +361,7 @@ steps:
 
       # --- Create GitHub Release ---
       - |
-        [ -f .release_skip ] && exit 0
+        if [ -f .release_skip ]; then exit 0; fi
         . ./.release_env
         export GH_TOKEN="$RELEASE_TOKEN"
         PRERELEASE_FLAG=""

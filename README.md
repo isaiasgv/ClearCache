@@ -1,6 +1,11 @@
+<!-- repo-standards:logo -->
 <p align="center">
-  <img src="./icons/icon128.png" alt="ClearCache" width="128" height="128" />
+  <picture>
+    <source srcset="./assets/logo.svg" type="image/svg+xml" />
+    <img src="./assets/logo.png" alt="ClearCache" width="128" height="128" />
+  </picture>
 </p>
+<!-- /repo-standards:logo -->
 
 <h1 align="center">Clear Cache &amp; Hard Reload</h1>
 
@@ -14,6 +19,7 @@
   <a href="https://github.com/isaiasgv/ClearCache/actions/workflows/ci.yml"><img src="https://github.com/isaiasgv/ClearCache/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://github.com/isaiasgv/ClearCache/actions/workflows/release.yml"><img src="https://github.com/isaiasgv/ClearCache/actions/workflows/release.yml/badge.svg" alt="Release" /></a>
   <a href="https://github.com/isaiasgv/ClearCache/releases/latest"><img src="https://img.shields.io/github/v/release/isaiasgv/ClearCache?include_prereleases&sort=semver" alt="Latest release" /></a>
+  <a href="https://github.com/isaiasgv/ClearCache/releases"><img src="https://img.shields.io/github/downloads/isaiasgv/ClearCache/total" alt="GitHub downloads" /></a>
   <a href="#contributing"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome" /></a>
 </p>
 

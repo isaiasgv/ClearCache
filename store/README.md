@@ -13,7 +13,10 @@ Canonical, copy-pasteable answers for every store form are kept alongside this R
 | Opera Add-ons | [opera-addons-answers.md](./opera-addons-answers.md) | General tab (URLs, build instructions, EULA, privacy policy) + Translations tab |
 | Firefox Add-ons (AMO) | [firefox-amo-answers.md](./firefox-amo-answers.md) | Name, summary, description, categories, license, privacy policy, Reviewer Notes |
 
-**See also:** [edge-featured-badge-compliance.md](./edge-featured-badge-compliance.md) — maps each criterion from Microsoft's Best Practices for extensions page to concrete evidence in this repo. Paste the summary table into the Edge submission's Certification Notes field for reviewer convenience.
+**See also:**
+
+- [edge-featured-badge-compliance.md](./edge-featured-badge-compliance.md) — maps each criterion from Microsoft's Best Practices for extensions page to concrete evidence in this repo. Paste the summary table into the Edge submission's Certification Notes field for reviewer convenience.
+- [badge-programs-roadmap.md](./badge-programs-roadmap.md) — per-store breakdown of every badge / curation program (Edge Featured, Chrome Established Publisher, Firefox AMO Recommended, etc.) with concrete action plans and timing. Revisit every couple of months.
 
 ## Localization — UI vs store listing copy
 

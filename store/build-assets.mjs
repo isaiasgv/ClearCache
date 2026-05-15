@@ -33,6 +33,10 @@ const ASSETS = [
   { src: "icon-square.html", out: "icons/icon48.png",                    w: 48,   h: 48   },
   { src: "icon-square.html", out: "icons/icon128.png",                   w: 128,  h: 128  },
 
+  // Canonical /assets/ — stable raw URLs for external apps (Slack, registries, docs sites)
+  { src: "icon-square.html",     out: "assets/logo.png",                     w: 512,  h: 512  },
+  { src: "social-preview.html",  out: "assets/social-preview.png",           w: 1280, h: 640  },
+
   // Landing page assets (served by Cloudflare Pages)
   { src: "icon-square.html", out: "landing/favicon.png",                 w: 128,  h: 128  },
   { src: "icon-square.html", out: "landing/logo.png",                    w: 300,  h: 300  },

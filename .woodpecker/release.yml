@@ -21,18 +21,14 @@
 when:
   - event: manual
 
-variables:
-  - &release_image node:20-bookworm
-
 steps:
   release:
-    image: *release_image
+    image: node:20-bookworm
     environment:
       RELEASE_TOKEN:
         from_secret: release_token
       GITHUB_REPO:
         from_secret: github_repo
-      BUMP_OVERRIDE: ${BUMP_OVERRIDE:-auto}
     commands:
       - set -euo pipefail
       - apt-get update -qq && apt-get install -y -qq --no-install-recommends jq git zip unzip ca-certificates curl gnupg >/dev/null
@@ -105,6 +101,7 @@ steps:
         COMMITS=$(git log ${RANGE} --pretty=format:'%H%x09%s%x09%b%x1e' || true)
 
         BUMP="none"
+        : "${BUMP_OVERRIDE:=auto}"
         if [ "$BUMP_OVERRIDE" != "auto" ] && [ -n "$BUMP_OVERRIDE" ]; then
           BUMP="$BUMP_OVERRIDE"
           echo "Manual BUMP_OVERRIDE: $BUMP"

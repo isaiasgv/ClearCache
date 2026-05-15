@@ -1,6 +1,34 @@
 # Changelog
 
 
+## v0.0.10 — 2026-05-15
+
+### Fixes
+- fix(ci): make Woodpecker release pipeline match GitHub Actions behavior
+
+### Install
+
+Two artifacts are published with every release:
+
+- `clearcache-0.0.10.zip` — Chrome, Edge, Brave, Arc, Opera, Vivaldi (any Chromium MV3 browser).
+- `clearcache-firefox-0.0.10.zip` — Firefox 112+.
+
+Chromium: open `chrome://extensions`, enable Developer mode, click "Load unpacked", select the extracted folder.
+
+Firefox: open `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on", select any file inside the extracted folder. Temporary installs are removed on browser restart — use the signed AMO build for permanent install.
+
+Or wait for the Chrome Web Store / Edge Add-ons / Firefox Add-ons listing to update.
+
+**SHA-256:**
+
+```
+0ff3905df1bf90eb7acecdf0550a9c91401058c358d780f0a9fb5c036fdf171b         clearcache-0.0.10.zip
+c378adc6002edfeadfe01f8a57e5867a92d51e941c58576ce5bbe8204caebba3  clearcache-firefox-0.0.10.zip
+```
+
+**Full changelog:** https://github.com/isaiasgv/ClearCache/compare/v0.0.9...v0.0.10
+
+
 ## v0.0.9 — 2026-05-15
 
 ### Fixes

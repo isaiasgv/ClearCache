@@ -431,14 +431,30 @@ const MENU_ITEMS = [
   { id: "clearcache-window-tabs",   messageId: "menuReloadAllTabsTitle",    contexts: ["action"], handler: (_info, tab) => clearOriginAndReloadTabs(tab, "window") },
   { id: "clearcache-all-windows",   messageId: "menuReloadAllWindowsTitle", contexts: ["action"], handler: (_info, tab) => clearOriginAndReloadTabs(tab, "all") },
   { id: "clearcache-incognito",     messageId: "menuReopenIncognitoTitle",  contexts: ["action"], handler: (_info, tab) => deepClearAndReopenIncognito(tab) },
+  { id: "clearcache-sep-about",     type: "separator",                      contexts: ["action"] },
+  { id: "clearcache-about",         messageId: "menuAboutTitle",            contexts: ["action"], handler: () => openAboutPage() },
   { id: "clearcache-open-link",     messageId: "menuOpenLinkFreshTitle",    contexts: ["link"],   handler: (info) => clearAndOpenLink(info.linkUrl) }
 ];
+
+// Open the bundled About page in a new tab. Self-contained extension page
+// (chrome-extension://<id>/about.html) — no network, no host permissions.
+async function openAboutPage() {
+  try {
+    await chrome.tabs.create({ url: chrome.runtime.getURL("about.html"), active: true });
+  } catch (err) {
+    console.error("[ClearCache] Could not open About page:", err);
+  }
+}
 
 async function installContextMenus() {
   // Chrome MV3 and Firefox both return Promises from contextMenus.removeAll;
   // the legacy callback form would break Firefox.
   await chrome.contextMenus.removeAll();
   for (const item of MENU_ITEMS) {
+    if (item.type === "separator") {
+      chrome.contextMenus.create({ id: item.id, type: "separator", contexts: item.contexts });
+      continue;
+    }
     chrome.contextMenus.create({
       id: item.id,
       title: chrome.i18n.getMessage(item.messageId),
@@ -452,7 +468,7 @@ chrome.runtime.onStartup.addListener(installContextMenus);
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   const item = MENU_ITEMS.find((m) => m.id === info.menuItemId);
-  if (!item) return;
+  if (!item?.handler) return;
   // Action-context items need a tab; link-context items read info.linkUrl.
   item.handler(info, tab);
 });

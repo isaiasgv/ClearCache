@@ -209,7 +209,7 @@ steps:
         . ./.release_env
 
         STAGING_CHROME="$(mktemp -d)"
-        cp manifest.json background.js LICENSE "$STAGING_CHROME/"
+        cp manifest.json background.js about.html about.js LICENSE "$STAGING_CHROME/"
         cp -r icons "$STAGING_CHROME/"
         [ -d _locales ] && cp -r _locales "$STAGING_CHROME/" || true
         [ -d lib ] && cp -r lib "$STAGING_CHROME/" || true
@@ -219,7 +219,7 @@ steps:
 
         STAGING_FIREFOX="$(mktemp -d)"
         cp manifest.firefox.json "$STAGING_FIREFOX/manifest.json"
-        cp background.js LICENSE "$STAGING_FIREFOX/"
+        cp background.js about.html about.js LICENSE "$STAGING_FIREFOX/"
         cp -r icons "$STAGING_FIREFOX/"
         [ -d _locales ] && cp -r _locales "$STAGING_FIREFOX/" || true
         [ -d lib ] && cp -r lib "$STAGING_FIREFOX/" || true

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title data-i18n="aboutPageTitle">About</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --fg: #1f2937;
+      --fg-muted: #6b7280;
+      --accent: #176bff; /* Oribion brand blue — same in light and dark, never themed */
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --surface: #111827;
+        --border: #1f2937;
+        --fg: #e5e7eb;
+        --fg-muted: #9ca3af;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 24px 24px;
+      flex: 1 0 auto;
+    }
+    .hero {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+    .hero img { width: 64px; height: 64px; flex: none; }
+    .hero h1 { font-size: 22px; margin: 0 0 2px; }
+    .version { color: var(--fg-muted); font-size: 13px; }
+    .tagline { color: var(--fg-muted); margin: 4px 0 28px; }
+    section { margin: 28px 0; }
+    h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-muted); margin: 0 0 10px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 5px 0; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px 20px; }
+    .links a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .links a:hover { text-decoration: underline; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+    /* Oribion family band — sits directly above the footer */
+    .oribion-band {
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .oribion-band strong { font-weight: 600; }
+    .oribion-band .brand { color: var(--accent); }
+    .oribion-band a { color: var(--accent); text-decoration: none; }
+    .oribion-band a:hover { text-decoration: underline; }
+
+    footer {
+      flex: none;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 18px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--fg-muted);
+    }
+    footer a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: inherit;
+      text-decoration: none;
+    }
+    footer img { height: 18px; width: auto; }
+    footer .brand { color: var(--accent); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <img src="icons/icon128.png" alt="" />
+      <div>
+        <h1 data-i18n="extName">ClearCache</h1>
+        <div class="version"><span data-i18n="aboutVersionLabel">Version</span> <span id="version">—</span></div>
+      </div>
+    </div>
+    <p class="tagline" data-i18n="extDescription"></p>
+
+    <section>
+      <h2 data-i18n="aboutWhatHeading">What it does</h2>
+      <div class="card">
+        <ul>
+          <li data-i18n="menuOriginTitle"></li>
+          <li data-i18n="menuSubdomainsTitle"></li>
+          <li data-i18n="menuAllTitle"></li>
+          <li data-i18n="menuDeepTitle"></li>
+          <li data-i18n="menuReloadAllTabsTitle"></li>
+          <li data-i18n="menuReloadAllWindowsTitle"></li>
+          <li data-i18n="menuReopenIncognitoTitle"></li>
+          <li data-i18n="menuOpenLinkFreshTitle"></li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2 data-i18n="aboutPrivacyHeading">Privacy</h2>
+      <div class="card">
+        <p style="margin:0" data-i18n="aboutPrivacyNote"></p>
+      </div>
+    </section>
+
+    <section>
+      <h2 data-i18n="aboutLinksHeading">Links</h2>
+      <div class="links">
+        <a href="https://github.com/isaiasgv/ClearCache" target="_blank" rel="noopener" data-i18n="aboutLinkSource">Source code</a>
+        <a href="https://github.com/isaiasgv/ClearCache/blob/main/docs/privacy.md" target="_blank" rel="noopener" data-i18n="aboutLinkPrivacy">Privacy policy</a>
+        <a href="https://www.gnu.org/licenses/gpl-3.0" target="_blank" rel="noopener" data-i18n="aboutLinkLicense">License (GPL-3.0)</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Oribion family signal — verbatim brand phrase, never reworded. -->
+  <div class="oribion-band">
+    <p style="margin:0">
+      <strong>Part of the <span class="brand">Oribion</span> Family of Companies.</strong>
+      <span data-i18n="aboutOribionLead"></span>
+      <a href="https://oribion.com" target="_blank" rel="noopener">oribion.com</a>.
+    </p>
+  </div>
+
+  <footer>
+    <a href="https://oribion.com"
+       target="_blank"
+       rel="noopener"
+       aria-label="Powered by Oribion — visit oribion.com">
+      <img src="icons/oribion-logo.svg" alt="Oribion" />
+      <span>Powered By <span class="brand">Oribion</span></span>
+    </a>
+  </footer>
+
+  <script src="about.js"></script>
+</body>
+</html>

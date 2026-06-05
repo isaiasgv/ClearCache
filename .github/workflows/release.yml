@@ -241,7 +241,7 @@ jobs:
 
           # --- Chromium zip ---
           STAGING_CHROME="$(mktemp -d)"
-          cp manifest.json background.js LICENSE "$STAGING_CHROME/"
+          cp manifest.json background.js about.html about.js LICENSE "$STAGING_CHROME/"
           cp -r icons "$STAGING_CHROME/"
           if [ -d _locales ]; then cp -r _locales "$STAGING_CHROME/"; fi
           if [ -d lib ]; then cp -r lib "$STAGING_CHROME/"; fi
@@ -252,7 +252,7 @@ jobs:
           # --- Firefox zip (manifest.firefox.json is renamed to manifest.json inside the zip) ---
           STAGING_FIREFOX="$(mktemp -d)"
           cp manifest.firefox.json "$STAGING_FIREFOX/manifest.json"
-          cp background.js LICENSE "$STAGING_FIREFOX/"
+          cp background.js about.html about.js LICENSE "$STAGING_FIREFOX/"
           cp -r icons "$STAGING_FIREFOX/"
           if [ -d _locales ]; then cp -r _locales "$STAGING_FIREFOX/"; fi
           if [ -d lib ]; then cp -r lib "$STAGING_FIREFOX/"; fi

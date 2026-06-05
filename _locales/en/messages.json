@@ -63,6 +63,50 @@
     "message": "Open link with fresh cache",
     "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."
   },
+  "menuAboutTitle": {
+    "message": "About ClearCache",
+    "description": "Right-click context menu entry that opens the About page."
+  },
+  "aboutPageTitle": {
+    "message": "About ClearCache",
+    "description": "Browser tab title for the About page."
+  },
+  "aboutVersionLabel": {
+    "message": "Version",
+    "description": "Label preceding the version number on the About page."
+  },
+  "aboutWhatHeading": {
+    "message": "What it does",
+    "description": "Section heading on the About page listing the extension's actions."
+  },
+  "aboutPrivacyHeading": {
+    "message": "Privacy",
+    "description": "Section heading on the About page for the privacy statement."
+  },
+  "aboutPrivacyNote": {
+    "message": "No analytics, no tracking, no remote servers — everything runs locally on your machine.",
+    "description": "Privacy statement shown on the About page."
+  },
+  "aboutLinksHeading": {
+    "message": "Links",
+    "description": "Section heading on the About page for external links."
+  },
+  "aboutLinkSource": {
+    "message": "Source code",
+    "description": "About page link label pointing to the GitHub repository."
+  },
+  "aboutLinkPrivacy": {
+    "message": "Privacy policy",
+    "description": "About page link label pointing to the privacy policy."
+  },
+  "aboutLinkLicense": {
+    "message": "License (GPL-3.0)",
+    "description": "About page link label pointing to the license."
+  },
+  "aboutOribionLead": {
+    "message": "Learn more about the Oribion portfolio at",
+    "description": "Lead-in sentence on the About page before the oribion.com link. The brand phrase 'Part of the Oribion Family of Companies' and the link itself are not localized."
+  },
   "commandReloadAllWindowsDescription": {
     "message": "Clear cache for current site & reload all tabs in ALL windows",
     "description": "Description for the all-windows reload shortcut."

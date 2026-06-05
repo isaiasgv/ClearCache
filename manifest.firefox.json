@@ -62,9 +62,6 @@
       "description": "__MSG_commandClearDeepDescription__"
     },
     "clear-subdomains": {
-      "suggested_key": {
-        "default": "Alt+Shift+S"
-      },
       "description": "__MSG_commandClearSubdomainsDescription__"
     },
     "reload-all-tabs": {

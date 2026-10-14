@@ -59,6 +59,10 @@
     "message": "Hapus penuh & buka ulang halaman ini di jendela penyamaran baru",
     "description": "Right-click context menu entry for reopen-in-incognito."
   },
+  "menuMoreTitle": {
+    "message": "Lainnya",
+    "description": "Toolbar context menu submenu that holds the less-used actions (reload all windows, incognito, About)."
+  },
   "menuOpenLinkFreshTitle": {
     "message": "Buka tautan dengan cache segar",
     "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."

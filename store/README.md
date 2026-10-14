@@ -210,7 +210,7 @@ No popups. No options page. No telemetry. No remote calls. Vanilla ES2022 JavaSc
 Features:
 • Per-site cache clear by default — other sites' data stays untouched
 • Five clear modes: this site, this site + open subdomains, all sites, deep clear (cache + cookies + storage), reload all tabs
-• Keyboard shortcuts: Alt+Shift+R / S / A / D / W (customizable via chrome://extensions/shortcuts)
+• Keyboard shortcuts: Alt+Shift+E / G / D / L (customizable via chrome://extensions/shortcuts)
 • Post-reload toast with cache hit/miss telemetry so you can verify the wipe worked
 • Right-click context menu with all modes including "reopen in incognito" and "open link with fresh cache"
 • Available in 20 languages: English, Spanish, French, German, Italian, Dutch, Polish, Portuguese-BR, Russian, Turkish, Japanese, Korean, Chinese Simplified and Traditional, Vietnamese, Indonesian, Thai, Hebrew, Arabic, Persian
@@ -235,7 +235,7 @@ Sin popups. Sin página de opciones. Sin telemetría. Sin llamadas remotas. Java
 Características:
 • Limpieza de caché por sitio — los datos de otros sitios no se tocan
 • Cinco modos: sitio actual, sitio + subdominios abiertos, todos los sitios, limpieza profunda (caché + cookies + almacenamiento), recargar todas las pestañas
-• Atajos de teclado: Alt+Shift+R / S / A / D / W (personalizables en chrome://extensions/shortcuts)
+• Atajos de teclado: Alt+Shift+E / G / D / L (personalizables en chrome://extensions/shortcuts)
 • Toast post-recarga con telemetría de caché para verificar que la limpieza funcionó
 • Menú contextual con todos los modos incluyendo "reabrir en incógnito" y "abrir enlace con caché limpia"
 • Disponible en 20 idiomas: inglés, español, francés, alemán, italiano, neerlandés, polaco, portugués (BR), ruso, turco, japonés, coreano, chino simplificado y tradicional, vietnamita, indonesio, tailandés, hebreo, árabe, persa
@@ -260,7 +260,7 @@ Características:
 功能：
 • 默认按站点清除缓存 — 其他站点的数据不受影响
 • 五种清除模式：此站点、此站点 + 打开的子域名、所有站点、深度清理（缓存 + Cookie + 存储）、重新加载所有标签页
-• 键盘快捷键：Alt+Shift+R / S / A / D / W（可在 chrome://extensions/shortcuts 中自定义）
+• 键盘快捷键：Alt+Shift+E / G / D / L（可在 chrome://extensions/shortcuts 中自定义）
 • 重新加载后的通知，显示缓存命中/未命中遥测，以验证清理是否生效
 • 右键菜单包含所有模式，包括"在隐身模式中重新打开"和"使用新缓存打开链接"
 • 支持 20 种语言：英语、西班牙语、法语、德语、意大利语、荷兰语、波兰语、葡萄牙语（巴西）、俄语、土耳其语、日语、韩语、简体中文、繁体中文、越南语、印尼语、泰语、希伯来语、阿拉伯语、波斯语
@@ -285,7 +285,7 @@ Chrome、Edge、Firefox 向けのミニマルで依存関係ゼロのブラウ�
 機能：
 • デフォルトでサイト単位のキャッシュクリア — 他のサイトのデータには触れません
 • 5つのクリアモード：このサイト、このサイト + 開いているサブドメイン、全サイト、ディープクリア（キャッシュ + Cookie + ストレージ）、すべてのタブをリロード
-• キーボードショートカット：Alt+Shift+R / S / A / D / W（chrome://extensions/shortcuts でカスタマイズ可能）
+• キーボードショートカット：Alt+Shift+E / G / D / L（chrome://extensions/shortcuts でカスタマイズ可能）
 • リロード後のトーストにキャッシュヒット/ミスのテレメトリーを表示、クリアが機能したか確認できます
 • 右クリックメニューですべてのモードが利用可能。「シークレットモードで再度開く」と「新しいキャッシュでリンクを開く」を含みます
 • 20言語対応：英語、スペイン語、フランス語、ドイツ語、イタリア語、オランダ語、ポーランド語、ポルトガル語（ブラジル）、ロシア語、トルコ語、日本語、韓国語、簡体字中国語、繁体字中国語、ベトナム語、インドネシア語、タイ語、ヘブライ語、アラビア語、ペルシア語
@@ -360,7 +360,7 @@ Sem popups. Sem página de opções. Sem telemetria. Sem chamadas remotas. JavaS
 Recursos:
 • Limpeza de cache por site por padrão — os dados de outros sites não são tocados
 • Cinco modos de limpeza: este site, este site + subdomínios abertos, todos os sites, limpeza profunda (cache + cookies + armazenamento), recarregar todas as abas
-• Atalhos de teclado: Alt+Shift+R / S / A / D / W (personalizáveis em chrome://extensions/shortcuts)
+• Atalhos de teclado: Alt+Shift+E / G / D / L (personalizáveis em chrome://extensions/shortcuts)
 • Notificação pós-recarregamento com telemetria de cache hit/miss para verificar se a limpeza funcionou
 • Menu de contexto com todos os modos, incluindo "Reabrir em janela anônima" e "Abrir link com cache limpo"
 • Disponível em 20 idiomas: inglês, espanhol, francês, alemão, italiano, neerlandês, polonês, português (BR), russo, turco, japonês, coreano, chinês simplificado e tradicional, vietnamita, indonésio, tailandês, hebraico, árabe, persa
@@ -406,7 +406,7 @@ Testing steps:
 2. Navigate to any website (e.g. https://example.com).
 3. Click the toolbar icon — the page reloads and a green toast appears in the top-right confirming the cache was cleared.
 4. Right-click the toolbar icon to see all seven modes (per-site, per-site + subdomains, all-sites, deep clear, reload all tabs in window, reload all tabs in all windows, reopen in incognito).
-5. Press Alt+Shift+R to test the keyboard shortcut (same as clicking the icon).
+5. Press Alt+Shift+E to test the keyboard shortcut (same as clicking the icon).
 6. Press Alt+Shift+S to clear the current site and every open subdomain of it (e.g. www.example.com + api.example.com + docs.example.com).
 7. Press Alt+Shift+D on a site where you're logged in — cookies and storage are cleared, the page reloads, and you're logged out.
 8. Right-click any hyperlink on any page → "Open link with fresh cache" clears the link's origin then opens it in a new tab.

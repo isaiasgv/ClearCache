@@ -59,6 +59,10 @@
     "message": "Xóa sâu và mở lại trang này trong cửa sổ ẩn danh mới",
     "description": "Right-click context menu entry for reopen-in-incognito."
   },
+  "menuMoreTitle": {
+    "message": "Thêm",
+    "description": "Toolbar context menu submenu that holds the less-used actions (reload all windows, incognito, About)."
+  },
   "menuOpenLinkFreshTitle": {
     "message": "Mở liên kết với cache mới",
     "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."

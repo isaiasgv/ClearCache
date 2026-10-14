@@ -59,6 +59,10 @@
     "message": "Derinlemesine temizle ve bu sayfayı yeni bir gizli pencerede yeniden aç",
     "description": "Right-click context menu entry for reopen-in-incognito."
   },
+  "menuMoreTitle": {
+    "message": "Daha fazla",
+    "description": "Toolbar context menu submenu that holds the less-used actions (reload all windows, incognito, About)."
+  },
   "menuOpenLinkFreshTitle": {
     "message": "Bağlantıyı temiz önbellekle aç",
     "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."

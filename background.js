@@ -224,6 +224,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   showToast(tabId, mode);
 });
 
+// A tab closed before its reload finished would otherwise leave entries
+// behind for the lifetime of the worker.
+chrome.tabs.onRemoved.addListener((tabId) => {
+  pendingToasts.delete(tabId);
+  reloadTelemetry.delete(tabId);
+});
+
 async function clearAndReload(tab, mode) {
   const origin = originOf(tab?.url);
 
@@ -279,8 +286,13 @@ async function clearOriginAndReloadTabs(tab, scope) {
     ok = false;
   }
 
-  const feedbackKey = ok ? "origin" : "error";
+  // A non-web tab has no origin, so siteFilter fell back to a global wipe —
+  // report it as one instead of claiming a site-scoped clear.
+  const feedbackKey = ok ? (origin ? "origin" : "all") : "error";
   await flashBadge(tab?.id, feedbackKey);
+
+  const query = scope === "all" ? {} : { windowId: tab?.windowId };
+  if (scope !== "all" && typeof tab?.windowId !== "number") return;
 
   // Show the toast on the originally active tab only — not on every reloaded
   // tab — to avoid a barrage of confirmations.
@@ -288,9 +300,6 @@ async function clearOriginAndReloadTabs(tab, scope) {
     pendingToasts.set(tab.id, feedbackKey);
     startTelemetry(tab.id);
   }
-
-  const query = scope === "all" ? {} : { windowId: tab?.windowId };
-  if (scope !== "all" && typeof tab?.windowId !== "number") return;
 
   const tabs = await chrome.tabs.query(query);
   await Promise.all(
@@ -312,32 +321,32 @@ async function clearOriginAndReloadTabs(tab, scope) {
 async function clearSubdomainsAndReload(tab) {
   const allTabs = await chrome.tabs.query({});
   const origins = siblingOrigins(tab?.url, allTabs);
+  if (origins.size === 0) return;
 
   let ok = true;
-  if (origins.size > 0) {
-    try {
-      await chrome.browsingData.remove(multiSiteFilter(origins), dataTypesFor(IS_FIREFOX, DATA_BASE));
-    } catch (err) {
-      console.error("[ClearCache] Subdomain clear failed:", err);
-      ok = false;
-    }
+  try {
+    await chrome.browsingData.remove(multiSiteFilter(origins), dataTypesFor(IS_FIREFOX, DATA_BASE));
+  } catch (err) {
+    console.error("[ClearCache] Subdomain clear failed:", err);
+    ok = false;
   }
 
   const feedbackKey = ok ? "subdomains" : "error";
   await flashBadge(tab?.id, feedbackKey);
-
-  // Only the triggering tab gets a toast; reloading every sibling would
-  // flood the user.
-  if (typeof tab?.id === "number") {
-    pendingToasts.set(tab.id, feedbackKey);
-    startTelemetry(tab.id);
-  }
 
   // Reload every tab whose origin is in the set (across all windows).
   const toReload = allTabs.filter((t) => {
     const o = originOf(t?.url);
     return typeof t.id === "number" && o && origins.has(o);
   });
+
+  // Only the triggering tab gets a toast; reloading every sibling would
+  // flood the user. Queue it only if that tab is actually being reloaded,
+  // or it would surface later on an unrelated navigation.
+  if (toReload.some((t) => t.id === tab?.id)) {
+    pendingToasts.set(tab.id, feedbackKey);
+    startTelemetry(tab.id);
+  }
   await Promise.all(
     toReload.map((t) =>
       chrome.tabs.reload(t.id, { bypassCache: true }).catch((err) =>
@@ -375,6 +384,13 @@ async function clearAndOpenLink(linkUrl) {
 async function deepClearAndReopenIncognito(tab) {
   const origin = originOf(tab?.url);
   const url = tab?.url;
+
+  // Without a web origin siteFilter would return a global filter, and a deep
+  // clear would then wipe cookies and storage for every site.
+  if (!origin) {
+    await flashBadge(tab?.id, "error");
+    return;
+  }
 
   let ok = true;
   try {
@@ -423,16 +439,21 @@ chrome.commands.onCommand.addListener(async (command) => {
 //   "link"   — the right-click menu on any hyperlink inside a page
 // The handler receives both the click info (for link URLs) and the tab the
 // user was on when they triggered the menu.
+//
+// Chrome, Edge and Firefox silently drop top-level "action" items beyond
+// contextMenus.ACTION_MENU_TOP_LEVEL_LIMIT (6), so anything past the sixth
+// lives under the "More" submenu via `parentId`.
 const MENU_ITEMS = [
   { id: "clearcache-origin",        messageId: "menuOriginTitle",           contexts: ["action"], handler: (_info, tab) => clearAndReload(tab, "origin") },
   { id: "clearcache-subdomains",    messageId: "menuSubdomainsTitle",       contexts: ["action"], handler: (_info, tab) => clearSubdomainsAndReload(tab) },
   { id: "clearcache-all",           messageId: "menuAllTitle",              contexts: ["action"], handler: (_info, tab) => clearAndReload(tab, "all")    },
   { id: "clearcache-deep",          messageId: "menuDeepTitle",             contexts: ["action"], handler: (_info, tab) => clearAndReload(tab, "deep")   },
   { id: "clearcache-window-tabs",   messageId: "menuReloadAllTabsTitle",    contexts: ["action"], handler: (_info, tab) => clearOriginAndReloadTabs(tab, "window") },
-  { id: "clearcache-all-windows",   messageId: "menuReloadAllWindowsTitle", contexts: ["action"], handler: (_info, tab) => clearOriginAndReloadTabs(tab, "all") },
-  { id: "clearcache-incognito",     messageId: "menuReopenIncognitoTitle",  contexts: ["action"], handler: (_info, tab) => deepClearAndReopenIncognito(tab) },
-  { id: "clearcache-sep-about",     type: "separator",                      contexts: ["action"] },
-  { id: "clearcache-about",         messageId: "menuAboutTitle",            contexts: ["action"], handler: () => openAboutPage() },
+  { id: "clearcache-more",          messageId: "menuMoreTitle",             contexts: ["action"] },
+  { id: "clearcache-all-windows",   messageId: "menuReloadAllWindowsTitle", contexts: ["action"], parentId: "clearcache-more", handler: (_info, tab) => clearOriginAndReloadTabs(tab, "all") },
+  { id: "clearcache-incognito",     messageId: "menuReopenIncognitoTitle",  contexts: ["action"], parentId: "clearcache-more", handler: (_info, tab) => deepClearAndReopenIncognito(tab) },
+  { id: "clearcache-sep-about",     type: "separator",                      contexts: ["action"], parentId: "clearcache-more" },
+  { id: "clearcache-about",         messageId: "menuAboutTitle",            contexts: ["action"], parentId: "clearcache-more", handler: () => openAboutPage() },
   { id: "clearcache-open-link",     messageId: "menuOpenLinkFreshTitle",    contexts: ["link"],   handler: (info) => clearAndOpenLink(info.linkUrl) }
 ];
 
@@ -451,14 +472,14 @@ async function installContextMenus() {
   // the legacy callback form would break Firefox.
   await chrome.contextMenus.removeAll();
   for (const item of MENU_ITEMS) {
-    if (item.type === "separator") {
-      chrome.contextMenus.create({ id: item.id, type: "separator", contexts: item.contexts });
-      continue;
-    }
-    chrome.contextMenus.create({
-      id: item.id,
-      title: chrome.i18n.getMessage(item.messageId),
-      contexts: item.contexts
+    const props = { id: item.id, contexts: item.contexts };
+    if (item.parentId) props.parentId = item.parentId;
+    if (item.type === "separator") props.type = "separator";
+    else props.title = chrome.i18n.getMessage(item.messageId);
+    chrome.contextMenus.create(props, () => {
+      if (chrome.runtime.lastError) {
+        console.error(`[ClearCache] Menu item ${item.id} failed:`, chrome.runtime.lastError.message);
+      }
     });
   }
 }

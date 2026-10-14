@@ -59,6 +59,10 @@
     "message": "深度清理并在新的隐身窗口中重新打开此页面",
     "description": "Right-click context menu entry for reopen-in-incognito."
   },
+  "menuMoreTitle": {
+    "message": "更多",
+    "description": "Toolbar context menu submenu that holds the less-used actions (reload all windows, incognito, About)."
+  },
   "menuOpenLinkFreshTitle": {
     "message": "使用新缓存打开链接",
     "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."

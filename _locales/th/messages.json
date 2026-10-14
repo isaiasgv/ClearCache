@@ -59,6 +59,10 @@
     "message": "ล้างข้อมูลเชิงลึกและเปิดหน้านี้อีกครั้งในหน้าต่างไม่ระบุตัวตนใหม่",
     "description": "Right-click context menu entry for reopen-in-incognito."
   },
+  "menuMoreTitle": {
+    "message": "เพิ่มเติม",
+    "description": "Toolbar context menu submenu that holds the less-used actions (reload all windows, incognito, About)."
+  },
   "menuOpenLinkFreshTitle": {
     "message": "เปิดลิงก์ด้วยแคชใหม่",
     "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."

@@ -73,10 +73,10 @@ Store policy requires screenshots to show **real extension functionality**, not 
 1. Navigate to `chrome://extensions/shortcuts`.
 2. Scroll so the **ClearCache** block is vertically centered.
 3. The four commands should be visible:
-   - Clear cache for this site & reload — `Alt+Shift+R`
-   - Clear cache for ALL sites & reload current tab — `Alt+Shift+A`
+   - Clear cache for this site & reload — `Alt+Shift+E`
+   - Clear cache for ALL sites & reload current tab — `Alt+Shift+G`
    - Clear cache + cookies + storage for this site & reload — `Alt+Shift+D`
-   - Clear cache for current site & reload all tabs in this window — `Alt+Shift+W`
+   - Clear cache for current site & reload all tabs in this window — `Alt+Shift+L`
    - Clear cache for current site & reload all tabs in ALL windows — (unbound)
 4. Capture.
 

@@ -24,14 +24,14 @@ describe("dataTypesFor", () => {
       expect(dataTypesFor(true, input)).toEqual({ cache: true });
     });
 
-    it("strips serviceWorkers", () => {
+    it("keeps serviceWorkers (supported with hostnames since Firefox 77)", () => {
       const input = { cache: true, serviceWorkers: true };
-      expect(dataTypesFor(true, input)).toEqual({ cache: true });
+      expect(dataTypesFor(true, input)).toEqual({ cache: true, serviceWorkers: true });
     });
 
-    it("strips both cacheStorage and serviceWorkers at once", () => {
+    it("strips cacheStorage but keeps serviceWorkers in the base clear set", () => {
       const input = { cache: true, cacheStorage: true, serviceWorkers: true };
-      expect(dataTypesFor(true, input)).toEqual({ cache: true });
+      expect(dataTypesFor(true, input)).toEqual({ cache: true, serviceWorkers: true });
     });
 
     it("preserves Firefox-supported keys", () => {
@@ -45,6 +45,7 @@ describe("dataTypesFor", () => {
       };
       expect(dataTypesFor(true, input)).toEqual({
         cache: true,
+        serviceWorkers: true,
         cookies: true,
         localStorage: true,
         indexedDB: true

@@ -66,9 +66,9 @@ Last audited: 2026-04-15 against the v0.0.7 release line (release branch HEAD at
 
 - No popup window, no options page, no side panel. The UI surface is:
   - Toolbar icon (click = clear + reload current site).
-  - Right-click context menu on the toolbar icon (7 modes).
+  - Right-click context menu on the toolbar icon (5 modes + a "More" submenu, within the browser's 6-item top-level limit).
   - Right-click context menu on hyperlinks (1 entry: "Open link with fresh cache").
-  - 5 keyboard shortcuts (`Alt+Shift+R / S / A / D / W`), all rebindable at `edge://extensions/shortcuts`.
+  - 4 default keyboard shortcuts (`Alt+Shift+E / G / D / L`; the other commands can be bound manually), all rebindable at `edge://extensions/shortcuts`.
   - A color-coded toast that appears on the freshly reloaded page (~2s, then auto-dismisses).
   - A color-coded badge on the toolbar icon (~1.5s) as a fallback when toast injection is blocked (e.g. on `edge://` pages).
 - Responsive: every action completes in <100 ms of wall-clock time at the extension level; the only wait is the browser's own cache clear + reload.

@@ -92,11 +92,11 @@ A toast appears in the top-right of the freshly loaded page confirming what got 
 
 | Action                                           | Shortcut          | Right-click menu | Toast / badge color |
 | ------------------------------------------------ | ----------------- | ---------------- | ------------------- |
-| Clear current site &amp; reload **(default)**    | `Alt+Shift+R`     | ✓                | ✓ green             |
-| Clear current site **+ open subdomains** &amp; reload | `Alt+Shift+S` | ✓                | ✓ green             |
-| Clear **all sites** &amp; reload current tab     | `Alt+Shift+A`     | ✓                | ★ amber             |
+| Clear current site &amp; reload **(default)**    | `Alt+Shift+E`     | ✓                | ✓ green             |
+| Clear current site **+ open subdomains** &amp; reload | — (set one in the shortcuts page) | ✓                | ✓ green             |
+| Clear **all sites** &amp; reload current tab     | `Alt+Shift+G`     | ✓                | ★ amber             |
 | Deep clear current site (cache + cookies + storage) | `Alt+Shift+D`  | ✓                | ☠ red               |
-| Reload all tabs in this window (clears current site) | `Alt+Shift+W` | ✓                | ✓ green             |
+| Reload all tabs in this window (clears current site) | `Alt+Shift+L` | ✓                | ✓ green             |
 
 **Subdomain mode details:** the extension enumerates every open tab whose hostname shares the same registrable domain as the current tab (e.g. `www.example.com`, `api.example.com`, `docs.example.com` all roll up to `example.com`), clears cache for that set of origins, and hard-reloads each of those tabs. Only open tabs are considered — sites you haven't opened are untouched. Registrable-domain detection uses a small built-in allow-list for common multi-label public suffixes (`.co.uk`, `.github.io`, `.vercel.app`, etc.) — not a full PSL, but enough for 95% of real-world sites.
 
@@ -146,7 +146,7 @@ Every permission is justified. There are no "just in case" requests.
 **Firefox caveats:**
 
 - Firefox's `browsingData.remove` accepts a `hostnames` array (no port) rather than Chrome's `origins` array (full origin). As a consequence, clearing `http://localhost:3000` also clears cache for any other port on `localhost`.
-- Firefox's `browsingData.remove` does not support the `cacheStorage` or `serviceWorkers` data types. ClearCache strips those keys when running on Firefox so the call succeeds, but on sites that use a Service Worker for offline caching you may still see cached content after a default clear. Use deep-clear mode (`Alt+Shift+D`) to also wipe cookies / localStorage / IndexedDB — which unregisters enough Service Worker state to fully bust the cache on most sites.
+- Firefox's `browsingData.remove` does not support the `cacheStorage` data type. ClearCache strips that key when running on Firefox so the call succeeds. Service Worker registrations *are* removed for the site, which also drops their caches on most sites; if a site still serves stale content after a default clear, use deep-clear mode (`Alt+Shift+D`) to also wipe cookies / localStorage / IndexedDB — which unregisters enough Service Worker state to fully bust the cache on most sites.
 
 Both are Firefox API limitations, not ClearCache bugs.
 

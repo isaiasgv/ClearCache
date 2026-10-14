@@ -59,6 +59,10 @@
     "message": "مسح عميق وإعادة فتح هذه الصفحة في نافذة تصفح متخفي جديدة",
     "description": "Right-click context menu entry for reopen-in-incognito."
   },
+  "menuMoreTitle": {
+    "message": "المزيد",
+    "description": "Toolbar context menu submenu that holds the less-used actions (reload all windows, incognito, About)."
+  },
   "menuOpenLinkFreshTitle": {
     "message": "فتح الرابط بذاكرة مؤقتة جديدة",
     "description": "Right-click context menu entry on a hyperlink. Clears the cache for the link's origin, then opens the link in a new tab."

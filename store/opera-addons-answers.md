@@ -186,10 +186,10 @@ A small confirmation appears in the top-right of the page so you know it worked,
 
 Four modes, each with a keyboard shortcut and a right-click menu entry:
 
-• Clear this site and reload — Alt+Shift+R (default click)
-• Clear all sites and reload this tab — Alt+Shift+A
+• Clear this site and reload — Alt+Shift+E (default click)
+• Clear all sites and reload this tab — Alt+Shift+G
 • Deep clear this site (cache, cookies, and storage) and reload — Alt+Shift+D
-• Clear this site and reload every tab in this window — Alt+Shift+W
+• Clear this site and reload every tab in this window — Alt+Shift+L
 
 You can also right-click the toolbar icon to reopen the current page in a fresh incognito window after a deep clear.
 
@@ -208,7 +208,7 @@ Version 0.0.2
 
 Previous highlights (0.0.1):
 - One-click per-site cache clear with hard reload.
-- Keyboard shortcuts: Alt+Shift+R / A / D / W.
+- Keyboard shortcuts: Alt+Shift+E / G / D / L.
 - Right-click menu with all four modes plus "reopen in incognito".
 - On-page toast confirmation with a fresh-vs-cached counter.
 - Color-coded toolbar badge as a fallback on system pages.
@@ -236,10 +236,10 @@ Aparece una pequeña confirmación en la esquina superior derecha de la página 
 
 Cuatro modos, cada uno con un atajo de teclado y una opción en el menú contextual:
 
-• Limpiar este sitio y recargar — Alt+Shift+R (clic por defecto)
-• Limpiar todos los sitios y recargar esta pestaña — Alt+Shift+A
+• Limpiar este sitio y recargar — Alt+Shift+E (clic por defecto)
+• Limpiar todos los sitios y recargar esta pestaña — Alt+Shift+G
 • Limpieza profunda de este sitio (caché, cookies y almacenamiento) y recargar — Alt+Shift+D
-• Limpiar este sitio y recargar todas las pestañas de esta ventana — Alt+Shift+W
+• Limpiar este sitio y recargar todas las pestañas de esta ventana — Alt+Shift+L
 
 También puedes hacer clic derecho en el icono para reabrir la página actual en una ventana de incógnito nueva tras una limpieza profunda.
 
@@ -258,7 +258,7 @@ Versión 0.0.2
 
 Novedades anteriores (0.0.1):
 - Limpieza de caché por sitio con un clic y recarga forzada.
-- Atajos de teclado: Alt+Shift+R / A / D / W.
+- Atajos de teclado: Alt+Shift+E / G / D / L.
 - Menú contextual con los cuatro modos y "reabrir en incógnito".
 - Confirmación en la página con contador de recursos frescos vs. en caché.
 - Insignia con color en la barra como respaldo en páginas del sistema.

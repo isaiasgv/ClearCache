@@ -40,16 +40,16 @@ A small confirmation appears in the top-right of the page so you know it worked,
 
 Four modes, each with a keyboard shortcut and a right-click menu entry:
 
-- Clear this site and reload — Alt+Shift+R (default click)
-- Clear all sites and reload this tab — Alt+Shift+A
+- Clear this site and reload — Alt+Shift+E (default click)
+- Clear all sites and reload this tab — Alt+Shift+G
 - Deep clear this site (cache, cookies, and storage) and reload — Alt+Shift+D
-- Clear this site and reload every tab in this window — Alt+Shift+W
+- Clear this site and reload every tab in this window — Alt+Shift+L
 
 You can also right-click the toolbar icon to reopen the current page in a fresh private window after a deep clear.
 
 Privacy: ClearCache collects nothing, sends nothing to any server, and stores nothing. It only clears data — the opposite of tracking. Every line of code is open source on GitHub.
 
-Firefox note: due to Firefox API limitations, "cacheStorage" and Service Worker registrations cannot be wiped via browsingData. On sites that use Service Workers for offline caching, use deep-clear mode (Alt+Shift+D) which also removes cookies and storage to fully invalidate SW state.
+Firefox note: due to a Firefox API limitation, "cacheStorage" cannot be wiped via browsingData. Service Worker registrations for the site are removed on every clear; if a site still serves stale content, use deep-clear mode (Alt+Shift+D), which also removes cookies and storage.
 
 Available in 20 languages including English, Spanish, French, German, Italian, Dutch, Polish, Portuguese (BR), Russian, Turkish, Japanese, Korean, Chinese (Simplified and Traditional), Vietnamese, Indonesian, Thai, Hebrew, Arabic, and Persian. Free and open source under GPL-3.0.
 ```
@@ -120,7 +120,7 @@ Testing steps:
 3. Navigate to any website (e.g. https://example.com).
 4. Click the toolbar icon — the page reloads and a green toast appears in the top-right confirming the cache was cleared.
 5. Right-click the toolbar icon to see all six modes.
-6. Press Alt+Shift+R to test the keyboard shortcut (same as clicking the icon).
+6. Press Alt+Shift+E to test the keyboard shortcut (same as clicking the icon).
 7. Press Alt+Shift+D on a site where you are logged in — cookies and storage are cleared, the page reloads, and you are logged out.
 
 Permissions justification:
